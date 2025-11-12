@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- pluging:Tittle , Icon -->
+    <%- include('../partials/_head') %> 
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="vendors/bootstrap-datepicker/bootstrap-datepicker.min.css">
+    <!-- End plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- End layout styles -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  </head>
+  <body>
+    <div class="container-scroller">
+      <!-- partial:partials/_navbar.html -->
+      <%- include('../partials/_navbar') %> 
+      <!-- partial -->
+      <div class="container-fluid page-body-wrapper">
+        <!-- partial:partials/_sidebar.html -->
+        <%- include('../partials/_sidebar') %> 
+        <!-- partial -->
+        <div class="main-panel">
+            <!-- content-wrapper -->
+           <div class="content-wrapper" style="width: 100%;">
+                <div class="page-header">
+                  <h3 class="page-title">
+                    <span class="page-title-icon bg-gradient-danger text-white me-2">
+                      <i class="mdi mdi-home"></i>
+                    </span> Dashboard
+                  </h3>
+                  <nav aria-label="breadcrumb">
+                    <ul class="breadcrumb">
+                      <li class="breadcrumb-item active" aria-current="page">
+                        <span></span><i class="mdi alert-circle-outline icon-sm text-primary align-middle"></i>
+                      </li>
+                    </ul>
+                  </nav>
+                </div>
+               <!-- content Add -->
+<div class="row">
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-danger card-img-holder text-white">
+      <div class="card-body">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3">Total Users <i class="mdi mdi-account-group  mdi-24px float-end"></i></h4>
+        <h2 class="mb-0"><%= totalUsers %></h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-success card-img-holder text-white">
+      <div class="card-body">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3">Active Users <i class="mdi mdi-account-check mdi-24px float-end"></i></h4>
+        <h2 class="mb-0"><%= activeUsers %></h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-primary card-img-holder text-white">
+      <div class="card-body">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3"> block Users <i class="mdi mdi-store mdi-24px float-end"></i></h4>
+        <h2 class="mb-0"><%= inactiveUsers %></h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-warning card-img-holder text-white">
+      <div class="card-body">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3"> Online Active  <i class="mdi mdi-store-check mdi-24px float-end"></i></h4>
+        <h2 class="mb-0"><%= onlineUsers %></h2>
+      </div>
+    </div>
+  </div>
+</div>
+ <!-- second row wallets details-->
+<div class="row">
+  <!-- Total Payment -->
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-info card-img-holder text-white">
+      <div class="card-body px-4 pt-5 ">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3">Total Deposit 
+          <i class="mdi mdi-cash-multiple mdi-24px float-end"></i>
+        </h4>
+        <h2 class="mb-0"><%= totalPayment %></h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Today Payment -->
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-dark card-img-holder text-white">
+      <div class="card-body px-4 pt-5">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3">Today Deposit
+          <i class="mdi mdi-cash mdi-24px float-end"></i>
+        </h4>
+        <h2 class="mb-0"><%= todayPayment %></h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Total Subscription -->
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-info card-img-holder text-white">
+      <div class="card-body px-4 pt-5">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3">Total Subscription 
+          <i class="mdi mdi-bank mdi-24px float-end"></i>
+        </h4>
+        <h2 class="mb-0"><%= totalSub %></h2>
+      </div>
+    </div>
+  </div>
+
+  <!-- Today Subscription -->
+  <div class="col-md-3 stretch-card grid-margin">
+    <div class="card bg-gradient-dark card-img-holder text-white">
+      <div class="card-body px-4 pt-5">
+        <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+        <h4 class="font-weight-normal mb-3">Today Subscription 
+          <i class="mdi mdi-crown mdi-24px float-end text-warning"></i>
+        </h4>
+        <h2 class="mb-0"><%= todaySub %></h2>
+      </div>
+    </div>
+  </div>
+</div>
+             
+             
+           <!-- <div class="row">
+                <div class="col-md-3 stretch-card grid-margin">
+                  <div class="card bg-gradient-danger card-img-holder text-white">
+                    <div class="card-body">
+                      <img src="images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
+                      <h4 class="font-weight-normal mb-3">Ignored Profile <i class="mdi mdi-heart-broken  mdi-24px float-end"></i>
+                      </h4>
+                      <h2 class="mb-4">15</h2>
+                      <h6 class="card-text">Increased by 60%</h6>
+                    </div>
+                  </div>
+                </div>
+              </div> -->
+<!--content end -->
+               
+               
+               
+              </div>
+          <!-- content-wrapper ends -->
+          <!-- partial:partials/_footer.html -->
+          <%- include('../partials/_footer') %>
+          <!-- partial -->
+        </div>
+        <!-- main-panel ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+     <script src="js/auth.js"></script>
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <script src="vendors/chart.js/chart.umd.js"></script>
+    <script src="vendors/bootstrap-datepicker/bootstrap-datepicker.min.js"></script>
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/todolist.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <!-- endinject -->
+    <!-- Custom js for this page -->
+    <script src="js/dashboard.js"></script>
+     <%- include('../partials/_script') %> 
+    <!-- End custom js for this page -->
+    
+
+
+  </body>
+</html>

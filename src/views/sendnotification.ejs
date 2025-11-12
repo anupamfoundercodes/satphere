@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Notification</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+  <style>
+    .user-selected {
+      background-color: #e0ffe0;
+    }
+    .table-wrapper {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+  </style>
+</head>
+<body>
+<div class="container-scroller">
+  <%- include('../partials/_navbar') %>
+  <div class="container-fluid page-body-wrapper">
+    <%- include('../partials/_sidebar') %>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title mt-2">Send Notification</h3>
+        </div>
+
+        <div class="row">
+          <!-- LEFT: Notification Form -->
+          <div class="col-md-6 d-flex">
+            <div class="card w-100">
+              <div class="card-body d-flex flex-column">
+                <h4 class="card-title">Send Notification</h4>
+
+                <!-- Notification message area -->
+                <div id="notificationMsg" style="margin-bottom: 10px;"></div>
+
+                <form id="notificationForm" class="flex-grow-1 d-flex flex-column">
+                  <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                  </div>
+                  <div class="form-group flex-grow-1">
+                    <label>Message</label>
+                    <textarea name="message" class="form-control h-100" required></textarea>
+                  </div>
+                  <input type="hidden" id="selectedUserTokens" name="token">
+                  <button type="submit" class="btn btn-primary mt-3">Send Notification</button>
+                </form>
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: User Table -->
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Select Users</h4>
+                <input type="text" id="userSearch" class="form-control mb-3" placeholder="Search users...">
+                <div class="table-wrapper">
+                  <table class="table table-bordered table-striped" id="userTable">
+                    <thead>
+                      <tr>
+                        <th><input type="checkbox" id="selectAll"></th>
+                        <th>Image</th>
+                        <th>Name</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <% users.forEach(user => { %>
+                        <tr>
+                          <td><input type="checkbox" class="user-checkbox" value="<%= user.token %>"></td>
+                          <td><img src="<%= user.img || '/images/faces-clipart/default.png' %>" width="40"></td>
+                          <td><%= user.name %></td>
+                        </tr>
+                      <% }) %>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /row -->
+      </div>
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/js/misc.js"></script>
+<script src="js/off-canvas.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/todolist.js"></script>
+<%- include('../partials/_script') %>
+
+<script>
+  const msgDiv = document.getElementById('notificationMsg');
+
+  // Select All checkbox
+  document.getElementById('selectAll').addEventListener('change', function () {
+    document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = this.checked);
+  });
+
+  // Search filter
+  document.getElementById('userSearch').addEventListener('input', function () {
+    const term = this.value.toLowerCase();
+    document.querySelectorAll('#userTable tbody tr').forEach(row => {
+      const name = row.cells[2]?.textContent.toLowerCase();
+      row.style.display = name.includes(term) ? '' : 'none';
+    });
+  });
+
+  // Form submit with AJAX
+  document.getElementById('notificationForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const title = this.title.value.trim();
+    const message = this.message.value.trim();
+    const selectedTokens = [...document.querySelectorAll('.user-checkbox:checked')].map(cb => cb.value);
+
+    if (!title || !message) {
+      showMessage('Please enter title and message.', 'danger');
+      return;
+    }
+    if (selectedTokens.length === 0) {
+      showMessage('Please select at least one user.', 'danger');
+      return;
+    }
+
+    const data = {
+      title,
+      message,
+      token: selectedTokens
+    };
+
+    try {
+      const res = await fetch('/sendnotifications', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        showMessage('Notification sent successfully!', 'success');
+        this.reset();
+        document.querySelectorAll('.user-checkbox').forEach(cb => cb.checked = false);
+        document.getElementById('selectAll').checked = false;
+      } else {
+        showMessage('Error: ' + result.message, 'danger');
+      }
+    } catch (err) {
+      console.error(err);
+      showMessage('Error sending notification', 'danger');
+    }
+  });
+
+  function showMessage(msg, type) {
+    msgDiv.innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+        ${msg}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+    setTimeout(() => {
+      msgDiv.innerHTML = '';
+    }, 3000);
+  }
+</script>
+</body>
+</html>

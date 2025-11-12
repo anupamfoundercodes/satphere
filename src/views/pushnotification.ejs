@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <title>Send Topic Notification</title>
+
+  <!-- Include partial head -->
+  <%- include('../partials/_head') %>
+
+  <!-- Icon & vendor CSS -->
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    #notificationMsg {
+      margin-bottom: 10px;
+    }
+  </style>
+</head>
+
+
+
+<body>
+<div class="container-scroller">
+  <%- include('../partials/_navbar') %>
+  <div class="container-fluid page-body-wrapper">
+    <%- include('../partials/_sidebar') %>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title mt-2">Send Notification All User</h3>
+        </div>
+
+        <div class="row">
+          <div class="col-md-8 offset-md-2">
+            <div class="card">
+              <div class="card-body">
+                <h4 class="card-title">Notification Details</h4>
+
+                <!-- Notification message area -->
+                <div id="notificationMsg"></div>
+
+                <form id="notificationForm">
+                  <div class="form-group">
+                    <label>Notification Type</label>
+                    <select name="type" class="form-control" required>
+                      <option value="5">Default</option>
+                      <option value="3">Premium</option>
+                      <option value="4">Chating</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" name="title" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label>Message</label>
+                    <textarea name="message" class="form-control" rows="5" required></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-danger mt-3">Send Notification</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div> <!-- /row -->
+      </div>
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/js/misc.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<%- include('../partials/_script') %>
+
+<script>
+  const msgDiv = document.getElementById('notificationMsg');
+
+  document.getElementById('notificationForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    const title = this.title.value.trim();
+    const type = this.type.value.trim();
+    const message = this.message.value.trim();
+
+    if (!title || !message || !type) {
+      showMessage('Please fill all fields.', 'danger');
+      return;
+    }
+
+    const data = {
+      title,
+      message,
+      type,
+      sender_id: 0
+    };
+
+    try {
+      const res = await fetch('/api/sendTopicNotification', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      const result = await res.json();
+
+      if (result.success) {
+        showMessage(result.message || 'Notification sent successfully!', 'success');
+        this.reset();
+      } else {
+        showMessage('Error: ' + result.message, 'danger');
+      }
+    } catch (err) {
+      console.error(err);
+      showMessage('Error sending notification', 'danger');
+    }
+  });
+
+  function showMessage(msg, type) {
+    msgDiv.innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+        ${msg}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+    setTimeout(() => {
+      msgDiv.innerHTML = '';
+    }, 3000);
+  }
+</script>
+</body>
+</html>

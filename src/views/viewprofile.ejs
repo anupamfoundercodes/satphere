@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <%- include('../partials/_head') %>
+
+  <!-- Required CSS -->
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    .content-wrapper {
+      width: 100% !important;
+    }
+    .profile-img-box {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+    .profile-img-box img {
+      max-width: 120px;
+      height: auto;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 2px solid #f3c5e8;
+      padding: 5px;
+      background: #fff;
+    }
+    .col-md-6 input {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header mt-2">
+            <h3 class="page-title text-center">User Profile</h3>
+          </div>
+
+          <% if (user && user.id) { %>
+            <div class="row justify-content-center">
+              <div class="col-md-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+
+<!-- 🧩 Profile Picture -->
+<div class="row mt-2">
+  <div class="col-md-12 text-center">
+    <label>Profile Picture</label>
+    <div class="profile-img-box">
+      <img src="<%= user.img || '/images/faces-clipart/profile.png' %>" 
+           alt="Profile" style="max-width:120px; border-radius:50%; border:2px solid #f3c5e8; padding:3px; background:#fff;">
+    </div>
+  </div>
+</div>
+
+<!-- 🧩 Group 1 -->
+<h5 class="mt-4 mb-2">Basic Information</h5>
+<div class="row mt-2">
+  <div class="col-md-6"><label>ID</label><input type="text" class="form-control" value="<%= user.id %>" readonly></div>
+  <div class="col-md-6"><label>Mobile No</label><input type="text" class="form-control" value="<%= user.mobile_no %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Email</label><input type="text" class="form-control" value="<%= user.email %>" readonly></div>
+  <div class="col-md-6"><label>First Name</label><input type="text" class="form-control" value="<%= user.first_name %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Last Name</label><input type="text" class="form-control" value="<%= user.last_name %>" readonly></div>
+  <div class="col-md-6"><label>Gender</label><input type="text" class="form-control" value="<%= user.gender %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Date of Birth</label><input type="text" class="form-control" value="<%= user.dob ? new Date(user.dob).toISOString().split('T')[0] : '' %>" readonly></div>
+  <div class="col-md-6"><label>State</label><input type="text" class="form-control" value="<%= user.state %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>City</label><input type="text" class="form-control" value="<%= user.city %>" readonly></div>
+  <div class="col-md-6"><label>Address</label><input type="text" class="form-control" value="<%= user.address %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Pincode</label><input type="text" class="form-control" value="<%= user.pincode %>" readonly></div>
+  <div class="col-md-6"><label>Religion</label><input type="text" class="form-control" value="<%= user.religion %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Sub Religion</label><input type="text" class="form-control" value="<%= user.sub_religion %>" readonly></div>
+  <div class="col-md-6"><label>Profession</label><input type="text" class="form-control" value="<%= user.profession %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Status</label><input type="text" class="form-control" value="<%= user.status %>" readonly></div>
+  <div class="col-md-6"><label>Token</label><input type="text" class="form-control" value="<%= user.token %>" readonly></div>
+</div>
+
+<!-- 🧩 Group 2 -->
+<h5 class="mt-4 mb-2">Family & Background</h5>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Caste</label><input type="text" class="form-control" value="<%= user.caste %>" readonly></div>
+  <div class="col-md-6"><label>Blood Group</label><input type="text" class="form-control" value="<%= user.blood_group %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Residency Year</label><input type="text" class="form-control" value="<%= user.residency_year %>" readonly></div>
+  <div class="col-md-6"><label>Family Income</label><input type="text" class="form-control" value="<%= user.family_income %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Mother Name</label><input type="text" class="form-control" value="<%= user.mother_name %>" readonly></div>
+  <div class="col-md-6"><label>Father Name</label><input type="text" class="form-control" value="<%= user.father_name %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Any Disability</label><input type="text" class="form-control" value="<%= user.any_disability %>" readonly></div>
+  <div class="col-md-6"><label>Mangalik</label><input type="text" class="form-control" value="<%= user.mangalik %>" readonly></div>
+</div>
+
+<!-- 🧩 Group 3 -->
+<h5 class="mt-4 mb-2">Personal Details</h5>
+<div class="row mt-2">
+  <div class="col-md-6"><label>About</label><textarea class="form-control" rows="3" readonly><%= user.about %></textarea></div>
+  <div class="col-md-6"><label>Hobbies</label><textarea class="form-control" rows="3" readonly><%= user.hobbies %></textarea></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Horoscopes</label><input type="text" class="form-control" value="<%= user.horoscopes %>" readonly></div>
+  <div class="col-md-6"><label>Diet</label><input type="text" class="form-control" value="<%= user.diet %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Height</label><input type="text" class="form-control" value="<%= user.height %>" readonly></div>
+  <div class="col-md-6"><label>Skin Tone</label><input type="text" class="form-control" value="<%= user.skin_tone %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Brother Count</label><input type="text" class="form-control" value="<%= user.brother_count %>" readonly></div>
+  <div class="col-md-6"><label>Sister Count</label><input type="text" class="form-control" value="<%= user.sister_count %>" readonly></div>
+</div>
+
+<!-- 🧩 Group 4 -->
+<h5 class="mt-4 mb-2">Professional Details</h5>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Marital Status</label><input type="text" class="form-control" value="<%= user.marital_status %>" readonly></div>
+  <div class="col-md-6"><label>Child</label><input type="text" class="form-control" value="<%= user.child %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Highest Education</label><input type="text" class="form-control" value="<%= user.highest_education %>" readonly></div>
+  <div class="col-md-6"><label>Organization</label><input type="text" class="form-control" value="<%= user.organization %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Course</label><input type="text" class="form-control" value="<%= user.course %>" readonly></div>
+  <div class="col-md-6"><label>Work Type</label><input type="text" class="form-control" value="<%= user.work_type %>" readonly></div>
+</div>
+<div class="row mt-2">
+  <div class="col-md-6"><label>Company Name</label><input type="text" class="form-control" value="<%= user.company_name %>" readonly></div>
+  <div class="col-md-6"><label>Income</label><input type="text" class="form-control" value="<%= user.income %>" readonly></div>
+</div>
+
+                  </div> <!-- card-body -->
+                </div> <!-- card -->
+              </div>
+            </div>
+          <% } else { %>
+            <div class="text-center">
+              <p class="text-muted">No user data available</p>
+            </div>
+          <% } %>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/vendors/select2/select2.min.js"></script>
+  <script src="/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/file-upload.js"></script>
+  <script src="/js/typeahead.js"></script>
+  <script src="/js/select2.js"></script>
+  <%- include('../partials/_script') %>
+</body>
+</html>

@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%- include('../partials/_head') %> 
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="container-scroller">
+      <%- include('../partials/_navbar') %> 
+      <div class="container-fluid page-body-wrapper">
+        <%- include('../partials/_sidebar') %> 
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title mt-2">View All Notification</h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item_"><a href="#"></a></li>
+                  <li class="breadcrumb-item active" aria-current="page"></li>
+                </ol>
+              </nav>
+            </div>
+
+            <div class="row mb-3">
+<div class="col-md-6">
+  <form method="GET" action="/shownotification">
+    <input 
+      type="text" 
+      name="search" 
+      class="form-control" 
+      placeholder="Search by Title, Message, Sender, Receiver, Date" 
+      value="<%= search %>"
+      onkeyup="this.form.submit()"
+    >
+  </form>
+</div>
+      </div>
+
+            <div class="row">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title" style="color:#F59BA7">Notifications Table</h4>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="usersTable">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Sender Name</th>
+                            <th>Receiver Name</th>
+                            <th>Title</th>
+                            <th>Message</th>
+                            <th>Type</th>
+                            <th>Date</th>
+                            <!--<th>Status</th>-->
+                           <!-- <th>Actions</th>-->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (users && users.length > 0) { %>
+                            <% users.forEach((user, index) => { %>
+                              <tr>
+                                <td><%= index + 1 %></td>
+                               <!-- <td class="py-1">
+                                  <img src="<%= user.img || '/images/faces-clipart/default.png' %>" alt="user" />
+                                </td>-->
+                                <td>
+                                 <%= user.senderid === 0 || null? "Admin" : user.sender_name %>
+                             </td>
+                                <td><%= user.user_id === 0 || null? "All Users" : user.user_name %></td>
+                                <td><%= user.title %></td> 
+                           
+								<td>
+								  <div style="
+									max-width:200px;
+									max-height:40px; 
+									overflow-y:auto;   /* सिर्फ vertical scroll */
+									overflow-x:hidden; /* horizontal छुपा दो */
+									white-space:normal; /* wrap allow */
+								  ">
+									<%= user.message %>
+								  </div>
+								</td>
+
+								 <td><%= user.type %></td>
+                                <td>
+                                  <%= typeof user.created_at === 'string' 
+                                      ? user.created_at 
+                                      : user.created_at.toISOString().split('T')[0] %>
+                                </td>  
+
+                                
+                                <!--<td><%= user.dob %></td>-->
+                              <!-- <td>
+                                 <button
+                                  class="btn btn-sm <%= user.is_read == '0' ? 'btn-danger' : 'btn-success' %>"
+                                  data-user-id="<%= user.id %>"
+                                 disabled
+                                   >
+                                   <%= user.is_read == '0' ? 'Unread' : 'Read' %>
+                              </button>
+                                </td>-->
+                                <td>
+                                  <!--<a href="/viewprofile/<%= user.user_id %>" class="btn btn-sm btn-info">View</a>
+                                  <a href="/editprofile/<%= user.id %>" class="btn btn-sm btn-warning">Edit</a>
+                                  <a href="javascript:void(0)" 
+                                  class="btn btn-sm btn-danger delete-user" 
+                                  data-user-id="<%= user.id %>">Delete</a>-->
+
+                                </td>
+                              </tr>
+                            <% }) %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="9" class="text-center text-muted">No users found</td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                      <!-- pegination start -->
+<div class="row">
+  <div class="col-md-12 d-flex justify-content-center mt-3">
+    <nav aria-label="Page navigation">
+      <ul class="pagination pagination-sm flex-wrap">
+        
+        <% 
+          const maxVisiblePages = 5;
+          const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+          const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+          const createPageLink = (i) => {
+            const url = '/shownotification?page=' + i + (search ? '&search=' + encodeURIComponent(search) : '');
+            return url;
+          };
+        %>
+
+        <!-- Prev -->
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link"
+             href="<%= currentPage === 1 ? '#' : createPageLink(currentPage - 1) %>"
+             style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">Prev</a>
+        </li>
+
+        <!-- First -->
+        <% if (startPage > 1) { %>
+          <li class="page-item">
+            <a class="page-link" href="<%= createPageLink(1) %>"
+               style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">1</a>
+          </li>
+          <% if (startPage > 2) { %>
+            <li class="page-item disabled">
+              <a class="page-link" style="border:1px solid #f3d6dc; border-radius:6px;">...</a>
+            </li>
+          <% } %>
+        <% } %>
+
+        <!-- Pages -->
+        <% for (let i = startPage; i <= endPage; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active disabled' : '' %>">
+            <a class="page-link"
+               href="<%= i === currentPage ? '#' : createPageLink(i) %>"
+               style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;"><%= i %></a>
+          </li>
+        <% } %>
+
+        <!-- Last -->
+        <% if (endPage < totalPages) { %>
+          <% if (endPage < totalPages - 1) { %>
+            <li class="page-item disabled">
+              <a class="page-link" style="border:1px solid #f3d6dc; border-radius:6px;">...</a>
+            </li>
+          <% } %>
+          <li class="page-item">
+            <a class="page-link" href="<%= createPageLink(totalPages) %>"
+               style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;"><%= totalPages %></a>
+          </li>
+        <% } %>
+
+        <!-- Next -->
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link"
+             href="<%= currentPage === totalPages ? '#' : createPageLink(currentPage + 1) %>"
+             style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+                       <!-- pagination end -->
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+                      <div id="successMsgContainer"></div>
+            </div>
+
+          </div>
+          <%- include('../partials/_footer') %> 
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/todolist.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <%- include('../partials/_script') %> 
+
+    <!-- Search Filter Script -->
+<script>
+  document.querySelectorAll('.toggle-status-user').forEach(button => {
+    button.addEventListener('click', async function () {
+      const userId = this.getAttribute('data-user-id');
+      const currentStatus = this.textContent.trim().toLowerCase();
+      const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+
+      try {
+        const res = await fetch(`/users/${userId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+
+        if (res.ok) {
+          this.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+          this.classList.toggle('btn-success');
+          this.classList.toggle('btn-danger');
+        } else {
+          alert('Failed to update status');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('An error occurred while updating status');
+      }
+    });
+  });
+</script>
+
+<script>
+  document.getElementById("userSearch").addEventListener("input", function () {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll("#usersTable tbody tr");
+
+    rows.forEach(row => {
+      // Grab all the text content from the row
+      const rowText = row.textContent.toLowerCase();
+
+      if (rowText.includes(searchTerm)) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  });
+</script>
+
+<script>
+document.querySelectorAll('.delete-user').forEach(button => {
+  button.addEventListener('click', async function () {
+    const userId = this.getAttribute('data-user-id');
+    const row = this.closest('tr');
+
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    try {
+      const res = await fetch(`/deleteprofile/${userId}`, {
+        method: 'GET' // or 'DELETE' if your API supports it
+      });
+
+      const data = await res.json();
+     if (data.success) {
+  row.remove();
+
+  const container = document.getElementById('successMsgContainer');
+  if (container) {
+    container.innerHTML = `
+      <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ${data.message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+
+    // Auto-hide after 3 sec
+    setTimeout(() => {
+      container.innerHTML = '';
+    }, 3000);
+  }
+}
+ else {
+        alert(data.message || 'Failed to delete user');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error while deleting user');
+    }
+  });
+});
+</script>
+  </body>
+</html>

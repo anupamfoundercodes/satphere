@@ -1,0 +1,255 @@
+<title>Satphere</title>
+<link rel="shortcut icon" href="/images/profile.jpg"/>
+<style>
+:root {
+    --nav-h: 70px;
+    /* navbar height */
+}
+
+html,
+body,
+.container-scroller {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+}
+
+/* ===== PAGE WRAPPER ===== */
+.page-body-wrapper {
+    position: relative;
+    height: 100vh;
+    padding-top: var(--nav-h);
+    /* navbar ka offset */
+    overflow: hidden;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar.sidebar-offcanvas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== MAIN PANEL ===== */
+.main-panel {
+    margin-left: var(--sidebar-w);
+    height: calc(100vh - var(--nav-h));
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+/* ===== NAVBAR PROFILE SPACING ===== */
+.navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile .nav-link .nav-profile-text {
+    margin-left: 0.5rem;
+}
+
+</style>
+<style>
+.img-modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+}
+
+.img-modal-content {
+    display: block;
+    max-width: 90%;
+    max-height: 80%;
+    margin: 5% auto;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+}
+
+.img-modal-close {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    color: white;
+    font-size: 30px;
+    cursor: pointer;
+}
+
+</style>
+
+<style>
+
+/* ✅ Enable sidebar scroll without breaking layout */
+.sidebar.sidebar-offcanvas {
+    overflow-y: auto !important;
+    /* vertical scroll allow */
+    -webkit-overflow-scrolling: touch;
+    /* smooth iOS scroll */
+    scrollbar-width: thin;
+    /* Firefox scroll */
+    scrollbar-color: rgba(0, 0, 0, 0) transparent;
+}
+
+/* Chrome/Safari scrollbar */
+.sidebar.sidebar-offcanvas::-webkit-scrollbar {
+    width: 6px;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 3px;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-thumb:hover {
+    background-color: rgba(0, 0, 0, 0);
+}
+
+</style>
+<style>
+  /* 🌸 Custom Pink Pagination Theme */
+  .pagination.pagination-sm.flex-wrap {
+    --bs-pagination-color: #d63384;               /* text color - pink tone */
+    --bs-pagination-hover-color: #d63384;         /* hover text */
+    --bs-pagination-hover-bg: #FFE8EC;            /* hover background */
+    --bs-pagination-active-bg: #d63384;           /* active background */
+    --bs-pagination-active-color: #fff;           /* active text color */
+    --bs-pagination-active-border-color: #d63384; /* active border */
+    --bs-pagination-border-color: #FFE8EC;        /* normal border color */
+    --bs-pagination-bg: #fff;                     /* normal background */
+    --bs-pagination-focus-box-shadow: none;
+    --bs-pagination-disabled-color: #bbb;
+    --bs-pagination-disabled-bg: #f8f9fa;
+    --bs-pagination-disabled-border-color: #eee;
+    gap: 4px;
+  }
+
+  /* 🔹 Common Page Link Style */
+  .pagination .page-link {
+    border: 1px solid #FFE8EC;
+    border-radius: 6px;
+    transition: all 0.3s ease;
+  }
+
+  /* 🔹 Hover Effect */
+  .pagination .page-link:hover {
+    background-color: #FFE8EC;
+    color: #d63384;
+  }
+
+  /* 🔹 Active Page */
+  .pagination .page-item.active .page-link {
+    background-color: #d63384;
+    border-color: #d63384;
+    color: #fff;
+  }
+
+  /* 🔹 Disabled Pages */
+  .pagination .page-item.disabled .page-link {
+    background-color: #f8f9fa;
+    border-color: #eee;
+    color: #bbb;
+  }
+
+</style>
+
+<style>
+.sidebar {
+  background:linear-gradient(135deg, #fff7f9, #fee0e4, #fff7f9); !important;
+  color: #fff !important;
+}
+.sidebar .nav-item:hover i,
+.sidebar .nav-item:hover span,
+.sidebar .nav-item:hover > a .menu-icon,
+.sidebar .nav-item:hover a {
+  color: #ff758c !important; /* text & icon color pink ho jaye */
+}
+</style>
+<!--<style>
+/* 🌸 Sidebar Light Red-Pink Theme */
+.sidebar {
+  background: linear-gradient(180deg, #ff758c 0%, #ff7eb3 100%) !important;
+  color: #fff !important;
+}
+
+
+
+.sidebar .nav .nav-item .nav-link:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  color: #fff !important;
+}
+
+.sidebar .nav .nav-item.active > .nav-link,
+.sidebar .nav .nav-item .nav-link.active {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+  font-weight: 600;
+}
+
+.sidebar .nav .nav-item .menu-icon {
+  color: #fff !important;
+}
+
+.sidebar .nav .nav-item .collapse .sub-menu {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border-left: 2px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar .nav .nav-item .collapse .sub-menu .nav-link {
+  color: #fff !important ;
+}
+
+.sidebar .nav .nav-item .collapse .sub-menu .nav-link:hover {
+color: #ffe3ec !important;
+  background: rgba(255, 255, 255, 0.15) !important;
+}
+
+
+.sidebar .nav-item:hover i,
+.sidebar .nav-item:hover span,
+.sidebar .nav-item:hover > a .menu-icon,
+.sidebar .nav-item:hover a {
+  color: #ff758c !important; /* text & icon color pink ho jaye */
+}
+
+.sidebar .nav-profile {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.sidebar .nav-profile .nav-profile-image img {
+  border: 2px solid #fff !important;
+}
+
+
+.sidebar .nav-profile-text .text-secondary {
+  color: #ffe3ec !important;
+}
+
+.sidebar .nav-profile-badge {
+  color: #fff !important;
+}
+
+/* 🩷 Active menu icon & text color fix */
+.sidebar .nav .nav-item.active > .nav-link,
+.sidebar .nav .nav-item .nav-link.active {
+  color: #ffe3ec !important; /* text color pink */
+  font-weight: 600;
+}
+
+/* 🩷 Active icon color fix */
+.sidebar .nav .nav-item.active > .nav-link .menu-icon,
+.sidebar .nav .nav-item .nav-link.active .menu-icon {
+  color: #ff758c !important;
+}
+
+</style>-->

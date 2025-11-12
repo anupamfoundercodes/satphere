@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <%- include('../partials/_head') %>
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+      <style>
+    .editable { background: #fdfd96; cursor: text; }
+    .editable:focus { outline: 2px solid #4caf50; }
+  </style>
+  </head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">Games</h3>
+          </div>
+
+          <!-- Add Game -->
+          <div class="row mb-3">
+            <div class="col-md-12 text-end">
+              <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addGameModal">
+                + Add Game
+              </button>
+            </div>
+          </div>
+
+          <!-- Games Table -->
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Games Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Title</th>
+                          <th>Entry Fee</th>
+                          <th>Reward</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (games && games.length > 0) { %>
+                          <% games.forEach((g, i) => { %>
+                            <tr>
+                              <td><%= i+1 %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= g.id %>" data-field="title"><%= g.title %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= g.id %>" data-field="entry_fee"><%= g.entry_fee %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= g.id %>" data-field="reward"><%= g.reward %></td>
+                              <td>
+                                <label class="badge <%= g.status === 'active' ? 'badge-success' : 'badge-danger' %> toggle-status"
+                                       data-id="<%= g.id %>" data-status="<%= g.status %>"
+                                       style="cursor:pointer;">
+                                  <%= g.status %>
+                                </label>
+                              </td>
+                              <td>
+                                <a href="/games/delete/<%= g.id %>" class="btn btn-sm btn-danger"
+                                  onclick="return confirm('Delete this game?')">Delete</a>
+                              </td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr><td colspan="6" class="text-center">No games found</td></tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Game Modal -->
+          <div class="modal fade" id="addGameModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <form id="addGameForm">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Add Game</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Title</label>
+                      <input type="text" class="form-control" name="title" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Entry Fee</label>
+                      <input type="number" class="form-control" name="entry_fee" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Reward</label>
+                      <input type="number" class="form-control" name="reward" required>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  <%- include('../partials/_script') %>
+
+<script>
+  // Inline field update
+  document.querySelectorAll(".editable").forEach(cell => {
+    cell.addEventListener("blur", function() {
+      fetch("/games/update-field", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: this.dataset.id,
+          field: this.dataset.field,
+          value: this.textContent.trim()
+        })
+      }).then(r => r.json()).then(d => {
+        if (!d.success) alert("Update failed");
+      });
+    });
+  });
+
+  // Toggle game status
+  document.querySelectorAll(".toggle-status").forEach(badge => {
+    badge.addEventListener("click", function() {
+      const newStatus = this.dataset.status === "active" ? "inactive" : "active";
+      fetch("/games/status-toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: this.dataset.id, status: newStatus })
+      }).then(r => r.json()).then(d => {
+        if (d.success) {
+          this.dataset.status = newStatus;
+          this.classList.toggle("badge-success");
+          this.classList.toggle("badge-danger");
+          this.textContent = newStatus;
+        } else {
+          alert("Failed to update status");
+        }
+      });
+    });
+  });
+
+  // Add new game
+  document.getElementById("addGameForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(this));
+    fetch("/games/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    }).then(r => r.json()).then(d => {
+      if (d.success) location.reload();
+      else alert("Add failed");
+    });
+  });
+</script>
+</body>
+</html>

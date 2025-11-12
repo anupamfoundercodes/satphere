@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Edit Terms & Conditions</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <!-- Add all icon libraries -->
+<link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+<link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+<style>/* ✅ Remove double vertical scrollbar */
+
+html, body {
+  overflow: hidden;   /* hide browser scroll */
+  height: 100%;
+}
+
+}</style>
+</head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <nav aria-label="breadcrumb">
+           <h3 id="termTitle"><%= selectedTerm?.title || '' %></h3>
+
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item_"><a href="#"></a></li>
+                <li class="breadcrumb-item active"></li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="card">
+            <div class="card-body">
+            <h3 class="page-title"></h3>
+              <div class="form-group mt-3">
+  <label>Select Term & Condition</label>
+  <select id="termSelect" class="form-control">
+<% terms.forEach(term => { %>
+  <option value="<%= term.id %>" <%= term.id === selectedTerm.id ? 'selected' : '' %>>
+    <%= term.title %>
+  </option>
+<% }) %>
+  </select>
+</div>
+
+<form id="termForm" method="POST" action="/termsave">
+  <input type="hidden" name="id" id="termId" value="<%= selectedTerm?.id || '' %>" />
+
+  <div class="form-group mt-3">
+    <label>Title</label>
+    <input type="text" name="title" id="title" class="form-control" value="<%= selectedTerm?.title || '' %>" required />
+  </div>
+
+  <div class="form-group mt-3">
+    <label>Description</label>
+    <textarea id="description" name="description" class="form-control" rows="10"><%= selectedTerm?.description || '' %></textarea>
+  </div>
+
+  <div class="form-group mt-3">
+    <label>Status</label>
+    <select name="status" id="status" class="form-control" required>
+      <option value="active" <%= selectedTerm?.status === 'active' ? 'selected' : '' %>>Active</option>
+      <option value="inactive" <%= selectedTerm?.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+    </select>
+  </div>
+
+  <button type="submit" class="btn btn-danger mt-3">Save</button>
+  <div id="messageBox" class="mt-3 text-success" style="display: none;"></div>
+</form>
+
+            </div>
+          </div>
+        </div>
+
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+
+  <!-- CKEditor -->
+  <script src="https://cdn.ckeditor.com/4.21.0/standard/ckeditor.js"></script>
+<script>
+CKEDITOR.replace('description');
+
+const termSelect = document.getElementById('termSelect');
+
+termSelect.addEventListener('change', async function () {
+  const termId = this.value;
+  try {
+    const res = await fetch(`/termcondition/${termId}`);
+    const data = await res.json();
+
+    document.getElementById('termId').value = data.id;
+    document.getElementById('title').value = data.title;
+    CKEDITOR.instances.description.setData(data.description);
+    document.getElementById('status').value = data.status;
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+// Submit form via fetch
+document.getElementById('termForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+  const form = this;
+  const formData = {
+    id: form.id.value,
+    title: form.title.value,
+    description: CKEDITOR.instances.description.getData(),
+    status: form.status.value,
+  };
+
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    });
+
+    const result = await res.json();
+    const box = document.getElementById('messageBox');
+
+    box.textContent = result.msg || (result.success ? 'Saved successfully' : 'Error occurred');
+    box.className = result.success ? 'text-success mt-3' : 'text-danger mt-3';
+    box.style.display = 'block';
+
+    setTimeout(() => { box.style.display = 'none'; }, 3000);
+
+  } catch (error) {
+    const box = document.getElementById('messageBox');
+    box.textContent = 'Network error. Please try again.';
+    box.className = 'text-danger mt-3';
+    box.style.display = 'block';
+  }
+});
+</script>
+//return title name 
+<script>
+termSelect.addEventListener('change', async function () {
+  const termId = this.value;
+  try {
+    const res = await fetch(`/termcondition/${termId}`);
+    const data = await res.json();
+
+    document.getElementById('termId').value = data.id;
+    document.getElementById('title').value = data.title;
+    CKEDITOR.instances.description.setData(data.description);
+    document.getElementById('status').value = data.status;
+
+    // 👇 Update heading text
+    document.getElementById('termTitle').textContent = data.title;
+  } catch (err) {
+    console.error(err);
+  }
+});
+
+</script>
+  
+  
+</body>
+</html>

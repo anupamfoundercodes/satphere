@@ -1,0 +1,2507 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "API v2",
+    "version": "unknown"
+  },
+  "servers": [
+    {
+      "url": "https://api.instamojo.com"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "sec0": {
+        "type": "apiKey",
+        "name": "Authorization",
+        "in": "header",
+        "x-default": "Bearer {{access_token}}"
+      }
+    }
+  },
+  "security": [
+    {
+      "sec0": []
+    }
+  ],
+  "paths": {
+    "/oauth2/token/": {
+      "post": {
+        "summary": "Generate Access token (Application Based Authentication)",
+        "description": "",
+        "operationId": "generate-access-token-application-based-authentication",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "grant_type",
+                  "client_id",
+                  "client_secret"
+                ],
+                "properties": {
+                  "grant_type": {
+                    "type": "string",
+                    "description": "This describes the type of authentication.",
+                    "default": "client_credentials"
+                  },
+                  "client_id": {
+                    "type": "string",
+                    "description": "The client_id that is provided to you."
+                  },
+                  "client_secret": {
+                    "type": "string",
+                    "description": "The client_secret that is provided to you."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"access_token\": \"y70kak2K0Rg7J4PAL8sdW0MutnGJEl\",\n  \"token_type\": \"Bearer\",\n  \"expires_in\": 36000,\n  \"scope\": \"read write\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "access_token": {
+                      "type": "string",
+                      "example": "y70kak2K0Rg7J4PAL8sdW0MutnGJEl"
+                    },
+                    "token_type": {
+                      "type": "string",
+                      "example": "Bearer"
+                    },
+                    "expires_in": {
+                      "type": "integer",
+                      "example": 36000,
+                      "default": 0
+                    },
+                    "scope": {
+                      "type": "string",
+                      "example": "read write"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"error\": \"unsupported_grant_type\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "unsupported_grant_type"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"error\": \"invalid_client\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string",
+                      "example": "invalid_client"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "security": [],
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/oauth2/token/');     \ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\n\n$payload = Array(\n    'grant_type' => 'client_credentials',\n    'client_id' => '21fe14a60057ece6c76496175cb0238a2ffd87be',\n    'client_secret' => '-KWPoDO!_l?MZQ-DsZeQ0TXXcvuDn;mxmAtGho8Xijn=iH6F'\n  );\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\necho $response;\n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\nrequests.post('https://api.instamojo.com/oauth2/token/', data={\n    \t'grant_type': 'client_credentials',\n  \t\t'client_id': '21fe14a60057ece6c76496175cb0238a2ffd87be',\n    \t'client_secret': '-KWPoDO!_l?MZQ-DsZeQ0TXXcvuDn;mxmAtGho8Xijn=iH6F'\n})\n              "
+            },
+            {
+              "language": "curl",
+              "code": "curl https://api.instamojo.com/oauth2/token/ \\\n  --data \n\"grant_type=client_credentials&client_id=21fe14a60057ece6c76496175cb0238a2ffd87be&client_secret=-KWPoDO!_l?MZQ-DsZeQ0TXXcvuDn;mxmAtGho8Xijn=iH6F\""
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python",
+            "curl"
+          ]
+        }
+      }
+    },
+    "/v2/payments/{payment_id}/refund/": {
+      "post": {
+        "summary": "Create a Refund",
+        "description": "This will refund a payment made on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "create-a-refund-1",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "Bearer <your-token>"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "type",
+                  "body",
+                  "transaction_id"
+                ],
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "description": "A three letter short-code identifying the reason for this case."
+                  },
+                  "body": {
+                    "type": "string",
+                    "description": "Additonal text explaining the refund."
+                  },
+                  "refund_amount": {
+                    "type": "string",
+                    "description": "This field can be used to specify the refund amount. For instance, you may want to issue a refund for an amount lesser than what was paid. Default is paid amount.",
+                    "default": "Paid amount"
+                  },
+                  "transaction_id": {
+                    "type": "string",
+                    "description": "Mandatory parameter in the body from the second case creation onwards for the payment to prevent duplicate case creations due to replay of APIs",
+                    "default": "required"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"refund\": {\n        \"id\": \"C5c0751269\",\n        \"payment_id\": \"MOJO5c04000J30502939\",\n        \"status\": \"Refunded\",\n        \"type\": \"QFL\",\n        \"body\": \"Customer isn't satisfied with the quality\",\n        \"refund_amount\": \"100\",\n        \"total_amount\": \"100.00\",\n        \"created_at\": \"2015-12-07T11:01:37.640Z\"\n    },\n    \"success\": true\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "refund": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "C5c0751269"
+                        },
+                        "payment_id": {
+                          "type": "string",
+                          "example": "MOJO5c04000J30502939"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "Refunded"
+                        },
+                        "type": {
+                          "type": "string",
+                          "example": "QFL"
+                        },
+                        "body": {
+                          "type": "string",
+                          "example": "Customer isn't satisfied with the quality"
+                        },
+                        "refund_amount": {
+                          "type": "string",
+                          "example": "100"
+                        },
+                        "total_amount": {
+                          "type": "string",
+                          "example": "100.00"
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2015-12-07T11:01:37.640Z"
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payments/MOJO5c04000J30502939/refund/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$payload = Array(\n    'transaction_id' => 'partial_refund_1',\n    'type' => 'TNR',\n    'body' => 'Need to refund to the buyer.',\n    'refund_amount' => '100'\n);\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\n\npayload = {\n  'transaction_id': 'partial_refund_1',\n\t'type': 'TNR',\n  'body': 'Need to refund to the buyer.',\n  'refund_amount': '100'\n}\n\nresponse = requests.post(\n  \"https://api.instamojo.com/v2/payments/MOJO5c04000J30502939/refund/\", \n  headers=headers,\n  data=payload\n)              "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/users/{id}/inrbankaccount/": {
+      "put": {
+        "summary": "Update bank details of a user",
+        "description": "This will update the bank account details of an account on Instamojo. You need to use a token that is obtained using the User Based Authentication.",
+        "operationId": "update-bank-details-of-a-user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "account_holder_name",
+                  "account_number",
+                  "ifsc_code"
+                ],
+                "properties": {
+                  "account_holder_name": {
+                    "type": "string",
+                    "description": "Name of account holder."
+                  },
+                  "account_number": {
+                    "type": "string",
+                    "description": "Bank account number."
+                  },
+                  "ifsc_code": {
+                    "type": "string",
+                    "description": "IFSC code of the branch."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"user\": \"https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/\",\n  \"account_holder_name\": \"Foo Bar\",\n  \"bank_name\": \"\",\n  \"account_number\": \"123456789\",\n  \"ifsc_code\": \"SBIN0000111\",\n  \"updated_at\": \"2016-05-09T15:40:50.715Z\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "user": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/"
+                    },
+                    "account_holder_name": {
+                      "type": "string",
+                      "example": "Foo Bar"
+                    },
+                    "bank_name": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "account_number": {
+                      "type": "string",
+                      "example": "123456789"
+                    },
+                    "ifsc_code": {
+                      "type": "string",
+                      "example": "SBIN0000111"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "example": "2016-05-09T15:40:50.715Z"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"ifsc_code\": [\n    \"This field is required.\"\n  ],\n  \"account_holder_name\": [\n    \"This field is required.\"\n  ],\n  \"account_number\": [\n    \"This field is required.\"\n  ]\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ifsc_code": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "This field is required."
+                      }
+                    },
+                    "account_holder_name": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "This field is required."
+                      }
+                    },
+                    "account_number": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "This field is required."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Not found\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/inrbankaccount/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, \"PUT\");\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer n9kmKzF0DzbP5jIKZk8gJO0mOr4W0t'));\n\n$payload = Array(\n    'account_holder_name' => 'Foo Bar',\n    'account_number' => '123456789',\n    'ifsc_code' => 'SBIN0000111'\n);\n\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\nrequests.put(\n  'https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/inrbankaccount/', \n  data={\n    \t'account_holder_name': 'Foo Bar',\n      'account_number': '123456789',\n      'ifsc_code': 'SBIN0000111'\n  },\n  headers={\n \t\t\t'Authorization': 'Bearer n9kmKzF0DzbP5jIKZk8gJO0mOr4W0t' \n  }\n)\n              "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/payment_requests/{id}/": {
+      "get": {
+        "summary": "Get a Payment Request",
+        "description": "This will fetch the details of a payment request on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "get-a-payment-request-1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "Bearer <your-token>"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "With Pending payment": {
+                    "value": "{\n    \"id\": \"87b0425b6baf4012a3abd1b6f4644741\",\n    \"user\": \"https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/\",\n    \"phone\": \"+919898989898\",\n    \"email\": \"rahul.sharma@instamojo.com\",\n    \"buyer_name\": \"Rahul\",\n    \"amount\": \"10.00\",\n    \"purpose\": \"Fifa 10\",\n    \"status\": \"Pending\",\n    \"payments\": [],\n    \"send_sms\": false,\n    \"send_email\": false,\n    \"sms_status\": null,\n    \"email_status\": null,\n    \"shorturl\": \"https://imjo.in/AnhTM2\",\n    \"longurl\": \"https://www.instamojo.com/@rahulinstamojo/87b0425b6baf4012a3abd1b6f4644741\",\n    \"redirect_url\": \"https://www.google.com/\",\n    \"webhook\": \"https://webhook.site/bb97ae83-a108-4c27-89b7-f2387ab95a6b\",\n    \"scheduled_at\": null,\n    \"expires_at\": null,\n    \"allow_repeated_payments\": false,\n    \"mark_fulfilled\": false,\n    \"created_at\": \"2023-02-07T06:51:39.026489Z\",\n    \"modified_at\": \"2023-02-07T06:51:39.171672Z\",\n    \"resource_uri\": \"https://api.instamojo.com/v2/payment_requests/87b0425b6baf4012a3abd1b6f4644741/\"\n}"
+                  },
+                  "With Completed Payment": {
+                    "value": "{\n    \"id\": \"87b0425b6baf4012a3abd1b6f4644741\",\n    \"user\": \"https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/\",\n    \"phone\": \"+919898989898\",\n    \"email\": \"rahul.sharma@instamojo.com\",\n    \"buyer_name\": \"Rahul\",\n    \"amount\": \"10.00\",\n    \"purpose\": \"Fifa 10\",\n    \"status\": \"Completed\",\n    \"payments\": [\n        \"https://api.instamojo.com/v2/payments/MOJO3207K05Q80978898/\"\n    ],\n    \"send_sms\": false,\n    \"send_email\": false,\n    \"sms_status\": null,\n    \"email_status\": null,\n    \"shorturl\": \"https://imjo.in/bdEqE5\",\n    \"longurl\": \"https://www.instamojo.com/@rahulinstamojo/87b0425b6baf4012a3abd1b6f4644741\",\n    \"redirect_url\": \"https://www.google.com/\",\n    \"webhook\": \"https://webhook.site/bb97ae83-a108-4c27-89b7-f2387ab95a6b\",\n    \"scheduled_at\": null,\n    \"expires_at\": null,\n    \"allow_repeated_payments\": false,\n    \"mark_fulfilled\": false,\n    \"created_at\": \"2023-02-07T06:49:07.209707Z\",\n    \"modified_at\": \"2023-02-07T06:50:50.349715Z\",\n    \"resource_uri\": \"https://api.instamojo.com/v2/payment_requests/87b0425b6baf4012a3abd1b6f4644741/\"\n}"
+                  }
+                },
+                "schema": {
+                  "oneOf": [
+                    {
+                      "title": "With Pending payment",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "87b0425b6baf4012a3abd1b6f4644741"
+                        },
+                        "user": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "+919898989898"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "rahul.sharma@instamojo.com"
+                        },
+                        "buyer_name": {
+                          "type": "string",
+                          "example": "Rahul"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "example": "10.00"
+                        },
+                        "purpose": {
+                          "type": "string",
+                          "example": "Fifa 10"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "Pending"
+                        },
+                        "payments": {
+                          "type": "array"
+                        },
+                        "send_sms": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "send_email": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "sms_status": {},
+                        "email_status": {},
+                        "shorturl": {
+                          "type": "string",
+                          "example": "https://imjo.in/AnhTM2"
+                        },
+                        "longurl": {
+                          "type": "string",
+                          "example": "https://www.instamojo.com/@rahulinstamojo/87b0425b6baf4012a3abd1b6f4644741"
+                        },
+                        "redirect_url": {
+                          "type": "string",
+                          "example": "https://www.google.com/"
+                        },
+                        "webhook": {
+                          "type": "string",
+                          "example": "https://webhook.site/bb97ae83-a108-4c27-89b7-f2387ab95a6b"
+                        },
+                        "scheduled_at": {},
+                        "expires_at": {},
+                        "allow_repeated_payments": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "mark_fulfilled": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2023-02-07T06:51:39.026489Z"
+                        },
+                        "modified_at": {
+                          "type": "string",
+                          "example": "2023-02-07T06:51:39.171672Z"
+                        },
+                        "resource_uri": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/payment_requests/87b0425b6baf4012a3abd1b6f4644741/"
+                        }
+                      }
+                    },
+                    {
+                      "title": "With Completed Payment",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "87b0425b6baf4012a3abd1b6f4644741"
+                        },
+                        "user": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "+919898989898"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "rahul.sharma@instamojo.com"
+                        },
+                        "buyer_name": {
+                          "type": "string",
+                          "example": "Rahul"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "example": "10.00"
+                        },
+                        "purpose": {
+                          "type": "string",
+                          "example": "Fifa 10"
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "Completed"
+                        },
+                        "payments": {
+                          "type": "array",
+                          "items": {
+                            "type": "string",
+                            "example": "https://api.instamojo.com/v2/payments/MOJO3207K05Q80978898/"
+                          }
+                        },
+                        "send_sms": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "send_email": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "sms_status": {},
+                        "email_status": {},
+                        "shorturl": {
+                          "type": "string",
+                          "example": "https://imjo.in/bdEqE5"
+                        },
+                        "longurl": {
+                          "type": "string",
+                          "example": "https://www.instamojo.com/@rahulinstamojo/87b0425b6baf4012a3abd1b6f4644741"
+                        },
+                        "redirect_url": {
+                          "type": "string",
+                          "example": "https://www.google.com/"
+                        },
+                        "webhook": {
+                          "type": "string",
+                          "example": "https://webhook.site/bb97ae83-a108-4c27-89b7-f2387ab95a6b"
+                        },
+                        "scheduled_at": {},
+                        "expires_at": {},
+                        "allow_repeated_payments": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "mark_fulfilled": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2023-02-07T06:49:07.209707Z"
+                        },
+                        "modified_at": {
+                          "type": "string",
+                          "example": "2023-02-07T06:50:50.349715Z"
+                        },
+                        "resource_uri": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/payment_requests/87b0425b6baf4012a3abd1b6f4644741/"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payment_requests/9ef9b530ff8e440dbbc29f2157bc69ad/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\n\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\n\nresponse = requests.get(\n  \"https://api.instamojo.com/v2/payment_requests/9ef9b530ff8e440dbbc29f2157bc69ad/\", \n  headers=headers\n)              "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/users/": {
+      "post": {
+        "summary": "Signup",
+        "description": "This will create an account on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "signup",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "password",
+                  "phone",
+                  "referrer"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "Email id for the account."
+                  },
+                  "password": {
+                    "type": "string",
+                    "description": "The password for the account."
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Phone number for the account"
+                  },
+                  "referrer": {
+                    "type": "string",
+                    "description": "The referrer provided to you."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": \"90f01dfdacbe4fe7892fc27dbdc30906\",\n  \"username\": \"foo\",\n  \"email\": \"foo@example.com\",\n  \"phone\": \"+919988776655\",\n  \"resource_uri\": \"https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/\",\n  \"promo_code\": null\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "90f01dfdacbe4fe7892fc27dbdc30906"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "foo"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "foo@example.com"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+919988776655"
+                    },
+                    "resource_uri": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/"
+                    },
+                    "promo_code": {}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"username\": [\n    \"Username is not available.\"\n  ],\n  \"email\": [\n    \"Email already exists.\"\n  ]\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "username": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Username is not available."
+                      }
+                    },
+                    "email": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Email already exists."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/users/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$payload = Array(\n    'email' => 'foo@example.com',\n    'password' => 'bar',\n    'phone' => '919988776655',\n    'referrer' => 'value-provided-to-you-by-instamojo'\n);\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\nrequests.post(\n  'https://api.instamojo.com/v2/users/', \n  data={\n      'email': 'foo@example.com',\n      'password': 'bar',\n      'phone': '+919988776655',\n      'referrer': 'value-provided-to-you-by-instamojo',\n  },\n  headers={\n \t\t\t'Authorization': 'Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl' \n  }\n)\n              "
+            },
+            {
+              "language": "curl",
+              "code": "curl https://api.instamojo.com/v2/users/ \\\n  --header \"Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\" \\\n  --data \"email=foo@example.com&password=bar&phone=+919988776655&referrer=value-provided-to-you-by-instamojo\""
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python",
+            "curl"
+          ]
+        }
+      }
+    },
+    "/v2/payment_requests/": {
+      "post": {
+        "summary": "Create a Payment Request",
+        "description": "This will create a payment request on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "create-a-payment-request-1",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "Bearer <your-token>"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "amount",
+                  "purpose"
+                ],
+                "properties": {
+                  "amount": {
+                    "type": "number",
+                    "description": "The amount for the request. The minimum amount is 9. And the maximum is 200000.",
+                    "format": "double"
+                  },
+                  "purpose": {
+                    "type": "string",
+                    "description": "Purpose of the payment request."
+                  },
+                  "buyer_name": {
+                    "type": "string",
+                    "description": "Name of payer"
+                  },
+                  "email": {
+                    "type": "string",
+                    "description": "Email of payer"
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Phone number of payer"
+                  },
+                  "redirect_url": {
+                    "type": "string",
+                    "description": "URL where we redirect the user after a payment. If provided, we will redirect the user to `redirect_url` immediately after the payment has been processed. Three additional query arguments `payment_request_id`, `payment_status` and `payment_id` are also sent with the redirect URL."
+                  },
+                  "webhook": {
+                    "type": "string",
+                    "description": "URL where our server do POST request after a payment  If provided, we will do a the POST request to the webhook (url) with full details of the payment"
+                  },
+                  "allow_repeated_payments": {
+                    "type": "boolean",
+                    "description": "If `allow_repeated_payments` is `false`, only one payment can be paid on a payment request link. `allow_repeated_payments` is `true` by default.",
+                    "default": false
+                  },
+                  "send_email": {
+                    "type": "boolean",
+                    "description": "Flag to send request link via email.  If `send_email` is `true`, a request email will be sent to the email supplied. If `send_email` is `true` but no email is supplied, request creation will throw an error.",
+                    "default": false
+                  },
+                  "expires_at": {
+                    "type": "string",
+                    "description": "Time after which the payment request will be expired in UTC timestamp. Max value is 600 seconds. Default is Null",
+                    "format": "date"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": \"05f317448ad84649aa1a9c7328edb015\",\n  \"user\": \"https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/\",\n  \"phone\": \"+919999999999\",\n  \"email\": \"foo@example.com\",\n  \"buyer_name\": \"John Doe\",\n  \"amount\": \"2500\",\n  \"purpose\": \"FIFA 16\",\n  \"status\": \"Pending\",\n  \"payments\": [],\n  \"send_sms\": true,\n  \"send_email\": true,\n  \"sms_status\": \"Pending\",\n  \"email_status\": \"Pending\",\n  \"shorturl\": null,\n  \"longurl\": \"https://www.instamojo.com/@foo/05f317448ad84649aa1a9c7328edb015\",\n  \"redirect_url\": \"http://www.example.com/redirect/\",\n  \"webhook\": \"http://www.example.com/webhook/\",\n  \"created_at\": \"2016-05-09T16:10:13.786Z\",\n  \"modified_at\": \"2016-05-09T16:10:13.786Z\",\n  \"resource_uri\": \"https://api.instamojo.com/v2/payment_requests/05f317448ad84649aa1a9c7328edb015/\",\n  \"allow_repeated_payments\": false,\n  \"mark_fulfilled\": true\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "05f317448ad84649aa1a9c7328edb015"
+                    },
+                    "user": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+919999999999"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "foo@example.com"
+                    },
+                    "buyer_name": {
+                      "type": "string",
+                      "example": "John Doe"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "example": "2500"
+                    },
+                    "purpose": {
+                      "type": "string",
+                      "example": "FIFA 16"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "Pending"
+                    },
+                    "payments": {
+                      "type": "array"
+                    },
+                    "send_sms": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    },
+                    "send_email": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    },
+                    "sms_status": {
+                      "type": "string",
+                      "example": "Pending"
+                    },
+                    "email_status": {
+                      "type": "string",
+                      "example": "Pending"
+                    },
+                    "shorturl": {},
+                    "longurl": {
+                      "type": "string",
+                      "example": "https://www.instamojo.com/@foo/05f317448ad84649aa1a9c7328edb015"
+                    },
+                    "redirect_url": {
+                      "type": "string",
+                      "example": "http://www.example.com/redirect/"
+                    },
+                    "webhook": {
+                      "type": "string",
+                      "example": "http://www.example.com/webhook/"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "example": "2016-05-09T16:10:13.786Z"
+                    },
+                    "modified_at": {
+                      "type": "string",
+                      "example": "2016-05-09T16:10:13.786Z"
+                    },
+                    "resource_uri": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/payment_requests/05f317448ad84649aa1a9c7328edb015/"
+                    },
+                    "allow_repeated_payments": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "mark_fulfilled": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"purpose\": [\n    \"This field is required.\"\n  ],\n  \"amount\": [\n    \"This field is required.\"\n  ]\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "purpose": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "This field is required."
+                      }
+                    },
+                    "amount": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "This field is required."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payment_requests/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$payload = Array(\n  'purpose' => 'FIFA 16',\n  'amount' => '2500',\n  'buyer_name' => 'John Doe',\n  'email' => 'foo@example.com',\n  'phone' => '9999999999',\n  'redirect_url' => 'http://www.example.com/redirect/',\n  'send_email' => 'True',\n  'webhook' => 'http://www.example.com/webhook/',\n  'allow_repeated_payments' => 'False',\n}\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\npayload = {\n  'purpose': 'FIFA 16',\n  'amount': '2500',\n  'buyer_name': 'John Doe',\n  'email': 'foo@example.com',\n  'phone': '9999999999',\n  'redirect_url': 'http://www.example.com/redirect/',\n  'send_email': 'True',\n  'webhook': 'http://www.example.com/webhook/',\n  'allow_repeated_payments': 'False',\n}\nresponse = requests.post(\n  \"https://api.instamojo.com/v2/payment_requests/\", \n  data=payload, \n  headers=headers\n)              "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/users/{id}/": {
+      "patch": {
+        "summary": "Update details of a user",
+        "description": "This will updated the details of an account on Instamojo. You need to use a token that is obtained using the User Based Authentication.",
+        "operationId": "update-details-of-a-user",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string",
+                    "description": "First name of the account."
+                  },
+                  "last_name": {
+                    "type": "string",
+                    "description": "Last name of the account."
+                  },
+                  "location": {
+                    "type": "string",
+                    "description": "Location of the user."
+                  },
+                  "phone": {
+                    "type": "string",
+                    "description": "Phone number of the user."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": \"90f01dfdacbe4fe7892fc27dbdc30906\",\n  \"username\": \"foo\",\n  \"first_name\": \"Foo\",\n  \"last_name\": \"Bar\",\n  \"phone\": \"+919988776655\",\n  \"email\": \"foo@example.com\",\n  \"date_joined\": \"2016-05-09T15:08:29.060Z\",\n  \"is_email_verified\": false,\n  \"is_phone_verified\": false,\n  \"bio\": \"\",\n  \"location\": \"India\",\n  \"public_phone\": null,\n  \"public_email\": null,\n  \"public_website\": null,\n  \"avatar_image_url\": null,\n  \"profile_image_url\": null,\n  \"tags\": [],\n  \"resource_uri\": \"https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "90f01dfdacbe4fe7892fc27dbdc30906"
+                    },
+                    "username": {
+                      "type": "string",
+                      "example": "foo"
+                    },
+                    "first_name": {
+                      "type": "string",
+                      "example": "Foo"
+                    },
+                    "last_name": {
+                      "type": "string",
+                      "example": "Bar"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+919988776655"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "foo@example.com"
+                    },
+                    "date_joined": {
+                      "type": "string",
+                      "example": "2016-05-09T15:08:29.060Z"
+                    },
+                    "is_email_verified": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "is_phone_verified": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "bio": {
+                      "type": "string",
+                      "example": ""
+                    },
+                    "location": {
+                      "type": "string",
+                      "example": "India"
+                    },
+                    "public_phone": {},
+                    "public_email": {},
+                    "public_website": {},
+                    "avatar_image_url": {},
+                    "profile_image_url": {},
+                    "tags": {
+                      "type": "array"
+                    },
+                    "resource_uri": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"phone\": [\n    \"Enter a valid phone number\"\n  ]\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "phone": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "Enter a valid phone number"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "404",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Not found\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Not found"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/');\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer n9kmKzF0DzbP5jIKZk8gJO0mOr4W0t'));\n\n$payload = Array(\n    'first_name' => 'Foo',\n    'last_name' => 'Bar',\n    'location' => 'India',\n    'phone' => '+919988776655'\n);\n\ncurl_setopt($ch, CURLOPT_POSTFIELDS, $payload);\n$response = curl_exec($ch);\ncurl_close($ch);\n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\nrequests.patch(\n  'https://api.instamojo.com/v2/users/90f01dfdacbe4fe7892fc27dbdc30906/', \n  data={\n    \t'first_name': 'Foo',\n      'last_name': 'Bar',\n      'location': 'India'\n    \t'phone': '+919988776655'\n  },\n  headers={\n \t\t\t'Authorization': 'Bearer n9kmKzF0DzbP5jIKZk8gJO0mOr4W0t' \n  }\n)\n              "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/payments/{payment_id}/fulfil/": {
+      "post": {
+        "summary": "Fulfil a Payment",
+        "description": "This will fulfil a payment made on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "fulfil-a-payment",
+        "parameters": [
+          {
+            "name": "payment_id",
+            "in": "path",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"fulfil\": true,\n  \"success\": true\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "fulfil": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payments/MOJO5c04000J30502939/fulfil/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\n\nresponse = requests.post(\n  \"https://api.instamojo.com/v2/payments/MOJO5c04000J30502939/fulfil/\", \n  headers=headers\n)              "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/gateway/orders/payment-request/": {
+      "post": {
+        "summary": "Create an Order using Payment Request ID (For SDK only)",
+        "description": "This will create a Order on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "create-an-order-using-payment-request-id-1",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "Bearer <your-token>"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string",
+                    "description": "Payment Request ID"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"order_id\": \"3b56d216-74c2-4189-83f3-9c2e93bad1be\",\n  \"name\": \"Vedhavyas\",\n  \"email\": \"vedhavyas@instamojo.com\",\n  \"phone\": \"+919663445546\",\n  \"amount\": \"100.00\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "order_id": {
+                      "type": "string",
+                      "example": "3b56d216-74c2-4189-83f3-9c2e93bad1be"
+                    },
+                    "name": {
+                      "type": "string",
+                      "example": "Vedhavyas"
+                    },
+                    "email": {
+                      "type": "string",
+                      "example": "vedhavyas@instamojo.com"
+                    },
+                    "phone": {
+                      "type": "string",
+                      "example": "+919663445546"
+                    },
+                    "amount": {
+                      "type": "string",
+                      "example": "100.00"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": [\n    \"This field is required.\"\n  ]\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "array",
+                      "items": {
+                        "type": "string",
+                        "example": "This field is required."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "text/plain": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/gateway/orders/payment-request/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$payload = Array(\n    'id' => '9c337d3c5e3242fca818937366b915b4'\n);\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\npayload = {\n  'id': '9c337d3c5e3242fca818937366b915b4',\n}\nresponse = requests.post(\n  \"https://api.instamojo.com/v2/gateway/orders/payment-request/\", \n  data=payload, \n  headers=headers\n)      "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/payment_requests/{id}/disable/": {
+      "post": {
+        "summary": "Disable a Request",
+        "description": "This will disable the payment request on Instamojo. You need to use a token that is obtained using the User Based Authentication.",
+        "operationId": "disable-a-request",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"success\": true\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payment_requests/6a04501b03964ce4874711566e84fabb/disable/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer fRPB9REdsmD7C2qX9uJolWPhsIu4Tc'));\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer fRPB9REdsmD7C2qX9uJolWPhsIu4Tc\"\n}\nresponse = requests.post(\n \"https://api.instamojo.com/v2/payment_requests/6a04501b03964ce4874711566e84fabb/disable/\", headers=headers\n) "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/payment_requests/{id}/enable/": {
+      "post": {
+        "summary": "Enable a Request",
+        "description": "This will enable the payment request on Instamojo. You need to use a token that is obtained using the User Based Authentication.",
+        "operationId": "enable-a-request",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"success\": true\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": true,
+                      "default": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\n\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payment_requests/6a04501b03964ce4874711566e84fabb/enable/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer fRPB9REdsmD7C2qX9uJolWPhsIu4Tc'));\n\ncurl_setopt($ch, CURLOPT_POST, true);\ncurl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($payload));\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer fRPB9REdsmD7C2qX9uJolWPhsIu4Tc\"\n}\nresponse = requests.post(\n \"https://api.instamojo.com/v2/payment_requests/6a04501b03964ce4874711566e84fabb/enable/\", headers=headers\n) "
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/payments/{id}/": {
+      "get": {
+        "summary": "Get Payment Details",
+        "description": "This will fetch the details of a payment on Instamojo. You need to use a token that is obtained using the Application Based Authentication.",
+        "operationId": "get-payment-details-1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "Payment ID",
+            "schema": {
+              "type": "string"
+            },
+            "required": true
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "Bearer <your-token>"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "With Successful Payment": {
+                    "value": "{\n    \"id\": \"MOJO3207U05Q80983266\",\n    \"title\": \"FIFA 10\",\n    \"payment_type\": \"api_rap\",\n    \"payment_request\": \"https://api.instamojo.com/v2/payment_requests/b318750f06e3491484acef4cb4ff7966/\",\n    \"status\": true,\n    \"link\": null,\n    \"product\": null,\n    \"seller\": \"https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/\",\n    \"currency\": \"INR\",\n    \"amount\": \"10.00\",\n    \"name\": \"Rahul\",\n    \"email\": \"rahul.sharma@instamojo.com\",\n    \"phone\": \"+919898989898\",\n    \"payout\": null,\n    \"fees\": \"3.20\",\n    \"total_taxes\": \"0.58\",\n    \"cases\": [],\n    \"affiliate_id\": null,\n    \"affiliate_commission\": \"0.00\",\n    \"order_info\": {\n        \"shipping_address\": null,\n        \"shipping_city\": null,\n        \"shipping_state\": null,\n        \"shipping_zip\": null,\n        \"shipping_country\": null,\n        \"quantity\": 1,\n        \"unit_price\": \"10.00\",\n        \"custom_fields\": {},\n        \"variants\": []\n    },\n    \"instrument_type\": \"QR\",\n    \"billing_instrument\": \"Order based QR Code\",\n    \"failure\": null,\n    \"created_at\": \"2023-02-07T08:30:33.902672Z\",\n    \"updated_at\": \"2023-02-07T08:30:34.300356Z\",\n    \"tax_invoice_id\": \"\",\n    \"resource_uri\": \"https://api.instamojo.com/v2/payments/MOJO3207U05Q80983266/\"\n}"
+                  },
+                  "With Failed Payment": {
+                    "value": "{\n    \"id\": \"MOJO3209V05A98786622\",\n    \"title\": \"Fifa 10\",\n    \"payment_type\": \"api_rap\",\n    \"payment_request\": \"https://api.instamojo.com/v2/payment_requests/83eb2693763349d891bd1d58b14cea1c/\",\n    \"status\": false,\n    \"link\": null,\n    \"product\": null,\n    \"seller\": \"https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/\",\n    \"currency\": \"INR\",\n    \"amount\": \"10.00\",\n    \"name\": \"Rahul\",\n    \"email\": \"rahul.sharma@instamojo.com\",\n    \"phone\": \"+919898989898\",\n    \"payout\": null,\n    \"fees\": null,\n    \"total_taxes\": null,\n    \"cases\": [],\n    \"affiliate_id\": null,\n    \"affiliate_commission\": null,\n    \"order_info\": {\n        \"shipping_address\": null,\n        \"shipping_city\": null,\n        \"shipping_state\": null,\n        \"shipping_zip\": null,\n        \"shipping_country\": null,\n        \"quantity\": 1,\n        \"unit_price\": \"10.00\",\n        \"custom_fields\": {},\n        \"variants\": []\n    },\n    \"instrument_type\": \"CARD\",\n    \"billing_instrument\": \"International Regular Credit Card (Visa/Mastercard)\",\n    \"failure\": {\n        \"reason\": \"AUTHORIZATION_FAILED\",\n        \"message\": \"Transaction was declined by the bank\"\n    },\n    \"created_at\": \"2023-02-09T07:35:56.590046Z\",\n    \"updated_at\": \"2023-02-09T07:36:04.285084Z\",\n    \"tax_invoice_id\": \"\",\n    \"resource_uri\": \"https://api.instamojo.com/v2/payments/MOJO3209V05A98786622/\"\n}"
+                  }
+                },
+                "schema": {
+                  "oneOf": [
+                    {
+                      "title": "With Successful Payment",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "MOJO3207U05Q80983266"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "FIFA 10"
+                        },
+                        "payment_type": {
+                          "type": "string",
+                          "example": "api_rap"
+                        },
+                        "payment_request": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/payment_requests/b318750f06e3491484acef4cb4ff7966/"
+                        },
+                        "status": {
+                          "type": "boolean",
+                          "example": true,
+                          "default": true
+                        },
+                        "link": {},
+                        "product": {},
+                        "seller": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "INR"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "example": "10.00"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Rahul"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "rahul.sharma@instamojo.com"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "+919898989898"
+                        },
+                        "payout": {},
+                        "fees": {
+                          "type": "string",
+                          "example": "3.20"
+                        },
+                        "total_taxes": {
+                          "type": "string",
+                          "example": "0.58"
+                        },
+                        "cases": {
+                          "type": "array"
+                        },
+                        "affiliate_id": {},
+                        "affiliate_commission": {
+                          "type": "string",
+                          "example": "0.00"
+                        },
+                        "order_info": {
+                          "type": "object",
+                          "properties": {
+                            "shipping_address": {},
+                            "shipping_city": {},
+                            "shipping_state": {},
+                            "shipping_zip": {},
+                            "shipping_country": {},
+                            "quantity": {
+                              "type": "integer",
+                              "example": 1,
+                              "default": 0
+                            },
+                            "unit_price": {
+                              "type": "string",
+                              "example": "10.00"
+                            },
+                            "custom_fields": {
+                              "type": "object",
+                              "properties": {}
+                            },
+                            "variants": {
+                              "type": "array"
+                            }
+                          }
+                        },
+                        "instrument_type": {
+                          "type": "string",
+                          "example": "QR"
+                        },
+                        "billing_instrument": {
+                          "type": "string",
+                          "example": "Order based QR Code"
+                        },
+                        "failure": {},
+                        "created_at": {
+                          "type": "string",
+                          "example": "2023-02-07T08:30:33.902672Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2023-02-07T08:30:34.300356Z"
+                        },
+                        "tax_invoice_id": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "resource_uri": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/payments/MOJO3207U05Q80983266/"
+                        }
+                      }
+                    },
+                    {
+                      "title": "With Failed Payment",
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string",
+                          "example": "MOJO3209V05A98786622"
+                        },
+                        "title": {
+                          "type": "string",
+                          "example": "Fifa 10"
+                        },
+                        "payment_type": {
+                          "type": "string",
+                          "example": "api_rap"
+                        },
+                        "payment_request": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/payment_requests/83eb2693763349d891bd1d58b14cea1c/"
+                        },
+                        "status": {
+                          "type": "boolean",
+                          "example": false,
+                          "default": true
+                        },
+                        "link": {},
+                        "product": {},
+                        "seller": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/users/60d40901b01044c8a3eaaa4d40fb04d2/"
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "INR"
+                        },
+                        "amount": {
+                          "type": "string",
+                          "example": "10.00"
+                        },
+                        "name": {
+                          "type": "string",
+                          "example": "Rahul"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "rahul.sharma@instamojo.com"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "+919898989898"
+                        },
+                        "payout": {},
+                        "fees": {},
+                        "total_taxes": {},
+                        "cases": {
+                          "type": "array"
+                        },
+                        "affiliate_id": {},
+                        "affiliate_commission": {},
+                        "order_info": {
+                          "type": "object",
+                          "properties": {
+                            "shipping_address": {},
+                            "shipping_city": {},
+                            "shipping_state": {},
+                            "shipping_zip": {},
+                            "shipping_country": {},
+                            "quantity": {
+                              "type": "integer",
+                              "example": 1,
+                              "default": 0
+                            },
+                            "unit_price": {
+                              "type": "string",
+                              "example": "10.00"
+                            },
+                            "custom_fields": {
+                              "type": "object",
+                              "properties": {}
+                            },
+                            "variants": {
+                              "type": "array"
+                            }
+                          }
+                        },
+                        "instrument_type": {
+                          "type": "string",
+                          "example": "CARD"
+                        },
+                        "billing_instrument": {
+                          "type": "string",
+                          "example": "International Regular Credit Card (Visa/Mastercard)"
+                        },
+                        "failure": {
+                          "type": "object",
+                          "properties": {
+                            "reason": {
+                              "type": "string",
+                              "example": "AUTHORIZATION_FAILED"
+                            },
+                            "message": {
+                              "type": "string",
+                              "example": "Transaction was declined by the bank"
+                            }
+                          }
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "example": "2023-02-09T07:35:56.590046Z"
+                        },
+                        "updated_at": {
+                          "type": "string",
+                          "example": "2023-02-09T07:36:04.285084Z"
+                        },
+                        "tax_invoice_id": {
+                          "type": "string",
+                          "example": ""
+                        },
+                        "resource_uri": {
+                          "type": "string",
+                          "example": "https://api.instamojo.com/v2/payments/MOJO3209V05A98786622/"
+                        }
+                      }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/payments/MOJO7726005A06926769/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\n\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            },
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\n\nresponse = requests.get(\n  \"https://api.instamojo.com/v2/payments/MOJO7726005A06926769/\", \n  headers=headers\n)"
+            }
+          ],
+          "samples-languages": [
+            "php",
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/virtual_accounts/": {
+      "post": {
+        "summary": "Creating Virtual Accounts",
+        "description": "",
+        "operationId": "creating-virtual-accounts",
+        "requestBody": {
+          "content": {
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "assigned_to": {
+                    "properties": {
+                      "name": {
+                        "type": "string"
+                      },
+                      "email": {
+                        "type": "string"
+                      },
+                      "phone": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "email",
+                      "phone"
+                    ],
+                    "type": "object"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "201",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"id\": \"46665650939090909090\",\n  \"assigned_to\": {\n    \"name\": \"Customer Name\",\n    \"email\": \"customer@example.com\",\n    \"phone\": \"9090909090\"\n  },\n  \"beneficiary\": {\n    \"account_number\": \"46665650939090909090\",\n    \"ifsc\": \"YESB0CMSNOC\",\n    \"bank_name\": \"Yes Bank\",\n    \"account_holder_name\": \"Test Merchant\"\n  },\n  \"resource_uri\": \"http://api.instamojo.com/v2/virtual_accounts/46665650939090909090/\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "46665650939090909090"
+                    },
+                    "assigned_to": {
+                      "type": "object",
+                      "properties": {
+                        "name": {
+                          "type": "string",
+                          "example": "Customer Name"
+                        },
+                        "email": {
+                          "type": "string",
+                          "example": "customer@example.com"
+                        },
+                        "phone": {
+                          "type": "string",
+                          "example": "9090909090"
+                        }
+                      }
+                    },
+                    "beneficiary": {
+                      "type": "object",
+                      "properties": {
+                        "account_number": {
+                          "type": "string",
+                          "example": "46665650939090909090"
+                        },
+                        "ifsc": {
+                          "type": "string",
+                          "example": "YESB0CMSNOC"
+                        },
+                        "bank_name": {
+                          "type": "string",
+                          "example": "Yes Bank"
+                        },
+                        "account_holder_name": {
+                          "type": "string",
+                          "example": "Test Merchant"
+                        }
+                      }
+                    },
+                    "resource_uri": {
+                      "type": "string",
+                      "example": "http://api.instamojo.com/v2/virtual_accounts/46665650939090909090/"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"success\": false,\n    \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer {{access_token}}\"\n}\n\npayload = {\n  \"assigned_to\": {\n\t\t\t\"name\": \"Customer Name\",\n\t\t\t\"email\": \"customer@example.com\",\n\t\t\t\"phone\": \"9090909090\"\n\t\t}\n}\n\nresponse = requests.post(\n  \"https://api.instamojo.com/v2/virtual_accounts\", \n  data=payload, \n  headers=headers\n)"
+            }
+          ],
+          "samples-languages": [
+            "python"
+          ]
+        }
+      },
+      "get": {
+        "summary": "Listing Virtual Accounts",
+        "description": "Returns first (latest) 50 virtual accounts",
+        "operationId": "listing-virtual-accounts",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "If the response spans multiple pages, the page parameter can be used to get paginated response",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of records returned in the response can be controlled with limit parameter.",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "GET /v2/virtual_accounts/?page=2&limit=10": {
+                    "value": "{\n  \"count\": 55,\n  \"next\": \"http://api.instamojo.com/v2/virtual_accounts/?limit=10&page=3\",\n  \"previous\": \"http://api.instamojo.com/v2/virtual_accounts/?limit=10\",\n  \"virtual_accounts\": [\n    {\n      \"id\": \"46665633029090909090\",\n\t\t  \"assigned_to\": {\n\t\t\t  \"name\": \"Customer Name\",\n\t\t\t  \"email\": \"someone@example.com\",\n\t\t\t  \"phone\": \"9090909090\"\n\t\t  },\n\t\t  \"beneficiary\": {\n\t\t\t  \"account_number\": \"46665633029090909090\",\n\t\t\t  \"ifsc\": \"YESB0CMSNOC\",\n\t\t\t  \"bank_name\": \"Yes Bank\",\n\t\t\t  \"account_holder_name\": \"Test Merchant\",\n\t\t  },\n\t\t  \"resource_uri\": \"http://<api_domain>/v2/virtual_accounts/46665633029090909090/\"\n\t\t},\n\t\t…\n\t\t…\n  ]\n}"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer n9kmKzFODibP5jIKVk8gJO0NOr4W0t\"\n}\n\nresponse = requests.get(\n  \"https://api.instamojo.com/v2/virtual_accounts/\", \n  headers=headers\n)"
+            }
+          ],
+          "samples-languages": [
+            "python"
+          ]
+        }
+      }
+    },
+    "/v2/resolutioncenter/cases/{id}/": {
+      "get": {
+        "summary": "Get details of a refund",
+        "description": "This will fetch the details of a refund made on a payment on Instamojo.",
+        "operationId": "get-details-of-a-refund-1",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "ID of the refund",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "schema": {
+              "type": "string",
+              "default": "Bearer <your-token>"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"id\": \"C5c0751272\",\n    \"created_by\": null,\n    \"payment\": \"https://api.instamojo.com/v2/payments/MOJO5a06005J21512197/\",\n    \"status\": \"FINI\",\n    \"resolution_status\": \"FINI_CONC\",\n    \"status_text\": \"Refunded\",\n    \"type\": \"QFL\",\n    \"body\": \"Customer isn't satisfied with the quality\",\n    \"refund_amount\": \"2500.00\",\n    \"references\": [\n        {\n            \"id\": \"MOJO0a22U05M99838558\",\n            \"type\": \"Payment held.\",\n            \"created_at\": \"2020-10-22T11:57:21.477161Z\"\n        },\n        {\n            \"id\": \"MOJO0a22Q05M99854564\",\n            \"type\": \"Held payment reversed.\",\n            \"created_at\": \"2020-10-22T17:07:58.171682Z\"\n        },\n        {\n            \"id\": \"MOJO0a22W05M99854566\",\n            \"type\": \"Payment settled.\",\n            \"created_at\": \"2020-10-22T17:07:58.229600Z\"\n        }\n    ],\n    \"refunds\": [\n        {\n            \"id\": \"7ad3f73f-2a6c-4326-95e6-38381db7e969\",\n            \"status\": \"Completed\",\n            \"bank_reference_number\": \"IGAJRIYGL4\",\n            \"created_at\": \"2020-10-22T17:07:58.272904Z\"\n        }\n    ],\n    \"transaction_id\": \"1603367841023\",\n    \"created_at\": \"2020-10-22T11:57:21.410686Z\",\n    \"updated_at\": \"2020-10-22T17:07:58.322985Z\",\n    \"resource_uri\": \"https://api.instamojo.com/v2/resolutioncenter/cases/C0a2233225/\",\n    \"creator_name\": \"Sample seller\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string",
+                      "example": "C5c0751272"
+                    },
+                    "created_by": {},
+                    "payment": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/payments/MOJO5a06005J21512197/"
+                    },
+                    "status": {
+                      "type": "string",
+                      "example": "FINI"
+                    },
+                    "resolution_status": {
+                      "type": "string",
+                      "example": "FINI_CONC"
+                    },
+                    "status_text": {
+                      "type": "string",
+                      "example": "Refunded"
+                    },
+                    "type": {
+                      "type": "string",
+                      "example": "QFL"
+                    },
+                    "body": {
+                      "type": "string",
+                      "example": "Customer isn't satisfied with the quality"
+                    },
+                    "refund_amount": {
+                      "type": "string",
+                      "example": "2500.00"
+                    },
+                    "references": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "MOJO0a22U05M99838558"
+                          },
+                          "type": {
+                            "type": "string",
+                            "example": "Payment held."
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "example": "2020-10-22T11:57:21.477161Z"
+                          }
+                        }
+                      }
+                    },
+                    "refunds": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string",
+                            "example": "7ad3f73f-2a6c-4326-95e6-38381db7e969"
+                          },
+                          "status": {
+                            "type": "string",
+                            "example": "Completed"
+                          },
+                          "bank_reference_number": {
+                            "type": "string",
+                            "example": "IGAJRIYGL4"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "example": "2020-10-22T17:07:58.272904Z"
+                          }
+                        }
+                      }
+                    },
+                    "transaction_id": {
+                      "type": "string",
+                      "example": "1603367841023"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "example": "2020-10-22T11:57:21.410686Z"
+                    },
+                    "updated_at": {
+                      "type": "string",
+                      "example": "2020-10-22T17:07:58.322985Z"
+                    },
+                    "resource_uri": {
+                      "type": "string",
+                      "example": "https://api.instamojo.com/v2/resolutioncenter/cases/C0a2233225/"
+                    },
+                    "creator_name": {
+                      "type": "string",
+                      "example": "Sample seller"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "401",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  \"success\": false,\n  \"message\": \"Authentication credentials were not provided.\"\n}"
+                  }
+                },
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "example": false,
+                      "default": true
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Authentication credentials were not provided."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false,
+        "x-readme": {
+          "code-samples": [
+            {
+              "language": "python",
+              "code": "import requests\n\nheaders = { \n\t\"Authorization\": \"Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl\"\n}\n\nresponse = requests.get(\n  \"https://api.instamojo.com/v2/resolutioncenter/cases/C5c0751272/\", \n  headers=headers\n)"
+            },
+            {
+              "language": "php",
+              "code": "<?php\n\n$ch = curl_init();\ncurl_setopt($ch, CURLOPT_URL, 'https://api.instamojo.com/v2/resolutioncenter/cases/C5c0751272/');\ncurl_setopt($ch, CURLOPT_HEADER, FALSE);\ncurl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);\ncurl_setopt($ch, CURLOPT_FOLLOWLOCATION, TRUE);\n\ncurl_setopt($ch, CURLOPT_HTTPHEADER,array('Authorization: Bearer y70kak2K0Rg7J4PAL8sdW0MutnGJEl'));\n\n$response = curl_exec($ch);\ncurl_close($ch); \n\n?>"
+            }
+          ],
+          "samples-languages": [
+            "python",
+            "php"
+          ]
+        }
+      }
+    }
+  },
+  "x-readme": {
+    "headers": []
+  },
+  "x-readme-fauxas": true
+}

@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Swipes</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Add all icon libraries -->
+<link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+<link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title mt-2">Swipe Records</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item_"><a href="#"></a></li>
+                <li class="breadcrumb-item active"></li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input type="text" id="swipeSearch" class="form-control" placeholder="Search by Name or ID">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Swipes Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Swiper</th>
+                          <th>Swiped</th>
+                          <th>Direction</th>
+                          <th>Date</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (swipes && swipes.length > 0) { %>
+                          <% swipes.forEach((swipe, index) => { %>
+                            <tr data-swipe-id="<%= swipe.id %>">
+                              <td><%= index + 1 %></td>
+                              <td>
+                                <img src="<%= swipe.swiper_img || '/images/faces-clipart/default.png' %>" class="me-2" width="40">
+                                <%= swipe.swiper_name || 'User ' + swipe.swiper_id %>
+                              </td>
+                              <td>
+                                <img src="<%= swipe.swiped_img || '/images/faces-clipart/default.png' %>" class="me-2" width="40">
+                                <%= swipe.swiped_name || 'User ' + swipe.swiped_id %>
+                              </td>
+                              <td><%= swipe.direction %></td>
+                              <td><%= new Date(swipe.created_at).toLocaleDateString() %></td>
+                              <td>
+                                <button class="btn btn-sm toggle-status <%= swipe.status === 'active' ? 'btn-success' : 'btn-danger' %>">
+                                  <%= swipe.status === 'active' ? 'Active' : 'Inactive' %>
+                                </button>
+                              </td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="6" class="text-center text-muted">No request data found</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    document.getElementById('swipeSearch').addEventListener('input', function () {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+      rows.forEach(row => {
+        const swiper = row.children[1].textContent.toLowerCase();
+        const swiped = row.children[2].textContent.toLowerCase();
+        const id = row.children[0].textContent.toLowerCase();
+        row.style.display = swiper.includes(filter) || swiped.includes(filter) || id.includes(filter) ? '' : 'none';
+      });
+    });
+
+    document.querySelectorAll('.toggle-status').forEach(button => {
+      button.addEventListener('click', async function () {
+        const row = this.closest('tr');
+        const swipeId = row.getAttribute('data-swipe-id');
+        const newStatus = this.textContent.trim().toLowerCase() === 'active' ? 'inactive' : 'active';
+
+        try {
+          const res = await fetch(`/request/${swipeId}/status`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+          });
+
+          if (res.ok) {
+            this.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            this.classList.toggle('btn-success');
+            this.classList.toggle('btn-danger');
+          } else {
+            alert('Failed to update status');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('Error updating status');
+        }
+      });
+    });
+  </script>
+
+  <script src="vendors/js/vendor.bundle.base.js"></script>
+  <script src="js/off-canvas.js"></script>
+  <script src="js/misc.js"></script>
+</body>
+</html>

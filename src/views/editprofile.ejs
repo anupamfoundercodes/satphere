@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Edit User Profile</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/choices.js/public/assets/styles/choices.min.css" />
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .form-control { border-radius: 10px; }
+    .alert { margin-top: 15px; }
+    .profile-img-box { text-align: center; padding: 10px; background: #f9f9f9; border-radius: 8px; border: 1px solid #ddd; margin-bottom: 15px;}
+    .profile-img-box img { max-width: 120px; border-radius: 50%; border: 2px solid #f3c5e8; padding: 5px; background: #fff; }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title mt-2">Edit User</h3>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <% if (users && users.length > 0) { %>
+                    <% const user = users[0]; %>
+                    <form id="editUserForm">
+                      <input type="hidden" name="id" value="<%= user.id %>">
+                      <div id="imgModal" class="img-modal">
+                        <span class="img-modal-close">&times;</span>
+                        <img class="img-modal-content" id="modalImg">
+                      </div>
+                      <!-- Profile & Cover Images -->
+                      <div class="row">
+                        <div class="col-md-6">
+                          <label>Profile Photo</label>
+                          <div class="profile-img-box">
+                            <img id="profilePreview" src="<%= user.profile_pic || '/images/default-profile.png' %>" alt="Profile" class="profile-img-box">
+                            <input type="file" id="profileImg" accept="image/*" class="form-control mt-2">
+                          </div>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Cover Photo</label>
+                          <div class="profile-img-box">
+                            <img id="coverPreview" src="<%= user.cover_pic || '/images/default-cover.png' %>" alt="Cover" style="border-radius:0;">
+                            <input type="file" id="coverImg" accept="image/*" class="form-control mt-2">
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Basic Fields -->
+                      <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Email</label>
+                          <input type="email" name="email" class="form-control" value="<%= user.email %>" required>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Password</label>
+                          <input type="text" name="password" class="form-control" value="<%= user.password %>" required>
+                        </div>
+                      </div>
+
+                      <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Phone</label>
+                          
+                          <input type="text" name="phone" class="form-control"  maxlength="10" 
+                          pattern="\d{10}" 
+                          title="Please enter a valid 10-digit phone number" value="<%= user.phone %>" required>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Username</label>
+                          <input type="text" name="username" class="form-control" value="<%= user.username %>" required>
+                        </div>
+                      </div>
+
+                      <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Name</label>
+                          <input type="text" name="name" class="form-control" value="<%= user.name %>" required>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Status</label>
+                          <select name="status" class="form-control" required>
+                            <option value="active" <%= user.status==='active'?'selected':'' %>>Active</option>
+                            <option value="inactive" <%= user.status==='inactive'?'selected':'' %>>Inactive</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Gender</label>
+                          <select name="gender" id="genderDropdown" class="form-control" required>
+                            <option value="">Select</option>
+                            <option value="male" <%= user.gender === 'male' ? 'selected' : '' %>>Male</option>
+                            <option value="female" <%= user.gender === 'female' ? 'selected' : '' %>>Female</option>
+                            <option value="other" <%= user.gender === 'other' ? 'selected' : '' %>>Other</option>
+                          </select>
+                        </div>
+                        <div class="col-md-6">
+                          <label>Interests</label>
+                          <select name="interests" id="interestsDropdown" multiple>
+                            <option value="datting" <%= user.interests?.includes('datting') ? 'selected' : '' %>>Datting</option>
+                            <option value="video" <%= user.interests?.includes('video') ? 'selected' : '' %>>Video</option>
+                            <option value="social" <%= user.interests?.includes('social') ? 'selected' : '' %>>Social Hub</option>
+                            <option value="game" <%= user.interests?.includes('game') ? 'selected' : '' %>>Game Zone</option>
+                          </select>
+                        </div>
+                      </div>
+
+                      <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Match Count</label>
+                          <input type="number" name="match_count" class="form-control" value="<%= user.match_count %>">
+                        </div>
+                        <div class="col-md-6">
+                          <label>Game Count</label>
+                          <input type="number" name="game_count" class="form-control" value="<%= user.game_count %>">
+                        </div>
+                      </div>
+
+                      <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Date of Birth</label>
+                          <input type="date" name="dob" class="form-control" value="<%= user.dob ? user.dob.toISOString().split('T')[0] : '' %>">
+                        </div>
+                        <div class="col-md-6">
+                          <label>About</label>
+                          <textarea name="about" class="form-control" rows="3"><%= user.about %></textarea>
+                        </div>
+                      </div>
+                       <div class="row mt-2">
+                        <div class="col-md-6">
+                          <label>Latitude</label>
+                          <input type="number" name="latitude" step="any" class="form-control" value="<%= user.latitude %>">
+                        </div>
+                        <div class="col-md-6">
+                          <label>Longitude</label>
+                          <input type="number" name="longitude" step="any" class="form-control" value="<%= user.longitude %>">
+                        </div>
+                        </div>
+                      <div id="responseMsg"></div>
+                      <div class="mt-4">
+                        <button type="submit" class="btn btn-primary p-2">Update</button>
+                        <a href="/users" class="btn btn-secondary p-2 ml-2">Cancel</a>
+                      </div>
+                    </form>
+                  <% } else { %>
+                    <p class="text-danger">No user found.</p>
+                  <% } %>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/choices.js/public/assets/scripts/choices.min.js"></script>
+<script>
+  const genderChoices = new Choices('#genderDropdown', { searchEnabled:false, itemSelectText:'', placeholder:true, placeholderValue:'Select Gender', removeItemButton:false });
+  const interestsChoices = new Choices('#interestsDropdown', { removeItemButton:true, placeholder:true, placeholderValue:'Select your interests' });
+
+  // --- Image preview + base64 ---
+  let profileBase64 = null, coverBase64 = null;
+  const profileInput = document.getElementById('profileImg');
+  const coverInput = document.getElementById('coverImg');
+  profileInput?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => { document.getElementById('profilePreview').src = reader.result; profileBase64 = reader.result; };
+    reader.readAsDataURL(file);
+  });
+  coverInput?.addEventListener('change', e => {
+    const file = e.target.files[0];
+    const reader = new FileReader();
+    reader.onload = () => { document.getElementById('coverPreview').src = reader.result; coverBase64 = reader.result; };
+    reader.readAsDataURL(file);
+  });
+
+  // --- Phone number validation ---
+  const phoneInput = document.querySelector('input[name="phone"]');
+  phoneInput?.addEventListener('input', () => {
+    phoneInput.value = phoneInput.value.replace(/[^0-9]/g, ''); // sirf digits
+  });
+
+  // --- Auto Detect Latitude & Longitude ---
+  window.addEventListener('load', () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          document.querySelector('input[name="latitude"]').value = pos.coords.latitude.toFixed(6);
+          document.querySelector('input[name="longitude"]').value = pos.coords.longitude.toFixed(6);
+        },
+        (err) => console.warn("Location access denied:", err.message)
+      );
+    } else {
+      console.warn("Geolocation not supported");
+    }
+  });
+
+  // --- Submit form as JSON ---
+  document.getElementById('editUserForm')?.addEventListener('submit', async e => {
+    e.preventDefault();
+    const form = e.target;
+    const msgBox = document.getElementById('responseMsg');
+
+    const data = {
+      id: form.id.value,
+      email: form.email.value,
+      password: form.password.value,
+      phone: form.phone.value,
+      username: form.username.value,
+      name: form.name.value,
+      status: form.status.value,
+      gender: form.gender.value,
+      interests: Array.from(form.interests.selectedOptions).map(o => o.value),
+      match_count: form.match_count.value,
+      game_count: form.game_count.value,
+      dob: form.dob.value,
+      about: form.about.value,
+      latitude: form.latitude.value,
+      longitude: form.longitude.value,
+      profile_pic: profileBase64,
+      cover_pic: coverBase64
+    };
+
+    const res = await fetch('/update-profile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    const result = await res.json();
+    msgBox.innerHTML = `<div class="alert alert-${result.success?'success':'danger'}">${result.msg}</div>`;
+    setTimeout(()=> msgBox.innerHTML='',5000);
+  });
+</script>
+
+
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+ <%- include('../partials/_script') %> 
+</body>
+</html>

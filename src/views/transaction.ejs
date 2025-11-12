@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <%- include('../partials/_head') %> 
+  <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<style>
+/* Prevent page from double scrolling */
+html, body {
+  height: 100%;
+  overflow: hidden; /* hide global scrollbar */
+}
+
+/* The wrapper that holds everything */
+.container-scroller {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Sidebar + main layout */
+.page-body-wrapper {
+  flex: 1;
+  display: flex;
+  overflow: hidden; /* stop outer scroll */
+}
+
+/* Sidebar stays fixed height */
+.sidebar {
+  height: 100%;
+  overflow-y: auto;
+}
+
+
+
+/* Keep table responsive scrolling inside */
+.table-responsive {
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+
+
+.main-panel {
+  overflow-x: auto; /* horizontal scroll allowed */
+  overflow-y: auto;
+}
+
+.content-wrapper {
+  overflow-x: auto;
+}
+
+</style>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %> 
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %> 
+      <div class="main-panel">
+        <div class="content-wrapper">
+
+          <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+            <h3 class="page-title mb-2 mb-md-0">View All Payments</h3>
+            <div>
+              <button id="exportCsv" class="btn btn-outline-primary btn-sm me-2">
+                <i class="mdi mdi-file-delimited"></i> CSV
+              </button>
+              <button id="exportPdf" class="btn btn-outline-danger btn-sm me-2">
+                <i class="mdi mdi-file-pdf"></i> PDF
+              </button>
+              <button id="exportPrint" class="btn btn-outline-secondary btn-sm">
+                <i class="mdi mdi-printer"></i> Print
+              </button>
+            </div>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input type="text" id="userSearch" class="form-control" placeholder="Search by User ID, Order Id, Payment Id">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Payments Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="paymentsTable">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>User Name</th>
+                          <th>Plan ID</th>
+                          <th>Order ID</th>
+                          <th>Payment ID</th>
+                          <th>Type</th>
+                          <!--<th>Signature</th>-->
+                          <th>Amount</th>
+                          <th>Currency</th>
+                          <th>Status</th>
+                          <th>Duration Days</th>
+                            <th>Filter Earning</th>
+                            <th>Swipe</th>
+                            <th>Filter Media</th>
+                            <th>No Ads</th>
+                            <th>Rear Camra</th>                          
+                          <th>Created At</th>
+                          <th>Expire At</th>
+                            <th>Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (payments && payments.length > 0) { %>
+                          <% payments.forEach((p, index) => { %>
+                            <tr>
+                              <td><%= index + 1 %></td>
+                              <td><%= p.name %></td>
+                              <td><%= p.plan_id %></td>
+                              <td><%= p.order_id %></td>
+                              <td><%= p.payment_id || '-' %></td>
+                              <td><%= p.type || '-' %></td>
+                              <td><%= p.amount %></td>
+                              <td><%= p.currency %></td>
+                              <td>
+                                <button
+                                  class="btn btn-sm toggle-status-payment <%= p.status === 'success' ? 'btn-success' : (p.status === 'failed' ? 'btn-danger' : 'btn-warning') %>"
+                                  data-payment-id="<%= p.id %>"
+                                >
+                                  <%= p.status.charAt(0).toUpperCase() + p.status.slice(1) %>
+                                </button>
+                              </td>
+                              <td><%= p.day || '-' %></td>
+                            <td>
+                              <% if (p.Filter_Both === 'true' || p.Filter_Both === true) { %>
+                                ✔ 
+                              <% } else if (p.Filter_Both === 'false' || p.Filter_Both === false) { %>
+                                ✖
+                              <% } else { %>
+                                <%= p.Filter_Both || '-' %>
+                              <% } %>
+                            </td>
+                            
+                            <td>
+                              <% if (p.Filter_Gender === 'true' || p.Filter_Gender === true) { %>
+                                ✔ 
+                              <% } else if (p.Filter_Gender === 'false' || p.Filter_Gender === false) { %>
+                                ✖
+                              <% } else { %>
+                                <%= p.Filter_Gender || '-' %>
+                              <% } %>
+                            </td>
+                            
+                            <td>
+                              <% if (p.Filter_Region === 'true' || p.Filter_Region === true) { %>
+                                ✔ 
+                              <% } else if (p.Filter_Region === 'false' || p.Filter_Region === false) { %>
+                                ✖
+                              <% } else { %>
+                                <%= p.Filter_Region || '-' %>
+                              <% } %>
+                            </td>
+                            
+                            <td>
+                              <% if (p.No_Ads === 'true' || p.No_Ads === true) { %>
+                                ✔ 
+                              <% } else if (p.No_Ads === 'false' || p.No_Ads === false) { %>
+                                ✖
+                              <% } else { %>
+                                <%= p.No_Ads || '-' %>
+                              <% } %>
+                            </td>
+                            
+                            <td>
+                              <% if (p.Rear_Camra === 'true' || p.Rear_Camra === true) { %>
+                                ✔ 
+                              <% } else if (p.Rear_Camra === 'false' || p.Rear_Camra === false) { %>
+                                ✖
+                              <% } else { %>
+                                <%= p.Rear_Camra || '-' %>
+                              <% } %>
+                            </td>
+
+
+                              <!--<td><%= p.meta || '-' %></td>-->
+                              <td><%= new Date(p.created_at).toISOString().slice(0,19).replace('T', ' ') %></td>
+                              <td><%= p.expire_at ? new Date(p.expire_at).toISOString().slice(0,19).replace('T', ' ') : '-' %></td>
+                              <td>
+                              <% if(p.status === 'pending') { %>
+                                <button class="btn btn-success btn-sm action-btn" data-id="<%= p.id %>" data-status="success"  data-plan-id="<%= p.plan_id %>">Success</button>
+                                <button class="btn btn-danger btn-sm action-btn" data-id="<%= p.id %>" data-status="failed"  data-plan-id="<%= p.plan_id %>">Failed</button>
+                              <% } else { %>
+                                <span>-</span>
+                              <% } %>
+                            </td>
+                                <td>
+                                  <button 
+                                    class="btn btn-primary btn-sm edit-btn"
+                                    data-id="<%= p.id %>"
+                                    data-day="<%= p.day %>"
+                                    data-filter_both="<%= p.Filter_Both %>"
+                                    data-filter_gender="<%= p.Filter_Gender %>"
+                                    data-filter_region="<%= p.Filter_Region %>"
+                                    data-no_ads="<%= p.No_Ads %>"
+                                    data-rear_camra="<%= p.Rear_Camra %>"
+                                    data-created_at="<%= p.created_at %>"
+                                    data-expire_at="<%= p.expire_at %>"
+                                  >
+                                    Edit
+                                  </button>
+                                </td>
+
+                             <!-- <td>
+                                <a href="/viewpayment/<%= p.id %>" class="btn btn-sm btn-info">View</a>
+                              </td>-->
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="13" class="text-center text-muted">No payments found</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div id="successMsgContainer"></div>
+          </div>
+
+        </div>
+<!-- Edit Modal -->
+<div class="modal fade" id="editModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <form id="editForm">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit Payment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <input type="hidden" id="editId" name="id">
+
+          <div class="mb-3">
+            <label>Duration Days <span class="text-danger">*</span></label>
+            <input type="number" class="form-control" id="editDay" name="day" required>
+          </div>
+
+          <!-- Perks -->
+          <div class="mb-3">
+            <label>Swipe</label>
+            <select class="form-control perk-select" id="editFilterBoth" name="Filter_Both">
+              <option value="true">✔ True</option>
+              <option value="false">❌ False</option>
+              <option value="custom">Custom</option>
+            </select>
+            <input type="text" class="form-control mt-2 d-none perk-custom" id="customFilterBoth">
+          </div>
+
+          <div class="mb-3">
+            <label>Message</label>
+            <select class="form-control perk-select" id="editFilterGender" name="Filter_Gender">
+              <option value="true">✔ True</option>
+              <option value="false">❌ False</option>
+              <option value="custom">Custom</option>
+            </select>
+            <input type="text" class="form-control mt-2 d-none perk-custom" id="customFilterGender">
+          </div>
+
+          <div class="mb-3">
+            <label>Reel</label>
+            <select class="form-control perk-select" id="editFilterRegion" name="Filter_Region">
+              <option value="true">✔ True</option>
+              <option value="false">❌ False</option>
+              <option value="custom">Custom</option>
+            </select>
+            <input type="text" class="form-control mt-2 d-none perk-custom" id="customFilterRegion">
+          </div>
+
+          <div class="mb-3">
+            <label>Audio</label>
+            <select class="form-control perk-select" id="editNoAds" name="No_Ads">
+              <option value="true">✔ True</option>
+              <option value="false">❌ False</option>
+              <option value="custom">Custom</option>
+            </select>
+            <input type="text" class="form-control mt-2 d-none perk-custom" id="customNoAds">
+          </div>
+
+          <div class="mb-3">
+            <label>Video</label>
+            <select class="form-control perk-select" id="editRearCamra" name="Rear_Camra">
+              <option value="true">✔ True</option>
+              <option value="false">❌ False</option>
+              <option value="custom">Custom</option>
+            </select>
+            <input type="text" class="form-control mt-2 d-none perk-custom" id="customRearCamra">
+          </div>
+
+          <!-- Dates -->
+            <div class="mb-3">
+              <label>Created At</label>
+              <input type="datetime-local" class="form-control" id="editCreatedAt" name="created_at">
+            </div>
+            
+            <div class="mb-3">
+              <label>Expire At</label>
+              <input type="datetime-local" class="form-control" id="editExpireAt" name="expire_at">
+            </div>
+
+        </div>
+
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-success">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+        <%- include('../partials/_footer') %> 
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="vendors/js/vendor.bundle.base.js"></script>
+  <script src="js/off-canvas.js"></script>
+  <script src="js/misc.js"></script>
+  <script src="js/settings.js"></script>
+  <script src="js/todolist.js"></script>
+  <script src="js/jquery.cookie.js"></script>
+  <%- include('../partials/_script') %> 
+
+  <!-- Search Filter Script -->
+  <script>
+    document.getElementById("userSearch").addEventListener("input", function () {
+      const searchTerm = this.value.toLowerCase();
+      const rows = document.querySelectorAll("#paymentsTable tbody tr");
+
+      rows.forEach(row => {
+        const userId = row.cells[1]?.textContent.toLowerCase() || '';
+        const orderId = row.cells[3]?.textContent.toLowerCase() || '';
+        const paymentId = row.cells[4]?.textContent.toLowerCase() || '';
+
+        if (userId.includes(searchTerm) || orderId.includes(searchTerm) || paymentId.includes(searchTerm)) {
+          row.style.display = "";
+        } else {
+          row.style.display = "none";
+        }
+      });
+    });
+
+    // Toggle payment status (only pending -> success/failed)
+    document.querySelectorAll('.toggle-status-payment').forEach(button => {
+      button.addEventListener('click', async function () {
+        const paymentId = this.getAttribute('data-payment-id');
+        const currentStatus = this.textContent.trim().toLowerCase();
+        if(currentStatus !== 'created') return; // only allow changing from created
+
+        const newStatus = prompt("Enter new status: success / failed").toLowerCase();
+        if(!['success','failed'].includes(newStatus)) { alert("Invalid status"); return; }
+
+        try {
+          const res = await fetch(`/transactions/${paymentId}/status`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ status: newStatus })
+          });
+          if(res.ok) {
+            this.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            this.classList.remove('btn-warning','btn-success','btn-danger');
+            this.classList.add(newStatus === 'success' ? 'btn-success' : 'btn-danger');
+          } else {
+            alert('Failed to update status');
+          }
+        } catch(err) {
+          console.error(err);
+          alert('Error updating status');
+        }
+      });
+    });
+  </script>
+<script>
+document.querySelectorAll('.action-btn').forEach(btn => {
+  btn.addEventListener('click', async function() {
+    const id = this.dataset.id;
+    const status = this.dataset.status;
+    const plan_id = this.dataset.planId; 
+
+    if(!confirm(`Are you sure you want to mark this payment as ${status}?`)) return;
+
+    try {
+      const res = await fetch(`/transactions/${id}/status`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+       body: JSON.stringify({ status, plan_id })
+      });
+      const result = await res.json();
+
+      if(result.success) {
+        alert(result.msg);
+        location.reload(); // reload table to reflect new status
+      } else {
+        alert(result.msg || 'Failed to update status');
+      }
+    } catch(err) {
+      console.error(err);
+      alert('Something went wrong');
+    }
+  });
+});
+</script>
+
+//edit premium plans
+
+<script>
+// Perk select logic
+document.querySelectorAll('.perk-select').forEach(select => {
+  select.addEventListener('change', function() {
+    const customInput = this.nextElementSibling;
+    if(this.value === 'custom'){
+      customInput.classList.remove('d-none');
+      customInput.name = this.name;
+      this.name = '';
+    } else {
+      customInput.classList.add('d-none');
+      customInput.name = '';
+      this.name = this.id.replace("edit","");
+    }
+  });
+});
+
+function formatDateForInput(dateStr){
+  if(!dateStr) return '';
+  const d = new Date(dateStr);
+  if(isNaN(d)) return '';
+  const year = d.getFullYear();
+  const month = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
+  const hours = String(d.getHours()).padStart(2,'0');
+  const minutes = String(d.getMinutes()).padStart(2,'0');
+  return `${year}-${month}-${day}T${hours}:${minutes}`;
+}
+
+
+// Open modal
+document.querySelectorAll('.edit-btn').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const data = this.dataset;
+    document.getElementById('editId').value = data.id;
+    document.getElementById('editDay').value = data.day || '';
+
+    setPerkValue('FilterBoth', data.filter_both);
+    setPerkValue('FilterGender', data.filter_gender);
+    setPerkValue('FilterRegion', data.filter_region);
+    setPerkValue('NoAds', data.no_ads);
+    setPerkValue('RearCamra', data.rear_camra);
+
+    // Set dates safely
+    document.getElementById('editCreatedAt').value = formatDateForInput(data.created_at);
+    document.getElementById('editExpireAt').value = formatDateForInput(data.expire_at);
+
+    new bootstrap.Modal(document.getElementById('editModal')).show();
+  });
+});
+
+// Set perk value
+function setPerkValue(field, value){
+  const select = document.getElementById('edit' + field);
+  const customInput = document.getElementById('custom' + field);
+
+  if(value==='true' || value===true){
+    select.value='true';
+    customInput.classList.add('d-none');
+    customInput.name='';
+  } else if(value==='false' || value===false){
+    select.value='false';
+    customInput.classList.add('d-none');
+    customInput.name='';
+  } else if(value && value!==''){
+    select.value='custom';
+    customInput.classList.remove('d-none');
+    customInput.value=value;
+    customInput.name=select.name;
+    select.name='';
+  } else {
+    select.value='';
+    customInput.classList.add('d-none');
+    customInput.name='';
+  }
+}
+
+// Form submit
+document.getElementById('editForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  const formData = Object.fromEntries(new FormData(this).entries());
+
+  // Validation: Duration required
+  if(!formData.day){
+    alert("Duration Days is required");
+    return;
+  }
+
+  // If custom input visible but empty, use previous select value
+  ['Filter_Both','Filter_Gender','Filter_Region','No_Ads','Rear_Camra'].forEach(key=>{
+    const custom = document.getElementById('custom'+key.replace('_',''));
+    if(custom && !custom.value){
+      formData[key] = document.getElementById('edit'+key.replace('_','')).value;
+    }
+  });
+  
+  ['Filter_Both','Filter_Gender','Filter_Region','No_Ads','Rear_Camra'].forEach(key => {
+  if (!formData[key] || formData[key] === '') {
+    formData[key] = 'false';
+  }
+});
+
+  try{
+    const res = await fetch('/transactions/update',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(formData)
+    });
+    const result = await res.json();
+    if(result.success){
+      alert('Payment updated successfully');
+      location.reload();
+    } else {
+      alert(result.msg || 'Failed to update');
+    }
+  } catch(err){
+    console.error(err);
+    alert('Error updating payment');
+  }
+});
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Text Slider Management</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+  <style>
+    .table-wrapper {
+      max-height: 50px;
+      overflow-y: auto;
+    }
+    
+    .big-text {
+  height: 100px;
+  width: 100%; /* optional */
+  resize: vertical; /* जिससे user manually height बढ़ा सके *
+  font-size: 16px;         /* थोड़ा बड़ा टेक्स्ट */
+  font-family: "Segoe UI", sans-serif;  /* साफ और सुंदर फॉन्ट */
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: vertical;        /* user ऊँचाई बदल सके */
+  line-height: 1.5;
+  background-color: #fdfdfd;
+}
+
+  </style>
+</head>
+<body>
+<div class="container-scroller">
+  <%- include('../partials/_navbar') %>
+  <div class="container-fluid page-body-wrapper">
+    <%- include('../partials/_sidebar') %>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header">
+          <h3 class="page-title mt-2">Add Coins Management</h3>
+        </div>
+
+        <div class="row">
+          <!-- LEFT: User Text Slider (ID = 1) -->
+          <div class="col-md-6 d-flex">
+            <div class="card w-100">
+              <div class="card-body">
+                <h4 class="card-title">Users</h4>
+                <div id="userSliderMsg"></div>
+<form id="userSliderForm">
+  <div class="form-group">
+    <label>Add Coins</label>
+    <textarea name="message" oninput="this.value = this.value.replace(/[^0-9]/g,'');" class="form-control  big-text" required><%= userText.message %></textarea>
+  </div>
+  <div class="form-group">
+    <label>Status</label>
+    <select name="status" class="form-control">
+      <option value="active" <%= userText.status === 'active' ? 'selected' : '' %>>Active</option>
+      <option value="inactive" <%= userText.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+    </select>
+  </div>
+  <input type="hidden" name="id" value="<%= userText.id %>">
+  <button type="submit" class="btn btn-primary mt-2">Update Coins</button>
+</form>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- RIGHT: Vendor Text Slider (ID = 2) -->
+          <div class="col-md-6 d-flex">
+            <div class="card w-100">
+              <div class="card-body">
+                <h4 class="card-title">Premium users</h4>
+                <div id="vendorSliderMsg"></div>
+              <form id="vendorSliderForm">
+  <div class="form-group">
+    <label>Add Coins</label>
+    <textarea name="message" oninput="this.value = this.value.replace(/[^0-9]/g,'');" class="form-control big-text" required><%= vendorText.message %></textarea>
+  </div>
+  <div class="form-group">
+    <label>Status</label>
+    <select name="status" class="form-control">
+      <option value="active" <%= vendorText.status === 'active' ? 'selected' : '' %>>Active</option>
+      <option value="inactive" <%= vendorText.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+    </select>
+  </div>
+  <input type="hidden" name="id" value="<%= vendorText.id %>">
+  <button type="submit" class="btn btn-primary mt-2">Update Coins</button>
+</form>
+
+              </div>
+            </div>
+          </div>
+        </div> <!-- /row -->
+      </div>
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+<!-- Scripts -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/js/misc.js"></script>
+<script src="js/off-canvas.js"></script>
+<script src="js/settings.js"></script>
+<script src="js/todolist.js"></script>
+<%- include('../partials/_script') %>
+<script>
+  async function handleFormSubmit(formId, messageDivId) {
+    const form = document.getElementById(formId);
+    form.addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const data = {
+        id: form.id.value,
+        message: form.message.value.trim(),
+        status: form.status.value
+      };
+
+      if (!data.message) {
+        showMsg(messageDivId, 'Message cannot be empty.', 'danger');
+        return;
+      }
+
+      try {
+        const res = await fetch('/text-slider', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.success) {
+          showMsg(messageDivId, 'Message updated successfully.', 'success');
+        } else {
+          showMsg(messageDivId, result.msg || 'Update failed.', 'danger');
+        }
+      } catch (err) {
+        console.error(err);
+        showMsg(messageDivId, 'Error updating message.', 'danger');
+      }
+    });
+  }
+
+  function showMsg(divId, msg, type) {
+    document.getElementById(divId).innerHTML = `
+      <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+        ${msg}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </div>
+    `;
+    setTimeout(() => {
+      document.getElementById(divId).innerHTML = '';
+    }, 3000);
+  }
+
+  handleFormSubmit('userSliderForm', 'userSliderMsg');
+  handleFormSubmit('vendorSliderForm', 'vendorSliderMsg');
+</script>
+</body>
+</html>

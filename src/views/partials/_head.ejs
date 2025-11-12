@@ -1,0 +1,179 @@
+<title>Honey With Moon</title>
+<link rel="shortcut icon" href="/images/profile.jpg"/>
+<style>
+/* इन दोनो rules को हटा दो या comment कर द
+.main-panel{ margin-top: 5%; } 
+.sidebar-offcanvas{ margin-top: 5%; }ो */
+/*
+scroll side bar and all pannel
+*/
+:root{
+  --nav-h: 64px;      /* navbar height (जरूरत हो तो 56/70 कर सकते हो) */
+  --sidebar-w: 260px; /* sidebar width */
+}
+
+html, body, .container-scroller { height: 100%; }
+
+/* पेज body wrapper को पूरे viewport तक फैलाओ */
+.page-body-wrapper{
+  position: relative;
+  height: 100vh;
+  padding-top: var(--nav-h); /* fixed navbar का offset */
+  overflow: hidden; /* parent पर scroll नहीं */
+}
+
+/* SIDEBAR: खुद का scroll (sleek & thin) */
+.sidebar.sidebar-offcanvas {
+  position: fixed;
+  top: var(--nav-h);       /* navbar के नीचे से शुरू */
+  left: 0;
+  bottom: 0;
+  width: var(--sidebar-w);
+  overflow-y: auto;        /* scroll enable */
+  -webkit-overflow-scrolling: touch; /* smooth scrolling on iOS */
+  
+  /* Custom scrollbar (modern look) */
+  scrollbar-width: thin;       /* Firefox */
+  scrollbar-color: rgba(0,0,0,0) transparent; /* thumb & track */
+}
+
+/* Webkit browsers (Chrome, Edge, Safari) */
+.sidebar.sidebar-offcanvas::-webkit-scrollbar {
+  width: 6px;  /* patla scroll */
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-thumb {
+  background-color: rgba(0,0,0,0.3);
+  border-radius: 3px;
+  transition: background 0.3s;
+}
+
+.sidebar.sidebar-offcanvas::-webkit-scrollbar-thumb:hover {
+  background-color: rgba(0,0,0,0.5); /* hover effect */
+}
+
+
+/* MAIN PANEL: खुद का scroll */
+.main-panel{
+  margin-left: var(--sidebar-w);
+  height: calc(100vh - var(--nav-h));
+  overflow-y: auto;      /* अपना scroll */
+  overflow-x: hidden;
+}
+
+/* content wrapper normal padding रखो */
+.content-wrapper{ padding: 1.5rem; }
+
+/* मोबाइल/टैब पर sidebar collapse होने पर main-panel full width कर दो */
+@media (max-width: 991.98px){
+  .sidebar.sidebar-offcanvas{
+    position: fixed;
+    transform: translateX(-100%); /* offcanvas hidden (framework का toggler इसे संभालेगा) */
+  }
+  .sidebar.sidebar-offcanvas.active{
+    transform: translateX(0);
+  }
+  .main-panel{
+    margin-left: 0;
+    height: calc(100vh - var(--nav-h));
+  }
+}
+
+/*end scroll*/
+   .navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile .nav-link .nav-profile-text {
+    margin-left: .50rem;
+}
+
+@media (max-width: 767.98px) {
+  .content-wrapper {
+    margin-top: 30px !important;
+  }
+}
+/* Image Modal */
+.img-modal {
+  display: none; 
+  position: fixed; 
+  z-index: 9999; 
+  padding-top: 60px; 
+  left: 0;
+  top: 0;
+  width: 100%; 
+  height: 100%; 
+  overflow: auto; 
+  background-color: rgba(0,0,0,0.8);
+}
+
+.img-modal-content {
+  margin: auto;
+  display: block;
+  max-width: 90%;
+  max-height: 80%;
+  border-radius: 10px;
+}
+
+.img-modal-close {
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  color: #fff;
+  font-size: 40px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.img-modal-close:hover {
+  color: #f3c5e8;
+}
+
+</style>
+
+<!-- <style>
+/* Reset some defaults */
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* पूरे पेज पर स्क्रोल नहीं, सिर्फ पैनल्स पर */
+}
+
+/* Sidebar */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 240px; /* साइडबार की चौड़ाई */
+  background-color: #f8f9fa; /* साइडबार का कलर */
+  overflow-y: auto; /* साइडबार का अपना स्क्रोल */
+  z-index: 1000;
+}
+
+/* Main content area */
+.page-body-wrapper {
+  position: absolute;
+  top: 0;
+  left: 240px; /* साइडबार के बराबर शिफ्ट */
+  right: 0;
+  bottom: 0;
+  overflow-y: auto; /* मेन कंटेंट का अपना स्क्रोल */
+  overflow-x: hidden;
+  padding: 20px; /* जरूरत के हिसाब से मार्जिन */
+  background-color: #fff; /* मेन कंटेंट का बैकग्राउंड */
+}
+
+/* Optional: ताकि फॉर्म/टेक्स्ट सही दिखे */
+.page-body-wrapper h3, .page-body-wrapper form, .page-body-wrapper .card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+</style> -->
+
+
+
+
+

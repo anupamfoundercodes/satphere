@@ -1,0 +1,182 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>View Vendor</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .form-control { border-radius: 10px; }
+    .form-title { font-size: 20px; font-weight: 600; margin-bottom: 20px; }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title"> View Vendor </h3>
+          </div>
+
+          <div class="row">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <div class="form-title">View Vendor Profile</div>
+                  <form id="editVendorForm" novalidate>
+                    <input type="hidden" name="id" value="<%= user.id %>">
+                    <input type="hidden" name="profile" value="2">
+                    
+                    <div class="row">
+                      <div class="col-md-6">
+                        <label>Name</label>
+                        <input type="text" name="name" class="form-control" value="<%= user.name %>" required readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="<%= user.email %>"readonly>
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-control" value="<%= user.phone %>" required readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>State</label>
+                        <input type="text" name="state" class="form-control" value="<%= user.state %>" readonly>
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>District</label>
+                        <input type="text" name="district" class="form-control" value="<%= user.district %>" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Town</label>
+                        <input type="text" name="town" class="form-control" value="<%= user.town %>" readonly>
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>City</label>
+                        <input type="text" name="city" class="form-control" value="<%= user.city %>" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>PIN Code</label>
+                        <input type="text" name="pincode" class="form-control" value="<%= user.pincode %>" readonly>
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Aadhaar No.</label>
+                        <input type="text" name="aadhar_no" class="form-control" value="<%= user.aadhar_no %>" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Shop No.</label>
+                        <input type="text" name="card_no" class="form-control" value="<%= user.card_no %>" readonly>
+                      </div>
+                    </div>
+
+                   <!-- <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Unit</label>
+                        <input type="text" name="unit" class="form-control" value="<%= user.unit %>" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Scheme</label>
+                        <input type="text" name="scheme" class="form-control" value="<%= user.scheme %>" readonly>
+                      </div>
+                    </div>-->
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Account No.</label>
+                        <input type="text" name="account_no" class="form-control" value="<%= user.account_no %>" readonly>
+                      </div>
+                      <div class="col-md-6">
+                        <label>Bank Name</label>
+                        <input type="text" name="bank_name" class="form-control" value="<%= user.bank_name %>" readonly>
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>IFSC Code</label>
+                        <input type="text" name="ifsc_no" class="form-control" value="<%= user.ifsc_no %>" readonly>
+                      </div>
+                       <div class="col-md-6">
+                        <label>Branch Name</label>
+                        <input type="text" name="branch_name" class="form-control" value="<%= user.branch_name %>" readonly>
+                      </div>
+                    </div>
+                    <div class="row mt-2">
+                      <!--<div class="col-md-6">
+                        <label>Status</label>
+                        <select name="status" class="form-control">
+                          <option value="active" <%= user.status === 'active' ? 'selected' : '' %>>Active</option>
+                          <option value="inactive" <%= user.status === 'inactive' ? 'selected' : '' %>>Inactive</option>
+                        </select>
+                      </div>-->
+                      </div>
+                    <div id="responseMsg" class="mt-3"></div>
+                    <!--<div class="mt-4">
+                      <button type="submit" class="btn btn-success p-2">Update</button>
+                      <a href="/users" class="btn btn-secondary p-2 ml-2">Cancel</a>
+                    </div>-->
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.getElementById('editVendorForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      const form = e.target;
+      const msgBox = document.getElementById('responseMsg');
+
+      const formData = new FormData(form);
+      const plainData = Object.fromEntries(formData.entries());
+
+      fetch('/update-profile', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(plainData)
+      })
+      .then(res => res.json())
+      .then(result => {
+        msgBox.innerHTML = `<div class="alert alert-${result.success ? 'success' : 'danger'}">${result.msg}</div>`;
+        setTimeout(() => msgBox.innerHTML = '', 4000);
+      })
+      .catch(() => {
+        msgBox.innerHTML = `<div class="alert alert-danger">Something went wrong</div>`;
+      });
+    });
+  </script>
+
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+</body>
+</html>

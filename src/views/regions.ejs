@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8" />
+    <title>Regions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <%- include('../partials/_head') %>
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="css/style.css" />
+      <style>
+    .editable { background: #fdfd96; cursor: text; }
+    .editable:focus { outline: 2px solid #4caf50; }
+  </style>
+  </head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">Regions</h3>
+          </div>
+
+          <!-- Add Region -->
+          <div class="row mb-3">
+            <div class="col-md-12 text-end">
+              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#addRegionModal">
+                + Add Region
+              </button>
+            </div>
+          </div>
+
+          <!-- Regions Table -->
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Regions Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Title</th>
+                          <th>Status</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (regions && regions.length > 0) { %>
+                          <% regions.forEach((r, i) => { %>
+                            <tr>
+                              <td><%= i+1 %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= r.id %>" data-field="name"><%= r.name %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= r.id %>" data-field="title"><%= r.title %></td>
+                              <td>
+                                <label class="badge <%= r.status === 'active' ? 'badge-success' : 'badge-danger' %> toggle-status"
+                                       data-id="<%= r.id %>" data-status="<%= r.status %>"
+                                       style="cursor:pointer;">
+                                  <%= r.status %>
+                                </label>
+                              </td>
+                              <td>
+                                <a href="/regions/delete/<%= r.id %>" class="btn btn-sm btn-danger"
+                                  onclick="return confirm('Delete this region?')">Delete</a>
+                              </td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr><td colspan="5" class="text-center">No regions found</td></tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Add Modal -->
+          <div class="modal fade" id="addRegionModal" tabindex="-1">
+            <div class="modal-dialog modal-dialog-centered">
+              <div class="modal-content">
+                <form id="addRegionForm">
+                  <div class="modal-header">
+                    <h5 class="modal-title">Add Region</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                  </div>
+                  <div class="modal-body">
+                    <div class="mb-3">
+                      <label class="form-label">Name</label>
+                      <input type="text" class="form-control" name="name" required>
+                    </div>
+                    <div class="mb-3">
+                      <label class="form-label">Title</label>
+                      <input type="text" class="form-control" name="title" required>
+                    </div>
+                  </div>
+                  <div class="modal-footer">
+                    <button type="submit" class="btn btn-success">Save</button>
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Cancel</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  <%- include('../partials/_script') %>
+
+<script>
+  // Inline update
+  document.querySelectorAll(".editable").forEach(cell => {
+    cell.addEventListener("blur", function() {
+      fetch("/regions/update-field", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: this.dataset.id,
+          field: this.dataset.field,
+          value: this.textContent.trim()
+        })
+      }).then(r => r.json()).then(d => {
+        if (!d.success) alert("Update failed");
+      });
+    });
+  });
+
+  // Toggle status
+  document.querySelectorAll(".toggle-status").forEach(badge => {
+    badge.addEventListener("click", function() {
+      const newStatus = this.dataset.status === "active" ? "inactive" : "active";
+      fetch("/regions/status-toggle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: this.dataset.id, status: newStatus })
+      }).then(r => r.json()).then(d => {
+        if (d.success) {
+          this.dataset.status = newStatus;
+          this.classList.toggle("badge-success");
+          this.classList.toggle("badge-danger");
+          this.textContent = newStatus;
+        } else {
+          alert("Failed to update status");
+        }
+      });
+    });
+  });
+
+  // Add region
+  document.getElementById("addRegionForm").addEventListener("submit", function(e) {
+    e.preventDefault();
+    const formData = Object.fromEntries(new FormData(this));
+    fetch("/regions/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData)
+    }).then(r => r.json()).then(d => {
+      if (d.success) location.reload();
+      else alert("Add failed");
+    });
+  });
+</script>
+</body>
+</html>

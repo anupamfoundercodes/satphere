@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <%- include('../partials/_head') %>
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css" />
+    <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="/css/style.css" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <%- include('../partials/_navbar') %>
+      <div class="container-fluid page-body-wrapper">
+        <%- include('../partials/_sidebar') %>
+
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+              <h3 class="page-title mb-2 mb-md-0">Game History</h3>
+            </div>
+
+            <!-- 🔍 Search -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <form method="GET" action="/gamehistory" class="d-flex">
+                  <input
+                    type="text"
+                    name="search"
+                    value="<%= search %>"
+                    class="form-control me-2"
+                    placeholder="Search by Username or Game Title"
+                  />
+                  <button class="btn btn-outline-primary" type="submit">Search</button>
+                </form>
+
+              </div>
+            </div>
+
+            <!-- 🧾 Table -->
+            <div class="row">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Game History Table</h4>
+
+                    <div class="table-responsive">
+                      <table class="table table-striped">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Username</th>
+                            <th>Game Title</th>
+                            <th>Result</th>
+                            <th>Entry Fee</th>
+                            <th>Reward</th>
+                            <th>Created At</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (gameHistory && gameHistory.length > 0) { %>
+                            <% gameHistory.forEach((g, index) => { %>
+                              <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= g.username || 'N/A' %></td>
+                                <td><%= g.game_title || 'N/A' %></td>
+                                <td><%= g.result || 'Pending' %></td>
+                                <td><%= g.entry_fee || 0 %></td>
+                                <td><%= g.reward || 0 %></td>
+                                <td><%= new Date(g.created_at).toLocaleString() %></td>
+                                <td>
+                                  <button class="btn btn-danger btn-sm delete-game" data-id="<%= g.id %>">Delete</button>
+                                </td>
+                              </tr>
+                            <% }) %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="8" class="text-center text-muted">No game history found</td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+
+                      </table>
+
+                      <!-- 📄 Pagination -->
+                      <div class="d-flex justify-content-center mt-3">
+                        <nav>
+                          <ul class="pagination">
+                            <% if (currentPage > 1) { %>
+                              <li class="page-item">
+                                <a class="page-link" href="/game_history?page=<%= currentPage - 1 %>&search=<%= search %>">Previous</a>
+                              </li>
+                            <% } %>
+                            <% for (let i = 1; i <= totalPages; i++) { %>
+                              <li class="page-item <%= i === currentPage ? 'active' : '' %>">
+                                <a class="page-link" href="/game_history?page=<%= i %>&search=<%= search %>"><%= i %></a>
+                              </li>
+                            <% } %>
+                            <% if (currentPage < totalPages) { %>
+                              <li class="page-item">
+                                <a class="page-link" href="/game_history?page=<%= currentPage + 1 %>&search=<%= search %>">Next</a>
+                              </li>
+                            <% } %>
+                          </ul>
+                        </nav>
+                      </div>
+
+                      <div id="successMsgContainer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <%- include('../partials/_footer') %>
+        </div>
+      </div>
+    </div>
+
+    <!-- JS -->
+    <script src="/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/js/off-canvas.js"></script>
+    <script src="/js/misc.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src="/js/todolist.js"></script>
+    <%- include('../partials/_script') %>
+
+    <!-- ❌ Delete Game Script -->
+    <script>
+      document.querySelectorAll(".delete-game").forEach(button => {
+        button.addEventListener("click", async function() {
+          const id = this.dataset.id;
+          const row = this.closest("tr");
+          if (!confirm("Are you sure you want to delete this game record?")) return;
+          try {
+            const res = await fetch(`/game_history/delete/${id}`, { method: "POST" });
+            const data = await res.json();
+            if (data.success) {
+              row.remove();
+              const container = document.getElementById("successMsgContainer");
+              container.innerHTML = `
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                  ${data.message}
+                  <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>`;
+              setTimeout(() => (container.innerHTML = ""), 3000);
+            } else alert(data.message || "Failed to delete record");
+          } catch (err) {
+            console.error(err);
+            alert("Error while deleting record");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

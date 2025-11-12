@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "instamojo",
+      "source": "@instamojo/v2#40d2ktblgmqonaz",
+      "integrity": "sha512-M/6o+f7nzbH5fnUMhUrXbv5fX+0HRxDPR8L4lzFppeb/btqeRqd+vQ4mRdXdaEdjhL92QKBdhXEUVZX9XVdsHA==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}

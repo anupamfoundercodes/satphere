@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>FCM Token Test</title>
+</head>
+<body>
+  <h2>FCM Token Output:</h2>
+  <pre id="output">Fetching...</pre>
+
+  <!-- Firebase SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"></script>
+
+  <script>
+    // Firebase config
+    const firebaseConfig = {
+      apiKey: "AIzaSyCRg4JU0diYtvklcC3BrFeQgBTyY3gIF-c",
+      authDomain: "kvsbandhan-306c2.firebaseapp.com",
+      projectId: "kvsbandhan-306c2",
+      messagingSenderId: "625135740863",
+      appId: "1:625135740863:web:92f0f54300e3eb4f49e30a"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+
+    const messaging = firebase.messaging();
+    const output = document.getElementById('output');
+
+    // Register service worker FIRST
+    navigator.serviceWorker.register('/firebase-messaging-sw.js')
+      .then((registration) => {
+        messaging.useServiceWorker(registration);
+
+        // Ask for permission
+        return Notification.requestPermission();
+      })
+      .then((permission) => {
+        if (permission === 'granted') {
+          return messaging.getToken({
+            vapidKey: 'BAy2W8x-vwHSeuDBRK6Hmln8MQ1ABgYqHeg3k0EllY3NT3D71xUCKxwdZCcxk7r2IVrIMs-v3XkQaX6XcRtTaqE'
+          });
+        } else {
+          throw new Error('Notification permission denied');
+        }
+      })
+      .then((token) => {
+        output.textContent = `✅ FCM Token:\n${token}`;
+      })
+      .catch((err) => {
+        output.textContent = `❌ Error getting token:\n${err}`;
+      });
+  </script>
+</body>
+</html>

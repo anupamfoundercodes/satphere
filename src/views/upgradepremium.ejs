@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%- include('../partials/_head') %>
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="css/style.css">
+  </head>
+  <body>
+    <div class="container-scroller">
+      <%- include('../partials/_navbar') %>
+      <div class="container-fluid page-body-wrapper">
+        <%- include('../partials/_sidebar') %>
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">Premium Users</h3>
+              <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                  <li class="breadcrumb-item_"><a href="#"></a></li>
+                  <li class="breadcrumb-item active" aria-current="page"></li>
+                </ol>
+              </nav>
+            </div>
+
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <input type="text" id="premiumPlanSearch" class="form-control" placeholder="Search by User ID">
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Premium Plans Table</h4>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="premiumPlansTable">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Plan Name</th>
+                            <th>Price</th>
+                            <th>Duration (Days)</th>
+                            <th>Start Date</th>
+                            <th>End Date</th>
+                            <th>Is Active</th>
+                            <th>Created At</th>
+                            <th>Description</th>
+                            <th>Premium</th>
+                            <th>User ID</th>
+                            <th>Status</th>
+                           <!-- <th>Actions</th>-->
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (premiumPlans && premiumPlans.length > 0) { %>
+                            <% premiumPlans.forEach((plan, index) => { %>
+                              <tr>
+                                <td><%= index + 1 %></td>
+                                <td><%= plan.plan_name %></td>
+                                <td>₹<%= plan.price %></td>
+                                <td><%= plan.duration_days %></td>
+                                <td><%= plan.start_date ? plan.start_date.toISOString().split('T')[0] : 'N/A' %></td>
+                                <td><%= plan.end_date ? plan.end_date.toISOString().split('T')[0] : 'N/A' %></td>
+                                <td>
+                                  <span class="badge <%= plan.is_active ? 'badge-success' : 'badge-danger' %>">
+                                    <%= plan.is_active ? 'Active' : 'Inactive' %>
+                                  </span>
+                                </td>
+                                <td><%= plan.created_at ? plan.created_at.toISOString().split('T')[0] : 'N/A' %></td>
+                                <td><%= plan.discription || '—' %></td>
+                                <td><%= plan.premium %></td>
+                                <td><%= plan.user_id %></td>
+                                <td>
+                                  <span class="badge badge-<%= plan.premium_status === 'active' ? 'info' : 'secondary' %>">
+                                    <%= plan.premium_status %>
+                                  </span>
+                                </td>
+                                <td>
+                                 <!-- <a href="/admin/premium/view/<%= plan.id %>" class="btn btn-sm btn-info">View</a>-->
+                                 <!-- <a href="/admin/premium/edit/<%= plan.id %>" class="btn btn-sm btn-warning">Edit</a>-->
+                                 <!-- <a href="/admin/premium/delete/<%= plan.id %>" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure you want to delete this plan?')">Delete</a>-->
+                                </td>
+                              </tr>
+                            <% }) %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="13" class="text-center text-muted">No premium plans found</td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <%- include('../partials/_footer') %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/todolist.js"></script>
+    <%- include('../partials/_script') %>
+
+    <!-- Search Filter Script -->
+<script>
+  document.getElementById('premiumPlanSearch').addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('#premiumPlansTable tbody tr');
+    rows.forEach(row => {
+      const userId = row.children[10].textContent.toLowerCase();
+      row.style.display = userId.includes(filter) ? '' : 'none';
+    });
+  });
+</script>
+
+  </body>
+</html>
+
+

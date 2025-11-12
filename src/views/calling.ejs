@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Call</title>
+  <%- include('../partials/_head') %>
+
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  body { background: #f5f5f5; font-family: sans-serif; }
+  .video-call-wrapper { max-width: 800px; margin: 20px auto; padding: 15px; background: #fff; border-radius: 10px; }
+  .video-container { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
+  #local-player, #remote-player { width: 48%; min-height: 300px; background: #000; border-radius: 8px; overflow: hidden; }
+  .call-buttons { text-align: center; margin: 15px 0; }
+  .call-buttons button { border-radius: 50px; padding: 10px 20px; margin: 0 5px; cursor: pointer; }
+  @media (max-width: 768px) { #local-player, #remote-player { width: 100%; height: 250px; } .call-buttons button { width: 45%; margin: 5px 0; } }
+  button:active { transform: scale(0.95); opacity: 0.8; }
+</style>
+</head>
+<body>
+  <div class="video-call-wrapper">
+    <h3 class="text-center">Video Call</h3>
+
+    <div class="row justify-content-center mb-3">
+      <div class="col-md-4"><input type="text" id="userNameInput" class="form-control" placeholder="Enter your name"></div>
+      <div class="col-md-4"><input type="text" id="channelInput" class="form-control" placeholder="Enter channel name"></div>
+    </div>
+
+    <div class="video-container">
+      <div id="local-player"></div>
+      <div id="remote-player"></div>
+    </div>
+
+    <div class="call-buttons">
+      <button id="joinBtn" class="btn btn-success">Join Call</button>
+      <button id="leaveBtn" class="btn btn-danger" disabled>Leave Call</button>
+      <button id="muteAudioBtn" class="btn btn-warning" disabled><i class="fas fa-microphone"></i> Mute Audio</button>
+      <button id="muteVideoBtn" class="btn btn-info" disabled><i class="fas fa-video"></i> Mute Video</button>
+    </div>
+  </div>
+
+  <!-- Agora SDK -->
+  <script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+
+  <script>
+    const APP_ID = "<%= process.env.AGORA_APP_ID %>";
+    let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+    let localTracks = [], remoteUsers = {};
+    let CHANNEL = "", USER_ID = "", USER_NAME = "";
+    let isAudioMuted = false, isVideoMuted = false;
+
+    const joinBtn = document.getElementById("joinBtn");
+    const leaveBtn = document.getElementById("leaveBtn");
+    const muteAudioBtn = document.getElementById("muteAudioBtn");
+    const muteVideoBtn = document.getElementById("muteVideoBtn");
+
+    joinBtn.onclick = async () => {
+      USER_NAME = document.getElementById("userNameInput").value.trim();
+      CHANNEL = document.getElementById("channelInput").value.trim();
+      if (!USER_NAME || !CHANNEL) return alert("Enter your name and channel");
+
+      USER_ID = String(Math.floor(Math.random() * 10000));
+
+      try {
+        const res = await fetch("/api/generate-token", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ channelName: CHANNEL, userId: USER_ID })
+        });
+        const data = await res.json();
+        const token = data.token;
+
+        await client.join(APP_ID, CHANNEL, token, USER_ID);
+        localTracks = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localTracks[1].play("local-player");
+        await client.publish(localTracks);
+
+        client.on("user-published", handleUserPublished);
+        client.on("user-unpublished", handleUserUnpublished);
+
+        joinBtn.disabled = true;
+        leaveBtn.disabled = false;
+        muteAudioBtn.disabled = false;
+        muteVideoBtn.disabled = false;
+
+      } catch (err) { console.error(err); }
+    };
+
+    leaveBtn.onclick = async () => {
+      if (localTracks.length) localTracks.forEach(track => track.close());
+      await client.leave();
+      joinBtn.disabled = false;
+      leaveBtn.disabled = true;
+      muteAudioBtn.disabled = true;
+      muteVideoBtn.disabled = true;
+      document.getElementById("local-player").innerHTML = "";
+      document.getElementById("remote-player").innerHTML = "";
+    };
+
+    muteAudioBtn.onclick = async () => {
+      if (!localTracks[0]) return;
+      isAudioMuted = !isAudioMuted;
+      await localTracks[0].setEnabled(!isAudioMuted);
+      muteAudioBtn.innerHTML = isAudioMuted ? '<i class="fas fa-microphone-slash"></i> Unmute Audio' : '<i class="fas fa-microphone"></i> Mute Audio';
+      muteAudioBtn.classList.toggle("btn-danger", isAudioMuted);
+      muteAudioBtn.classList.toggle("btn-warning", !isAudioMuted);
+    };
+
+    muteVideoBtn.onclick = async () => {
+      if (!localTracks[1]) return;
+      isVideoMuted = !isVideoMuted;
+      await localTracks[1].setEnabled(!isVideoMuted);
+      muteVideoBtn.innerHTML = isVideoMuted ? '<i class="fas fa-video-slash"></i> Unmute Video' : '<i class="fas fa-video"></i> Mute Video';
+      muteVideoBtn.classList.toggle("btn-danger", isVideoMuted);
+      muteVideoBtn.classList.toggle("btn-info", !isVideoMuted);
+    };
+
+    async function handleUserPublished(user, mediaType) {
+      remoteUsers[user.uid] = user;
+      await client.subscribe(user, mediaType);
+
+      const remoteContainer = document.getElementById("remote-player");
+      remoteContainer.innerHTML = "";
+
+      if (mediaType === "video") {
+        user.videoTrack.play(remoteContainer);
+      }
+      if (mediaType === "audio") user.audioTrack.play();
+    }
+
+    function handleUserUnpublished(user) {
+      delete remoteUsers[user.uid];
+      document.getElementById("remote-player").innerHTML = "";
+    }
+  </script>
+</body>
+</html>

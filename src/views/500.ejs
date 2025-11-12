@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <%- include('../partials/_head') %> 
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="vendors/font-awesome/css/font-awesome.min.css">
+    <!-- endinject -->
+    <!-- Plugin css for this page -->
+    <!-- End Plugin css for this page -->
+    <!-- inject:css -->
+    <!-- endinject -->
+    <!-- Layout styles -->
+    <link rel="stylesheet" href="css/style.css">
+    <!-- End layout styles -->
+  
+  </head>
+  <body>
+    <div class="container-scroller">
+      <div class="container-fluid page-body-wrapper full-page-wrapper">
+        <div class="content-wrapper d-flex align-items-center text-center error-page bg-info">
+          <div class="row flex-grow">
+            <div class="col-lg-7 mx-auto text-white">
+              <div class="row align-items-center d-flex flex-row">
+                <div class="col-lg-6 text-lg-right pr-lg-4">
+                  <h1 class="display-1 mb-0">500</h1>
+                </div>
+                <div class="col-lg-6 error-page-divider text-lg-left pl-lg-4">
+                  <h2>SORRY!</h2>
+                  <h3 class="font-weight-light">Internal server error!</h3>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-12 text-center mt-xl-2">
+                  <a class="text-white font-weight-medium" href="/">Back to home</a>
+                </div>
+              </div>
+              <div class="row mt-5">
+                <div class="col-12 mt-xl-2">
+                  <p class="text-white font-weight-medium text-center">Copyright &copy; 2021 All rights reserved. Distributed by <a href="http://themewagon.com" target="_blank">ThemeWagon</a></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- content-wrapper ends -->
+      </div>
+      <!-- page-body-wrapper ends -->
+    </div>
+    <!-- container-scroller -->
+    <!-- plugins:js -->
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <!-- endinject -->
+    <!-- Plugin js for this page -->
+    <!-- End plugin js for this page -->
+    <!-- inject:js -->
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/todolist.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <!-- endinject -->
+    <%- include('../partials/_script') %> 
+  </body>
+</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .content-wrapper {
+      width: 100% !important;
+    }
+    .vendor-details-box {
+      background: #fff;
+      padding: 25px;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      margin-bottom: 30px;
+    }
+    .vendor-details-box h4 {
+      font-weight: 600;
+      margin-bottom: 20px;
+      color: #2c3e50;
+    }
+    .vendor-details-box p {
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #333;
+    }
+    .card-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 20px;
+    }
+    .table td, .table th {
+      vertical-align: middle;
+    }
+    .table-hover tbody tr:hover {
+      background-color: #f9f9f9;
+    }
+  </style>
+</head>
+<body>
+<div class="container-scroller">
+  <%- include('../partials/_navbar') %>
+  <div class="container-fluid page-body-wrapper">
+    <%- include('../partials/_sidebar') %>
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <div class="page-header mt-2 mb-4 text-center">
+          <h3 class="page-title">Vendor Profile</h3>
+        </div>
+
+        <div class="vendor-details-box">
+          <h4>Vendor Details</h4>
+          <div class="row">
+            <div class="col-md-4">
+              <p><strong>ID:</strong> <%= vendor.id %></p>
+              <p><strong>Name:</strong> <%= vendor.name %></p>
+              <p><strong>Email:</strong> <%= vendor.email %></p>
+              <p><strong>Phone:</strong> <%= vendor.phone %></p>
+              <p><strong>Aadhar No:</strong> <%= vendor.aadhar_no %></p>
+              <p><strong>Card No:</strong> <%= vendor.card_no %></p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>State:</strong> <%= vendor.state %></p>
+              <p><strong>District:</strong> <%= vendor.district %></p>
+              <p><strong>Town:</strong> <%= vendor.town %></p>
+              <p><strong>City:</strong> <%= vendor.city %></p>
+              <p><strong>Pincode:</strong> <%= vendor.pincode %></p>
+              <p><strong>Status:</strong> <%= vendor.status %></p>
+            </div>
+            <div class="col-md-4">
+              <p><strong>Unit:</strong> <%= vendor.unit %></p>
+              <p><strong>Scheme:</strong> <%= vendor.scheme %></p>
+              <p><strong>Account No:</strong> <%= vendor.account_no %></p>
+              <p><strong>Bank Name:</strong> <%= vendor.bank_name %></p>
+              <p><strong>IFSC:</strong> <%= vendor.ifsc_no %></p>
+              <p><strong>Branch:</strong> <%= vendor.branch_name %></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <input type="text" id="userSearch" class="form-control" placeholder="Search by Name, Email, Phone, or Card">
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body">
+            <h4 class="card-title">Users Registered with This Vendor's Referral</h4>
+            <div class="table-responsive">
+              <table class="table table-striped table-hover" id="usersTable">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Card No</th>
+                    <th>Status</th>
+                    <th>Date</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <% if (referrals && referrals.length > 0) { %>
+                    <% referrals.forEach((user, index) => { %>
+                      <tr>
+                        <td><%= index + 1 %></td>
+                        <td><%= user.name || '-' %></td>
+                        <td><%= user.email || '-' %></td>
+                        <td><%= user.phone || '-' %></td>
+                        <td><%= user.card_no || '-' %></td>
+                        <td>
+                          <button type="button" class="btn btn-sm toggle-status-user <%= user.status === 'paid' ? 'btn-success' : 'btn-danger' %>" data-user-id="<%= user.sn %>">
+                            <%= user.status === 'paid' ? 'Paid' : 'Unpaid' %>
+                          </button>
+                        </td>
+                        <td><%= new Date(user.created_at).toLocaleDateString('en-IN') %></td>
+                      </tr>
+                    <% }) %>
+                  <% } else { %>
+                    <tr>
+                      <td colspan="7" class="text-center text-muted">No referred users found</td>
+                    </tr>
+                  <% } %>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.getElementById("userSearch").addEventListener("input", function () {
+    const searchTerm = this.value.toLowerCase();
+    const rows = document.querySelectorAll("#usersTable tbody tr");
+    rows.forEach(row => {
+      const name = row.cells[1]?.textContent.toLowerCase() || '';
+      const email = row.cells[2]?.textContent.toLowerCase() || '';
+      const phone = row.cells[3]?.textContent.toLowerCase() || '';
+      const card = row.cells[4]?.textContent.toLowerCase() || '';
+      if (
+        name.includes(searchTerm) ||
+        email.includes(searchTerm) ||
+        phone.includes(searchTerm) ||
+        card.includes(searchTerm)
+      ) {
+        row.style.display = "";
+      } else {
+        row.style.display = "none";
+      }
+    });
+  });
+
+  document.querySelectorAll('.toggle-status-user').forEach(button => {
+    button.addEventListener('click', async function () {
+      const userId = this.getAttribute('data-user-id');
+      const currentStatus = this.textContent.trim().toLowerCase();
+      const newStatus = currentStatus === 'paid' ? 'unpaid' : 'paid';
+      try {
+        const res = await fetch(`/agent/${userId}/statuspaid`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        if (res.ok) {
+          this.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+          this.classList.toggle('btn-success');
+          this.classList.toggle('btn-danger');
+        } else {
+          alert('Failed to update status');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('An error occurred while updating status');
+      }
+    });
+  });
+</script>
+
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/vendors/select2/select2.min.js"></script>
+<script src="/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/misc.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script src="/js/file-upload.js"></script>
+<script src="/js/typeahead.js"></script>
+<script src="/js/select2.js"></script>
+<%- include('../partials/_script') %>
+</body>
+</html>
+
+

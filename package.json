@@ -1,0 +1,55 @@
+{
+  "name": "pookichat",
+  "version": "1.0.0",
+  "description": "Chat, video call application with random stranger",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/anupamgupta432/pookichat.git"
+  },
+  "keywords": [
+    "pookichat",
+    "chat",
+    "video-call",
+    "random-stranger",
+    "webrtc",
+    "socket.io"
+  ],
+  "author": "anupam",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/anupamgupta432/pookichat/issues"
+  },
+  "homepage": "https://github.com/anupamgupta432/pookichat#readme",
+  "dependencies": {
+    "@api/instamojo": "file:.api/apis/instamojo",
+    "agora-access-token": "^2.0.4",
+    "bcrypt": "^6.0.0",
+    "cloudinary": "^2.7.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.1",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "firebase-admin": "^13.5.0",
+    "instamojo-nodejs": "^0.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "moment-timezone": "^0.6.0",
+    "multer": "^2.0.2",
+    "mysql2": "^3.14.3",
+    "node-cron": "^4.2.1",
+    "nodemailer": "^7.0.6",
+    "razorpay": "^2.9.6",
+    "socket.io": "^4.8.1",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^11.1.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  }
+}

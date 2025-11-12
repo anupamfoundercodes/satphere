@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/css/style.css">
+  <style>
+    .editable { background: #fdfd96; cursor: text; }
+    .editable:focus { outline: 2px solid #4caf50; }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">Social Media Links</h3>
+          </div>
+
+          <!-- Table -->
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Links Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped" id="linksTable">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Link</th>
+                          <th>Status</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (links && links.length > 0) { %>
+                          <% links.forEach((link, index) => { %>
+                            <tr>
+                              <td><%= index + 1 %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= link.id %>" data-field="name"><%= link.name %></td>
+                              <td contenteditable="true" class="editable" data-id="<%= link.id %>" data-field="link"><%= link.link %></td>
+                              <td>
+                                <label class="badge <%= link.status == 'ACTIVE' ? 'badge-success' : 'badge-danger' %> toggle-status"
+                                  style="cursor:pointer;"
+                                  data-id="<%= link.id %>"
+                                  data-status="<%= link.status %>">
+                                  <%= link.status == 'ACTIVE' ? 'ACTIVE' : 'INACTIVE' %>
+                                </label>
+                              </td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="4" class="text-center text-muted">No social links found</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <%- include('../partials/_script') %>
+
+<script>
+  // Inline update on blur
+  document.querySelectorAll('.editable').forEach(cell => {
+    cell.addEventListener('blur', function () {
+      const id = this.dataset.id;
+      const field = this.dataset.field;
+      const value = this.textContent.trim();
+
+      fetch('/social-links/update-field', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, field, value })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (!data.success) alert('Update failed');
+      })
+      .catch(() => alert('Error updating field'));
+    });
+  });
+
+  // Toggle status
+  document.querySelectorAll('.toggle-status').forEach(badge => {
+    badge.addEventListener('click', function () {
+      const id = this.dataset.id;
+      const newStatus = this.dataset.status == 'ACTIVE' ? 'INACTIVE' : 'ACTIVE';
+
+      fetch('/social-links/status-toggle', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id, status: newStatus })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          this.dataset.status = newStatus;
+          this.classList.toggle('badge-success');
+          this.classList.toggle('badge-danger');
+          this.textContent = newStatus == 'ACTIVE' ? 'ACTIVE' : 'INACTIVE';
+        } else {
+          alert('Failed to update status');
+        }
+      })
+      .catch(() => alert('Error updating status'));
+    });
+  });
+</script>
+
+</body>
+</html>

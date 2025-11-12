@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Connections</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="css/style.css">
+  <!-- Add all icon libraries -->
+<link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+<link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+<link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">Matched Connections</h3>
+            <nav aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item_"><a href="#"></a></li>
+                <li class="breadcrumb-item active"></li>
+              </ol>
+            </nav>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-6">
+              <input type="text" id="connectionSearch" class="form-control" placeholder="Search by Name or Sr. ID">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Connections Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>User 1</th>
+                          <th>User 2</th>
+                          <th>Matched At</th>
+                          <th>Status</th>
+                          <!--<th>Reaction</th>-->
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (connections && connections.length > 0) { %>
+                          <% connections.forEach((conn, index) => { %>
+                            <tr data-conn-id="<%= conn.id %>">
+                              <td><%= index + 1 %></td>
+                              <td>
+                                <img src="<%= conn.user1_img || '/images/faces-clipart/default.png' %>" class="me-2" width="40">
+                                <%= conn.user1_name || 'User ' + conn.user1_id %>
+                              </td>
+                              <td>
+                                <img src="<%= conn.user2_img || '/images/faces-clipart/default.png' %>" class="me-2" width="40">
+                                <%= conn.user2_name || 'User ' + conn.user2_id %>
+                              </td>
+                              <td><%= new Date(conn.matched_at).toLocaleDateString() %></td>
+                              <td>
+                                <button class="btn btn-sm toggle-status <%= conn.status === 'active' ? 'btn-success' : 'btn-danger' %>">
+                                  <%= conn.status === 'active' ? 'Active' : 'Inactive' %>
+                                </button>
+                              </td>
+                             <!-- <td>
+                                <button class="btn btn-sm toggle-reaction <%= conn.status === 'unblock' ? 'btn-success' : 'btn-danger' %>">
+                                  <%= conn.reaction === 'unblock' ? 'unblock' : 'block' %>
+                                </button>
+                              </td> -->                             
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="5" class="text-center text-muted">No connections found</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Script -->
+  <script>
+    document.getElementById('connectionSearch').addEventListener('input', function () {
+      const filter = this.value.toLowerCase();
+      const rows = document.querySelectorAll('table tbody tr');
+      rows.forEach(row => {
+        const user1 = row.children[1].textContent.toLowerCase();
+        const user2 = row.children[2].textContent.toLowerCase();
+        const id = row.children[0].textContent.toLowerCase();
+        row.style.display = user1.includes(filter) || user2.includes(filter) || id.includes(filter)
+          ? ''
+          : 'none';
+      });
+    });
+
+    // Toggle Status Script
+    document.querySelectorAll('.toggle-status').forEach(button => {
+      button.addEventListener('click', async function () {
+        const row = this.closest('tr');
+        const connId = row.getAttribute('data-conn-id');
+        const newStatus = this.textContent.trim().toLowerCase() === 'active' ? 'inactive' : 'active';
+
+        try {
+          const res = await fetch(`/connections/${connId}/status`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: newStatus })
+          });
+
+          if (res.ok) {
+            this.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            this.classList.toggle('btn-success');
+            this.classList.toggle('btn-danger');
+          } else {
+            alert('Failed to update status');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('An error occurred');
+        }
+      });
+    });
+    
+        // Toggle reaction Script
+    document.querySelectorAll('.toggle-reaction').forEach(button => {
+      button.addEventListener('click', async function () {
+        const row = this.closest('tr');
+        const connId = row.getAttribute('data-conn-id');
+        const newReaction = this.textContent.trim().toLowerCase() === 'unblock' ? 'unblock' : 'block';
+
+        try {
+          const res = await fetch(`/connections/${connId}/reaction`, {
+            method: 'PATCH',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ reaction: newReaction })
+          });
+
+          if (res.ok) {
+            this.textContent = newReaction.charAt(0).toUpperCase() + newReaction.slice(1);
+            this.classList.toggle('btn-success');
+            this.classList.toggle('btn-danger');
+          } else {
+            alert('Failed to update Reaction');
+          }
+        } catch (err) {
+          console.error(err);
+          alert('An error occurred');
+        }
+      });
+    });
+  </script>
+
+  <script src="vendors/js/vendor.bundle.base.js"></script>
+  <script src="js/off-canvas.js"></script>
+  <script src="js/misc.js"></script>
+</body>
+</html>

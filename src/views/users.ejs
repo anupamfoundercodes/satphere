@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+    <%- include('../partials/_head') %>
+    <!-- plugins:css -->
+    <link rel="stylesheet" href="vendors/mdi/css/materialdesignicons.min.css" />
+    <link rel="stylesheet" href="vendors/ti-icons/css/themify-icons.css" />
+    <link rel="stylesheet" href="vendors/css/vendor.bundle.base.css" />
+    <link
+      rel="stylesheet"
+      href="vendors/font-awesome/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" href="css/style.css" />
+  </head>
+  <body>
+    <div class="container-scroller">
+      <%- include('../partials/_navbar') %>
+      <div class="container-fluid page-body-wrapper">
+        <%- include('../partials/_sidebar') %>
+        <div class="main-panel">
+          <div class="content-wrapper">
+
+            <div
+              class="page-header d-flex justify-content-between align-items-center flex-wrap"
+            >
+              <h3 class="page-title mb-2 mb-md-0">View All Users</h3>
+              <div>
+                <button
+                  id="exportCsv"
+                  class="btn btn-outline-primary btn-sm me-2"
+                >
+                  <i class="mdi mdi-file-delimited"></i> CSV
+                </button>
+                <button
+                  id="exportPdf"
+                  class="btn btn-outline-danger btn-sm me-2"
+                >
+                  <i class="mdi mdi-file-pdf"></i> PDF
+                </button>
+                <button
+                  id="exportPrint"
+                  class="btn btn-outline-secondary btn-sm"
+                >
+                  <i class="mdi mdi-printer"></i> Print
+                </button>
+              </div>
+            </div>
+
+                  <div class="row mb-3">
+                    <div class="col-md-6">
+                      <form method="GET" action="/users" class="d-flex">
+                        <input
+                          type="text"
+                          name="search"
+                          value="<%= search %>"
+                          class="form-control me-2"
+                          placeholder="Search by Name, Email or Phone"
+                        />
+                        <button class="btn btn-outline-danger" type="submit">Search</button>
+                      </form>
+                    </div>
+                  </div>
+
+                    <!-- Image Modal -->
+            <div id="imgModal" class="img-modal">
+              <span class="img-modal-close">&times;</span>
+              <img class="img-modal-content" id="modalImg">
+            </div>
+
+            <div class="row">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Users Table</h4>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="usersTable">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>Profile</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Gender</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Date of Birth</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (users && users.length > 0) { %> <%
+                          users.forEach((user, index) => { %>
+                          <tr>
+                            <td><%= index + 1 %></td>
+                                <td class="py-1">
+                                  <img src="<%= user.img || '/images/faces-clipart/profile.png' %>" alt="user" class="profile-img-box"/>
+
+                                </td>                            
+                            <td>
+                              <%= user.first_name %>
+                            </td>
+                            <td><%= user.last_name %></td>
+                            <td><%= user.gender %></td>
+                            <td><%= user.mobile_no %></td>
+                            <td><%= user.email %></td>
+                            <td><%= new Date(user.dob).toLocaleDateString('en-GB') %></td>
+                            
+                            <td>
+                              <button
+                                class="btn btn-sm toggle-status-user <%= user.status === 'active' ? 'btn-success' : 'btn-danger' %>"
+                                data-user-id="<%= user.id %>"
+                              >
+                                <%= user.status === 'active' ? 'Active' :
+                                'Inactive' %>
+                              </button>
+                            </td>
+                            <td>
+                              <a
+                                href="/viewprofile/<%= user.id %>"
+                                class="btn btn-sm btn-info"
+                                >View</a
+                              >
+                              <a
+                                href="/editprofile/<%= user.id %>"
+                                class="btn btn-sm btn-warning"
+                                >Edit</a
+                              >
+                             <button class="btn btn-danger btn-sm delete-user" data-user-id="<%= user.id %>">Delete</button>
+
+                            </td>
+                          </tr>
+                          <% }) %> <% } else { %>
+                          <tr>
+                            <td colspan="9" class="text-center text-muted">
+                              No users found
+                            </td>
+                          </tr>
+                          <% } %>
+                        </tbody>
+                       
+
+                      </table>
+
+                      <!--pegination-->
+<div class="row">
+  <div class="col-md-12 d-flex justify-content-center mt-3">
+    <nav aria-label="Page navigation">
+      <ul class="pagination pagination-sm flex-wrap">
+        
+        <% 
+          const maxVisiblePages = 5;
+          const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
+          const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+          const createPageLink = (i) => {
+            const url = '/users?page=' + i + (search ? '&search=' + encodeURIComponent(search) : '');
+            return url;
+          };
+        %>
+
+        <!-- Prev -->
+        <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
+          <a class="page-link"
+             href="<%= currentPage === 1 ? '#' : createPageLink(currentPage - 1) %>"
+             style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">Prev</a>
+        </li>
+
+        <!-- First -->
+        <% if (startPage > 1) { %>
+          <li class="page-item">
+            <a class="page-link" href="<%= createPageLink(1) %>"
+               style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">1</a>
+          </li>
+          <% if (startPage > 2) { %>
+            <li class="page-item disabled">
+              <a class="page-link" style="border:1px solid #f3d6dc; border-radius:6px;">...</a>
+            </li>
+          <% } %>
+        <% } %>
+
+        <!-- Pages -->
+        <% for (let i = startPage; i <= endPage; i++) { %>
+          <li class="page-item <%= i === currentPage ? 'active disabled' : '' %>">
+            <a class="page-link"
+               href="<%= i === currentPage ? '#' : createPageLink(i) %>"
+               style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;"><%= i %></a>
+          </li>
+        <% } %>
+
+        <!-- Last -->
+        <% if (endPage < totalPages) { %>
+          <% if (endPage < totalPages - 1) { %>
+            <li class="page-item disabled">
+              <a class="page-link" style="border:1px solid #f3d6dc; border-radius:6px;">...</a>
+            </li>
+          <% } %>
+          <li class="page-item">
+            <a class="page-link" href="<%= createPageLink(totalPages) %>"
+               style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;"><%= totalPages %></a>
+          </li>
+        <% } %>
+
+        <!-- Next -->
+        <li class="page-item <%= currentPage === totalPages ? 'disabled' : '' %>">
+          <a class="page-link"
+             href="<%= currentPage === totalPages ? '#' : createPageLink(currentPage + 1) %>"
+             style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">Next</a>
+        </li>
+      </ul>
+    </nav>
+  </div>
+</div>
+                      <!--pegination End -->
+                       <div id="successMsgContainer"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <%- include('../partials/_footer') %>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="vendors/js/vendor.bundle.base.js"></script>
+    <script src="js/off-canvas.js"></script>
+    <script src="js/misc.js"></script>
+    <script src="js/settings.js"></script>
+    <script src="js/todolist.js"></script>
+    <script src="js/jquery.cookie.js"></script>
+    <%- include('../partials/_script') %>
+
+    <!-- Search Filter Script -->
+    <script>
+      document
+        .getElementById("userSearch")
+        .addEventListener("keyup", function () {
+          const filter = this.value.toLowerCase();
+          const rows = document.querySelectorAll("#usersTable tbody tr");
+
+          rows.forEach((row) => {
+            const text = row.innerText.toLowerCase();
+            if (text.includes(filter)) {
+              row.style.display = "";
+            } else {
+              row.style.display = "none";
+            }
+          });
+        });
+    </script>
+
+    <script>
+ document.querySelectorAll(".toggle-status-user").forEach((button) => {
+  button.addEventListener("click", async function () {
+    const userId = this.getAttribute("data-user-id");
+    const currentStatus = this.textContent.trim().toLowerCase();
+    const newStatus = currentStatus === "active" ? "inactive" : "active";
+
+    try {
+      const res = await fetch(`/users/${userId}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        this.textContent = newStatus === "active" ? "Active" : "Inactive";
+        this.classList.remove("btn-success", "btn-danger");
+        this.classList.add(newStatus === "active" ? "btn-success" : "btn-danger");
+      } else {
+        alert(data.message || "Failed to update status");
+      }
+    } catch (err) {
+      console.error("❌ Frontend error:", err);
+      alert("An error occurred while updating status");
+    }
+  });
+});
+
+    </script>
+    <!--delete users-->
+    <script>
+document.querySelectorAll('.delete-user').forEach(button => {
+  button.addEventListener('click', async function () {
+    const userId = this.getAttribute('data-user-id');
+    const row = this.closest('tr');
+
+    if (!confirm('Are you sure you want to delete this user?')) return;
+
+    try {
+      const res = await fetch(`/deleteprofile/${userId}`, { method: 'GET' });
+      const data = await res.json();
+
+      if (data.success) {
+        row.remove(); // पंक्ति हटाओ
+        const container = document.getElementById('successMsgContainer');
+        if (container) {
+          container.innerHTML = `
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+              ${data.message}
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+          `;
+          setTimeout(() => {
+            container.innerHTML = '';
+          }, 3000);
+        }
+      } else {
+        alert(data.message || 'Failed to delete user');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Error while deleting user');
+    }
+  });
+});
+</script>
+
+  </body>
+</html>

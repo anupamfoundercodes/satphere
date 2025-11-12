@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <%- include('../partials/_head') %>
+
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    .content-wrapperr {
+      max-width: 100%;
+      margin: 0 auto;
+    }
+    .profile-img-box {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 10px;
+      background: #f9f9f9;
+    }
+    .profile-img-box img {
+      max-width: 120px;
+      min-height: 100px;
+      border-radius: 50%;
+      margin-bottom: 10px;
+      border: 2px solid #f3c5e8;
+      padding: 5px;
+      background: #fff;
+    }
+    .col-md-6 input, .col-md-12 input {
+      border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+<div class="container-scroller">
+  <%- include('../partials/_navbar') %>
+  <div class="container-fluid page-body-wrapper">
+    <%- include('../partials/_sidebar') %>
+    <div class="main-panel">
+      <div class="content-wrapper content-wrapperr">
+        <div class="page-header mt-2 text-center">
+          <h3 class="page-title">Admin Profile</h3>
+        </div>
+        <!-- Image Modal -->
+<div id="imgModal" class="img-modal">
+  <span class="img-modal-close">&times;</span>
+  <img class="img-modal-content" id="modalImg">
+</div>
+
+
+        <% if (admin) { %>
+          <div class="row justify-content-center">
+            <div class="col-md-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <form id="adminProfileForm">
+                    <input type="hidden" name="id" value="<%= admin.id %>">
+
+                    <!-- Profile Image & Logo -->
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Round Logo</label>
+                        <div class="profile-img-box">
+                          <img id="profilePreview" src="<%= admin.img || '/images/default-profile.png' %>" alt="Profile">
+                          <input type="file" class="form-control mt-2" name="profileImg" id="profileImg" accept="image/*">
+                        </div>
+                      </div>
+
+                      <div class="col-md-6">
+                        <label>Rectangle Logo</label>
+                        <div class="profile-img-box">
+                          <img id="logoPreview" src="<%= admin.logo || '/images/default-logo.png' %>" alt="Logo" style="border-radius: 0;">
+                          <input type="file" class="form-control mt-2" name="logoImg" id="logoImg" accept="image/*">
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- Basic Fields -->
+                    <div class="row mt-4">
+                      <div class="col-md-6">
+                        <label>Full Name</label>
+                        <input type="text" name="name" class="form-control" value="<%= admin.name %>">
+                      </div>
+                      <div class="col-md-6">
+                        <label>Status</label>
+                        <input type="text" name="status" class="form-control" value="<%= admin.status %>">
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Email</label>
+                        <input type="email" name="email" class="form-control" value="<%= admin.email %>">
+                      </div>
+                      <div class="col-md-6">
+                        <label>Phone</label>
+                        <input type="text" name="phone" class="form-control" value="<%= admin.phone %>">
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Gender</label>
+                        <input type="text" name="gender" class="form-control" value="<%= admin.gender %>">
+                      </div>
+                      <div class="col-md-6">
+                        <label>Date of Birth</label>
+                        <input type="date" name="dob" class="form-control" value="<%= admin.dob %>">
+                      </div>
+                    </div>
+
+                    <div class="row mt-2">
+                      <div class="col-md-12">
+                        <label>Address</label>
+                        <input type="text" name="location" class="form-control" value="<%= admin.location %>">
+                      </div>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="row mt-2">
+                      <div class="col-md-6">
+                        <label>Old Password</label>
+                        <input type="password" name="oldPassword" class="form-control">
+                      </div>
+                      <div class="col-md-6">
+                        <label>New Password</label>
+                        <input type="password" name="newPassword" class="form-control">
+                      </div>
+                    </div>
+                    
+                     <!-- QR_CODE & UPI--> 
+                    <div class="row mt-2">
+                      <div class="col-md-12">
+                        <label>QR CODE</label>
+                        <div class="profile-img-box">
+                          <img id="qrPreview" 
+                               src="<%= admin.qr_code || '/images/default-logo.png' %>" 
+                               alt="QR Code" 
+                               style="width:150px; height:125px; object-fit:cover; border-radius:0;">
+                          <input type="file" class="form-control mt-2" name="qrCodeImg" id="qrCodeImg" accept="image/*">
+                        </div>
+                    
+                        <label class="mt-3">UPI ID</label>
+                        <input type="text" class="form-control" name="upi_id" id="upi_id" 
+                               value="<%= admin.upi_id || '' %>" placeholder="Enter UPI ID">
+                      </div>
+                    </div>
+                        <div class="row mt-2">
+                          <div class="col-md-6">
+                            <label>Ads Count</label>
+                            <input type="number" name="ads_count" class="form-control" value="<%= admin.ads_count || 0 %>" min="0">
+                          </div>
+                        </div>
+                    
+                    <!-- Response Message -->
+                    <div id="responseMsg" class="text-center mt-3"></div>
+
+                    <!-- Submit Button -->
+                    <div class="row mt-4 justify-content-center">
+                      <div class="col-md-4 text-center">
+                        <button type="submit" class="btn btn-success btn-block">Update Profile</button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        <% } else { %>
+          <div class="text-center">
+            <p class="text-muted">Admin data not found.</p>
+          </div>
+        <% } %>
+      </div>
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script>
+document.getElementById('qrCodeImg').addEventListener('change', function (e) {
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    document.getElementById('qrPreview').src = e.target.result;
+  }
+  reader.readAsDataURL(this.files[0]);
+});
+
+
+function toBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = error => reject(error);
+  });
+}
+
+
+document.getElementById('adminProfileForm').addEventListener('submit', async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+
+  const jsonPayload = {
+    id: formData.get('id'),
+    name: formData.get('name'),
+    phone: formData.get('phone'),
+    email: formData.get('email'),
+    location: formData.get('location'),
+    gender: formData.get('gender'),
+    dob: formData.get('dob'),
+    status: formData.get('status'),
+    oldPassword: formData.get('oldPassword'),
+    newPassword: formData.get('newPassword')
+  };
+
+  // UPI ID add karo
+jsonPayload.upi_id = formData.get('upi_id');
+// Add ads_count to payload
+jsonPayload.ads_count = formData.get('ads_count');
+
+
+// QR Code file ko base64 me convert karo
+const qrFile = formData.get('qrCodeImg');
+if (qrFile && qrFile.size > 0) {
+  jsonPayload.qr_code = await toBase64(qrFile);
+}
+
+
+  // Only add base64 if image file selected
+  const profileFile = formData.get('profileImg');
+  if (profileFile && profileFile.size > 0) {
+    jsonPayload.profileImg = await toBase64(profileFile);
+  }
+
+  const logoFile = formData.get('logoImg');
+  if (logoFile && logoFile.size > 0) {
+    jsonPayload.logoImg = await toBase64(logoFile);
+  }
+  
+  
+
+  try {
+    const response = await fetch('/admin/updateprofile', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(jsonPayload)
+    });
+
+    const result = await response.json();
+    const msgBox = document.getElementById('responseMsg');
+    msgBox.innerHTML = `<div class="alert alert-${result.success ? 'success' : 'danger'}">${result.message}</div>`;
+    setTimeout(() => {
+      msgBox.innerHTML = '';
+    }, 3000);
+  } catch (err) {
+    console.error(err);
+    document.getElementById('responseMsg').innerHTML = `<div class="alert alert-danger">Network error. Try again.</div>`;
+  }
+});
+
+</script>
+
+<!-- External Scripts -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/vendors/select2/select2.min.js"></script>
+<script src="/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/misc.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script src="/js/file-upload.js"></script>
+<script src="/js/typeahead.js"></script>
+<script src="/js/select2.js"></script>
+<%- include('../partials/_script') %>
+</body>
+</html>

@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <%- include('../partials/_head') %>
+
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css" />
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css" />
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css" />
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <title>Referral Invites</title>
+</head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <!-- Page Header -->
+          <div class="page-header d-flex justify-content-between align-items-center flex-wrap">
+            <h3 class="page-title mb-2 mb-md-0">
+              Referral Invites — Code: <span class="text-primary"><%= referral_code %></span>
+            </h3>
+            <a href="/referrals" class="btn btn-sm btn-primary">
+              <i class="mdi mdi-arrow-left"></i> Back
+            </a>
+          </div>
+
+          <!-- Table -->
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Invited Users</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Invited User</th>
+                          <th>User ID</th>
+                          <th>Referral Code</th>
+                          <th>Invited On</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (invites.length > 0) { %>
+                          <% invites.forEach((invite, index) => { %>
+                            <tr>
+                              <td><%= index + 1 %></td>
+                              <td><%= invite.invited_user_name || '-' %></td>
+                              <td><%= invite.invited_user_id || '-' %></td>
+                              <td><%= invite.ref_code || '-' %></td>
+                              <td><%= invite.created_at ? new Date(invite.created_at).toLocaleString() : '-' %></td>
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="5" class="text-center">No invites found for this referral code.</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS -->
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <%- include('../partials/_script') %>
+</body>
+</html>

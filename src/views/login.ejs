@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="shortcut icon" href="/images/profile.jpg"/>
+  <title>SatPhere | Login</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      height: 100vh;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: linear-gradient(135deg, #ef6e80, #fee0e4, #fff7f9);
+      background-size: 300% 300%;
+      animation: gradientMove 12s ease infinite;
+      overflow: hidden;
+      position: relative;
+    }
+
+    @keyframes gradientMove {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    /* Decorative background circles */
+    .circle {
+      position: absolute;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.25);
+      filter: blur(3px);
+      z-index: 1;
+    }
+
+    .circle.top-left {
+      width: 250px;
+      height: 250px;
+      top: -100px;
+      left: -100px;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4), rgba(255, 182, 193, 0.2));
+    }
+
+    .circle.bottom-right {
+      width: 300px;
+      height: 300px;
+      bottom: -120px;
+      right: -120px;
+      background: radial-gradient(circle at center, rgba(255, 255, 255, 0.4), rgba(239, 110, 128, 0.25));
+    }
+
+    /* Floating transparent heart bubbles */
+    .floating {
+      position: absolute;
+      font-size: 45px;
+      color: rgba(187, 142, 255, 0.2);
+      animation: floatUp 12s linear infinite;
+      user-select: none;
+      text-shadow: 0 0 15px rgba(195, 150, 255, 0.3);
+      filter: blur(0.3px);
+      z-index: 2;
+    }
+
+    @keyframes floatUp {
+      0% {
+        transform: translateY(100vh) scale(0.8);
+        opacity: 0.6;
+      }
+      100% {
+        transform: translateY(-10vh) scale(1.3);
+        opacity: 0;
+      }
+    }
+
+    /* Login Card */
+    .login-card {
+      position: relative;
+      background: rgba(255, 255, 255, 0.92);
+      border-radius: 25px;
+      box-shadow: 8px 8px 25px rgba(0,0,0,0.1);
+      width: 400px;
+      max-width: 100%;
+      padding: 40px 30px;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .brand-logo img {
+      height: 60px;
+      margin-bottom: 20px;
+    }
+
+    h4 {
+      font-weight: 600;
+      color: #44316c;
+      margin-bottom: 8px;
+    }
+
+    h6 {
+      font-weight: 400;
+      color: #6a5a8e;
+      margin-bottom: 30px;
+    }
+
+    .form-control {
+      border-radius: 50px;
+      padding: 12px 20px;
+      border: none;
+      background: #f7f5fb;
+      box-shadow: inset 4px 4px 10px rgba(0,0,0,0.05),
+                  inset -4px -4px 10px rgba(255,255,255,0.8);
+      transition: 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      box-shadow: 0 0 8px rgba(153, 112, 255, 0.4);
+    }
+
+    .btn-login {
+      border-radius: 50px;
+      padding: 12px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ef6e80, #f9b7d0);
+      border: none;
+      color: #fff;
+      width: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .btn-login:hover {
+      transform: scale(1.05);
+      background: linear-gradient(135deg, #e0b8ff, #ef6e80);
+    }
+
+    .toggle-password {
+      position: absolute;
+      top: 50%;
+      right: 20px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      color: #9a88c1;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: #ef6e80;
+      text-decoration: underline;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    #alertBox { margin-bottom: 20px; }
+
+    @media (max-width: 576px) {
+      .login-card { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Background circles -->
+  <div class="circle top-left"></div>
+  <div class="circle bottom-right"></div>
+
+  <!-- Transparent heart bubbles -->
+  <div class="floating" style="left:10%; animation-delay:0s;">🤍</div>
+  <div class="floating" style="left:45%; animation-delay:2s;">🤍</div>
+  <div class="floating" style="left:75%; animation-delay:5s;">🤍</div>
+
+  <div class="login-card">
+    <div class="brand-logo">
+      <img src="images/logo_.png" alt="SatPhere Logo">
+    </div>
+
+    <div id="alertBox" class="alert d-none"></div>
+
+    <div id="loginForm">
+      <h4>Welcome Back</h4>
+      <h6>Login to continue your SatPhere journey</h6>
+      <form action="/signin" method="POST" class="position-relative">
+        <div class="mb-3">
+          <input type="email" name="email" class="form-control" placeholder="Email" required>
+        </div>
+        <div class="mb-3 position-relative">
+          <input type="password" name="password" class="form-control" placeholder="Password" id="passwordInput" required>
+          <i class="fa fa-eye toggle-password"></i>
+        </div>
+        <button type="submit" class="btn-login">Sign In</button>
+      </form>
+      <button class="link-btn" id="showForgot">Forgot Password?</button>
+    </div>
+
+    <div id="forgotForm" style="display:none;">
+      <h4>Forgot Password?</h4>
+      <h6>Enter your registered email</h6>
+      <form id="forgotPasswordForm">
+        <div class="mb-3">
+          <input type="email" id="forgotEmail" class="form-control" placeholder="Enter your email" required>
+        </div>
+        <button type="submit" class="btn-login">Send Reset Link</button>
+      </form>
+      <button class="link-btn" id="showLogin">Back to Login</button>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const toggle = document.querySelector(".toggle-password");
+      const passwordInput = document.querySelector("#passwordInput");
+
+      toggle.addEventListener("click", function () {
+        const type = passwordInput.getAttribute("type") === "password" ? "text" : "password";
+        passwordInput.setAttribute("type", type);
+        this.classList.toggle("fa-eye");
+        this.classList.toggle("fa-eye-slash");
+      });
+
+      document.getElementById("showForgot").addEventListener("click", function () {
+        document.getElementById("loginForm").style.display = "none";
+        document.getElementById("forgotForm").style.display = "block";
+      });
+      document.getElementById("showLogin").addEventListener("click", function () {
+        document.getElementById("forgotForm").style.display = "none";
+        document.getElementById("loginForm").style.display = "block";
+      });
+    });
+  </script>
+</body>
+</html>

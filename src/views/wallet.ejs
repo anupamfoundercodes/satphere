@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wallet Balances</title>
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css" />
+  <link rel="stylesheet" href="/css/style.css" />
+  <!-- Icon libraries -->
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+</head>
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header">
+            <h3 class="page-title">Wallet Balances</h3>
+          </div>
+
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <input type="text" id="walletSearch" class="form-control" placeholder="Search by Name or Phone">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Wallet Table</h4>
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>#</th>
+                          <th>Name</th>
+                          <th>Phone</th>
+                          <th>Balance</th>
+                          <th>Coins</th>
+                          <th>Last Updated</th>
+                          <th>Status</th>                       
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <% if (wallets && wallets.length > 0) { %>
+                          <% wallets.forEach((wallet, index) => { %>
+                            <tr data-wallet-id="<%= wallet.id %>">
+                              <td><%= index + 1 %></td>
+                              <td><%= wallet.user_name %></td>
+                              <td><%= wallet.phone %></td>
+                              <td>
+                                ₹ <span class="wallet-balance"><%= parseFloat(wallet.balance || 0).toFixed(2) %></span>
+                                <button class="btn btn-sm btn-outline-success ms-2" onclick="openWalletModal(<%= wallet.id %>, 'add')">+</button>
+                                <button class="btn btn-sm btn-outline-danger" onclick="openWalletModal(<%= wallet.id %>, 'subtract')">−</button>
+                              </td>
+                              <td class="wallet-coins"><%= wallet.coins %></td>
+                              <td><%= new Date(wallet.updated_at).toLocaleDateString() %></td>
+                              <td>
+                                <button class="btn btn-sm toggle-status <%= wallet.status === 'active' ? 'btn-success' : 'btn-danger' %>">
+                                  <%= wallet.status === 'active' ? 'Active' : 'Inactive' %>
+                                </button>
+                              </td>                                                        
+                            </tr>
+                          <% }) %>
+                        <% } else { %>
+                          <tr>
+                            <td colspan="7" class="text-center text-muted">No wallet records found</td>
+                          </tr>
+                        <% } %>
+                      </tbody>
+                    </table>
+
+                    <!-- Pagination -->
+                    <nav>
+                      <ul class="pagination">
+                        <% for(let i = 1; i <= totalPages; i++) { %>
+                          <li class="page-item <%= i === page ? 'active' : '' %>">
+                            <a class="page-link" href="/wallet?page=<%= i %>"><%= i %></a>
+                          </li>
+                        <% } %>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Search wallet table
+  const searchInput = document.getElementById('walletSearch');
+  searchInput.addEventListener('input', function () {
+    const filter = this.value.toLowerCase();
+    const rows = document.querySelectorAll('table tbody tr');
+
+    rows.forEach(row => {
+      const namePhone = row.children[1].textContent.toLowerCase();
+      const status = row.querySelector('.toggle-status').textContent.toLowerCase();
+      row.style.display = (!filter || namePhone.includes(filter) || status.includes(filter)) ? "" : "none";
+    });
+  });
+
+  // Toggle wallet status
+  document.querySelectorAll('.toggle-status').forEach(button => {
+    button.addEventListener('click', async function () {
+      const row = this.closest('tr');
+      const walletId = row.getAttribute('data-wallet-id');
+      const newStatus = this.textContent.trim().toLowerCase() === 'active' ? 'inactive' : 'active';
+
+      try {
+        const res = await fetch(`/wallet/${walletId}/status`, {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status: newStatus })
+        });
+        const data = await res.json();
+        if (data.success) {
+          this.textContent = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+          this.classList.toggle('btn-success');
+          this.classList.toggle('btn-danger');
+        } else alert(data.message);
+      } catch (err) {
+        console.error(err);
+        alert('Error updating status');
+      }
+    });
+  });
+
+  // Add/Subtract wallet
+  function openWalletModal(walletId, action) {
+    const amount = prompt(`Enter amount to ${action}:`);
+    const coins = prompt(`Enter coins to ${action}:`);
+    if (amount === null || coins === null) return;
+
+    const amountNum = parseFloat(amount);
+    const coinsNum = parseInt(coins);
+    if (isNaN(amountNum) || isNaN(coinsNum)) {
+      alert('Please enter valid numbers for amount and coins');
+      return;
+    }
+
+    fetch(`/wallet/${walletId}/adjust`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ amount: amountNum, coins: coinsNum, action })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        const row = document.querySelector(`tr[data-wallet-id='${walletId}']`);
+        row.querySelector('.wallet-balance').textContent = parseFloat(data.balance).toFixed(2);
+        row.querySelector('.wallet-coins').textContent = data.coins;
+        alert(data.message);
+      } else alert(data.message);
+    })
+    .catch(err => console.error(err));
+  }
+</script>
+
+<script src="vendors/js/vendor.bundle.base.js"></script>
+<script src="js/off-canvas.js"></script>
+<script src="js/misc.js"></script>
+<script src="js/settings.js"></script> 
+<script src="js/todolist.js"></script>
+<script src="js/jquery.cookie.js"></script>
+<%- include('../partials/_script') %>
+</body>
+</html>

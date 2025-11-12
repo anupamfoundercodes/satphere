@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <%- include('../partials/_head') %>
+
+  <!-- Required CSS files -->
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    .profile-img-box {
+      text-align: center;
+      padding: 20px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      margin-top: 10px;
+    }
+   .profile-img-box img {
+    max-width: 90%;
+    height: auto;
+    border-radius: 1%;
+    margin-bottom: 10px;
+    <!--border: 2px solid #f3c5e8;-->
+    padding: 5px;
+    background: #fff;
+    }
+    .profile-img-box input[type="file"] {
+      display: block;
+      margin: 10px auto 0;
+    }
+    .col-md-6 input{
+     border-radius: 10px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-scroller">
+    <%- include('../partials/_navbar') %>
+    <div class="container-fluid page-body-wrapper">
+      <%- include('../partials/_sidebar') %>
+      <div class="main-panel">
+        <div class="content-wrapper">
+          <div class="page-header mt-2">
+            <h3 class="page-title text-center">User Payment Details</h3>
+          </div>
+
+<% if (user) { %>
+  <div class="row justify-content-center">
+    <div class="col-md-10 grid-margin stretch-card">
+      <div class="card">
+        <div class="card-body">
+          <form class="forms-sample" action="/updateprofile" method="POST" enctype="multipart/form-data">
+            <input type="hidden" name="id" value="<%= user.id %>">
+
+            <!-- Profile Image Section -->
+            <div class="row mt-2">
+              <div class="col-md-12">
+                <label>Payment Details</label>
+               <!-- <div class="profile-img-box">
+                  <% if (user.image) { %>
+                    <img src="<%= base_url + user.image %>" alt="Payment Screenshot">
+                  <% } else { %>
+                    <img src="/images/default-profile.png" alt="No Image">
+                  <% } %>
+                </div>-->
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-md-6">
+                <label>Full Name</label>
+                <input type="text" class="form-control" value="<%= user.name %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label>Status</label>
+                <input type="text" class="form-control" value="<%= user.status %>" readonly>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <label>Phone</label>
+                <input type="text" class="form-control" value="<%= user.phone %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label>Vendor ID</label>
+                <input type="text" class="form-control" value="<%= user.vendor_id %>" readonly>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <label>Title</label>
+                <input type="text" class="form-control" value="<%= user.title %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label>Slot ID</label>
+                <input type="text" class="form-control" value="<%= user.slot_id %>" readonly>
+              </div>
+            </div>
+
+            <div class="row mt-2">
+              <div class="col-md-6">
+                <label>Card No.</label>
+                <input type="text" class="form-control" value="<%= user.card_no %>" readonly>
+              </div>
+              <div class="col-md-6">
+                <label>Amount</label>
+                <input type="text" class="form-control" value="<%= user.amount %>" readonly>
+              </div>
+            </div>
+
+            <div class="row mt-2 mb-2">
+              <div class="col-md-12">
+                <label>Message</label>
+                <textarea class="form-control" rows="3" readonly><%= user.message %></textarea>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+<% } else { %>
+  <div class="col-12 text-center">
+    <p class="text-muted">No user data available.</p>
+  </div>
+<% } %>
+
+        </div>
+
+        <%- include('../partials/_footer') %>
+      </div>
+    </div>
+  </div>
+
+  <script src="/vendors/js/vendor.bundle.base.js"></script>
+  <script src="/vendors/select2/select2.min.js"></script>
+  <script src="/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+  <script src="/js/off-canvas.js"></script>
+  <script src="/js/misc.js"></script>
+  <script src="/js/settings.js"></script>
+  <script src="/js/todolist.js"></script>
+  <script src="/js/jquery.cookie.js"></script>
+  <script src="/js/file-upload.js"></script>
+  <script src="/js/typeahead.js"></script>
+  <script src="/js/select2.js"></script>
+  <%- include('../partials/_script') %>
+</body>
+</html>

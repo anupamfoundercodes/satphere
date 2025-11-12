@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Call</title>
+
+  <!-- Include admin panel CSS/partials -->
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/select2/select2.min.css">
+  <link rel="stylesheet" href="/vendors/select2-bootstrap-theme/select2-bootstrap.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p+1eGp+X3vKz+O8vL+XG4vT5Xbzv4bZy6lqfkp1EYsj0Wd7eHnM1b6qgM1Tm+ylR5HVbZ6N7P6YvZ0jbfF+5Mg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <style>
+    body {
+      background: #f5f5f5;
+    }
+
+    .video-call-wrapper {
+      max-width: 1000px;
+      margin: 20px auto;
+      padding: 15px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    .video-call-header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .video-container {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    #local-player, #remote-player {
+      width: 48%;
+      min-height: 300px;
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .call-buttons {
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .call-buttons button {
+      border-radius: 50px;
+      padding: 10px 25px;
+      font-weight: bold;
+      margin: 0 10px;
+      cursor: pointer;
+    }
+
+    @media (max-width: 768px) {
+      #local-player, #remote-player {
+        width: 100%;
+        height: 250px;
+      }
+
+      .call-buttons button {
+        margin: 5px;
+        width: 45%;
+      }
+    }
+  </style>
+</head>
+<body>
+<div class="container-scroller">
+  <!-- Navbar -->
+  <%- include('../partials/_navbar') %>
+
+  <div class="container-fluid page-body-wrapper">
+    <!-- Sidebar -->
+    <%- include('../partials/_sidebar') %>
+
+    <div class="main-panel">
+      <div class="content-wrapper content-wrapperr">
+<div class="video-call-wrapper">
+  <div class="video-call-header text-center">
+    <h3>Video Call</h3>
+  </div>
+
+  <!-- Custom Inputs -->
+  <div class="row justify-content-center mb-3">
+    <div class="col-md-4 col-sm-6">
+      <input type="text" id="userNameInput" class="form-control" placeholder="Enter your name">
+    </div>
+    <div class="col-md-4 col-sm-6">
+      <input type="text" id="channelInput" class="form-control" placeholder="Enter channel name">
+    </div>
+  </div>
+
+
+  <div class="video-container">
+    <div id="local-player"></div>
+    <div id="remote-player"></div>
+  </div>
+<div class="call-buttons">
+  <button id="joinBtn" class="btn btn-success">Join Call</button>
+  <button id="leaveBtn" class="btn btn-danger">Leave Call</button>
+  <button id="muteAudioBtn" class="btn btn-warning">
+    <i class="fas fa-microphone"></i> Mute Audio
+  </button>
+  <button id="muteVideoBtn" class="btn btn-info">
+    <i class="fas fa-video"></i> Mute Video
+  </button>
+</div>
+
+
+
+
+</div>
+      </div>
+
+      <!-- Footer -->
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+
+<!-- Agora + JS -->
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+
+<script src="https://download.agora.io/sdk/release/AgoraRTC_N.js"></script>
+<!-- 1️⃣ Initialize Agora Client & Variables -->
+<script>
+const APP_ID = "681b932a28ab491f80b6e880bf8edb49"; 
+let client = AgoraRTC.createClient({ mode: "rtc", codec: "vp8" });
+let localTracks = [];
+let remoteUsers = {};
+
+let CHANNEL = "";
+let USER_ID = "";
+let USER_NAME = "";
+let isAudioMuted = false;
+let isVideoMuted = false;
+</script>
+
+<!-- 2️⃣ Join / Leave Call -->
+<script>
+document.getElementById("joinBtn").onclick = async () => {
+    USER_NAME = document.getElementById("userNameInput").value.trim();
+    CHANNEL = document.getElementById("channelInput").value.trim();
+    if (!USER_NAME) return alert("Please enter your name");
+    if (!CHANNEL) return alert("Please enter channel name");
+
+    USER_ID = String(Math.floor(Math.random() * 10000));
+
+    try {
+        let res = await fetch(`/api/generate-token1?channelName=${CHANNEL}&userId=${USER_ID}`);
+        let data = await res.json();
+        let token = data.token;
+
+        await client.join(APP_ID, CHANNEL, token, USER_ID);
+        localTracks = await AgoraRTC.createMicrophoneAndCameraTracks();
+        localTracks[1].play("local-player"); // Video
+        await client.publish(localTracks);
+
+        // Display local name
+        const localPlayer = document.getElementById("local-player");
+        const nameTag = document.createElement("div");
+        nameTag.innerText = USER_NAME;
+        nameTag.style.position = "absolute";
+        nameTag.style.bottom = "5px";
+        nameTag.style.left = "5px";
+        nameTag.style.color = "#fff";
+        nameTag.style.background = "rgba(0,0,0,0.5)";
+        nameTag.style.padding = "2px 6px";
+        nameTag.style.borderRadius = "5px";
+        localPlayer.appendChild(nameTag);
+
+        client.on("user-published", handleUserPublished);
+        client.on("user-unpublished", handleUserUnpublished);
+
+        document.getElementById("joinBtn").disabled = true;
+        document.getElementById("leaveBtn").disabled = false;
+        document.getElementById("muteAudioBtn").disabled = false;
+        document.getElementById("muteVideoBtn").disabled = false;
+
+    } catch (err) {
+        console.error("Join error:", err);
+    }
+};
+
+document.getElementById("leaveBtn").onclick = async () => {
+    if (localTracks.length) localTracks.forEach(track => track.close());
+    await client.leave();
+
+    document.getElementById("joinBtn").disabled = false;
+    document.getElementById("leaveBtn").disabled = true;
+    document.getElementById("muteAudioBtn").disabled = true;
+    document.getElementById("muteVideoBtn").disabled = true;
+
+    document.getElementById("local-player").innerHTML = "";
+    document.getElementById("remote-player").innerHTML = "";
+};
+</script>
+
+<!-- 3️⃣ Mute / Unmute Audio & Video -->
+<script>
+const audioBtn = document.getElementById("muteAudioBtn");
+const videoBtn = document.getElementById("muteVideoBtn");
+
+audioBtn.onclick = async () => {
+    if (!localTracks[0]) return; // Audio track
+    isAudioMuted = !isAudioMuted;
+    await localTracks[0].setEnabled(!isAudioMuted);
+
+    audioBtn.innerHTML = isAudioMuted
+        ? '<i class="fas fa-microphone-slash"></i> Unmute Audio'
+        : '<i class="fas fa-microphone"></i> Mute Audio';
+
+    audioBtn.classList.toggle("btn-danger", isAudioMuted);
+    audioBtn.classList.toggle("btn-warning", !isAudioMuted);
+};
+
+videoBtn.onclick = async () => {
+    if (!localTracks[1]) return; // Video track
+    isVideoMuted = !isVideoMuted;
+    await localTracks[1].setEnabled(!isVideoMuted);
+
+    videoBtn.innerHTML = isVideoMuted
+        ? '<i class="fas fa-video-slash"></i> Unmute Video'
+        : '<i class="fas fa-video"></i> Mute Video';
+
+    videoBtn.classList.toggle("btn-danger", isVideoMuted);
+    videoBtn.classList.toggle("btn-info", !isVideoMuted);
+};
+</script>
+
+<!-- 4️⃣ Handle Remote Users -->
+<script>
+async function handleUserPublished(user, mediaType) {
+    remoteUsers[user.uid] = user;
+    await client.subscribe(user, mediaType);
+
+    const remoteContainer = document.getElementById("remote-player");
+    remoteContainer.innerHTML = "";
+
+    if (mediaType === "video") {
+        user.videoTrack.play(remoteContainer);
+        const nameTag = document.createElement("div");
+        nameTag.innerText = user.uid;
+        nameTag.style.position = "absolute";
+        nameTag.style.bottom = "5px";
+        nameTag.style.left = "5px";
+        nameTag.style.color = "#fff";
+        nameTag.style.background = "rgba(0,0,0,0.5)";
+        nameTag.style.padding = "2px 6px";
+        nameTag.style.borderRadius = "5px";
+        remoteContainer.appendChild(nameTag);
+    }
+    if (mediaType === "audio") user.audioTrack.play();
+}
+
+function handleUserUnpublished(user) {
+    delete remoteUsers[user.uid];
+    document.getElementById("remote-player").innerHTML = "";
+}
+</script>
+
+
+<!-- External JS (admin panel) -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/vendors/select2/select2.min.js"></script>
+<script src="/vendors/typeahead.js/typeahead.bundle.min.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/misc.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<script src="/js/jquery.cookie.js"></script>
+<script src="/js/file-upload.js"></script>
+<script src="/js/typeahead.js"></script>
+<script src="/js/select2.js"></script>
+<%- include('../partials/_script') %>
+</body>
+</html>
