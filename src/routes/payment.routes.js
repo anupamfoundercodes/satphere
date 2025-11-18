@@ -1,18 +1,14 @@
 import express from "express";
 import bodyParser from "body-parser";
 import Insta from "instamojo-nodejs";
-import { paymentcheck, razorpayorder , verifyPayment, createCashfreeOrder,createInstamojoOrder } from "../controllers/paymentController.js";
+import { verifyPayment, createCashfreeOrder} from "../controllers/paymentController.js";
 
 const router = express.Router();
 
 // Payment gateway list API
-router.post("/InstamojoOrder", createInstamojoOrder);
 
-router.post("/razorpay", razorpayorder);
 
-router.get("/payment", paymentcheck);
-
-router.post("/payment/verify", verifyPayment);
+router.post("/verifyPayment", verifyPayment);
 
 router.post("/cashfree", createCashfreeOrder);
 

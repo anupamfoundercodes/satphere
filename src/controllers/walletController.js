@@ -1,64 +1,12 @@
 import { pool } from "../config/db.js";
 
-// ✅ Get or Create Wallet for a User
-export const userWallet = async (req, res) => {
-  try {
-    const { user_id } = req.body;
-
-    if (!user_id) {
-      return res.status(200).json({
-        success: false,
-        message: "user_id is required",
-      });
-    }
-
-    // 1️⃣ Check if wallet exists
-    const [existing] = await pool.query(
-      "SELECT * FROM wallet WHERE user_id = ?",
-      [user_id]
-    );
-
-    if (existing.length > 0) {
-      return res.status(200).json({
-        success: true,
-        message: "Wallet fetched successfully",
-        data: existing[0],
-      });
-    }
-
-    // 2️⃣ If not found — create new wallet
-    const [insert] = await pool.query(
-      "INSERT INTO wallet (user_id, balance, coins, status) VALUES (?, 0.00, 0, 'active')",
-      [user_id]
-    );
-
-    const [newWallet] = await pool.query(
-      "SELECT * FROM wallet WHERE id = ?",
-      [insert.insertId]
-    );
-
-    return res.status(200).json({
-      success: true,
-      message: "New wallet created successfully",
-      data: newWallet[0],
-    });
-  } catch (error) {
-    console.error("Error in userWallet:", error);
-    res.status(500).json({
-      success: false,
-      message: "Internal server error",
-      error: error.message,
-    });
-  }
-};
 
 export const userTransactions = async (req, res) => {
   try {
     const { user_id, type } = req.body;
 
     if (!user_id) {
-      return res.status(200).json({
-        success: false,
+      return res.status(400).json({
         message: "user_id is required",
         data: []
       });
@@ -100,7 +48,6 @@ export const userTransactions = async (req, res) => {
     const [rows] = await pool.query(query, params);
 
     return res.status(200).json({
-      success: true,
       message: rows.length ? "User transactions fetched" : "No transactions found",
       data: rows
     });
@@ -108,7 +55,7 @@ export const userTransactions = async (req, res) => {
   } catch (err) {
     console.error("User Transactions Error:", err);
     return res.status(500).json({
-      success: false,
+      success: err,
       message: "Server error",
       data: []
     });

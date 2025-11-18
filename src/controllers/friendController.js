@@ -68,7 +68,8 @@ export const manageFriend = async (req, res) => {
       1: { created: "Friend request accepted successfully", exists: "Friend already accepted" },
       2: { created: "Friend request rejected successfully", exists: "Friend already rejected" },
       3: { created: "Friend blocked successfully", exists: "Friend already blocked" },
-      4: { created: "Friend sortlist successfully", exists: "Friend already sortlist" }
+      4: { created: "Friend sortlist successfully", exists: "Friend already sortlist" },
+      5: { created: "Friend sortlist remove successfully", exists: "Friend sortlist already remove" }
     };
 
     // ------------------- Check Existing Records -------------------

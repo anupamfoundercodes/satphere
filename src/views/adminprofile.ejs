@@ -127,19 +127,33 @@
                     </div>
 
                     <!-- Password -->
-                    <div class="row mt-2">
-                      <div class="col-md-6">
-                        <label>Old Password</label>
-                        <input type="password" name="oldPassword" class="form-control">
-                      </div>
-                      <div class="col-md-6">
-                        <label>New Password</label>
-                        <input type="password" name="newPassword" class="form-control">
-                      </div>
-                    </div>
+						<div class="row mt-2">
+						  <div class="col-md-6">
+							<label>Old Password</label>
+							<div class="position-relative">
+							  <input type="password" name="oldPassword" id="oldPassword" class="form-control">
+							  <i class="mdi mdi-eye toggle-eye"
+								 data-target="oldPassword"
+								 style="position:absolute; right:15px; top:12px; cursor:pointer; font-size:20px;">
+							  </i>
+							</div>
+						  </div>
+
+						  <div class="col-md-6">
+							<label>New Password</label>
+							<div class="position-relative">
+							  <input type="password" name="newPassword" id="newPassword" class="form-control">
+							  <i class="mdi mdi-eye toggle-eye"
+								 data-target="newPassword"
+								 style="position:absolute; right:15px; top:12px; cursor:pointer; font-size:20px;">
+							  </i>
+							</div>
+						  </div>
+						</div>
+
                     
                      <!-- QR_CODE & UPI--> 
-                    <div class="row mt-2">
+                <!--   <div class="row mt-2">
                       <div class="col-md-12">
                         <label>QR CODE</label>
                         <div class="profile-img-box">
@@ -160,7 +174,7 @@
                             <label>Ads Count</label>
                             <input type="number" name="ads_count" class="form-control" value="<%= admin.ads_count || 0 %>" min="0">
                           </div>
-                        </div>
+                        </div>-->
                     
                     <!-- Response Message -->
                     <div id="responseMsg" class="text-center mt-3"></div>
@@ -168,7 +182,7 @@
                     <!-- Submit Button -->
                     <div class="row mt-4 justify-content-center">
                       <div class="col-md-4 text-center">
-                        <button type="submit" class="btn btn-success btn-block">Update Profile</button>
+                        <button type="submit" class="btn btn-danger btn-block">Update Profile</button>
                       </div>
                     </div>
                   </form>
@@ -189,13 +203,35 @@
 
 <!-- Scripts -->
 <script>
-document.getElementById('qrCodeImg').addEventListener('change', function (e) {
-  const reader = new FileReader();
-  reader.onload = function (e) {
-    document.getElementById('qrPreview').src = e.target.result;
-  }
-  reader.readAsDataURL(this.files[0]);
+document.querySelectorAll(".toggle-eye").forEach(icon => {
+  icon.addEventListener("click", () => {
+    const field = document.getElementById(icon.dataset.target);
+
+    if (field.type === "password") {
+      field.type = "text";
+      icon.classList.remove("mdi-eye");
+      icon.classList.add("mdi-eye-off");
+    } else {
+      field.type = "password";
+      icon.classList.remove("mdi-eye-off");
+      icon.classList.add("mdi-eye");
+    }
+  });
 });
+
+
+// QR Preview Safe Handler (input ho tabhi chale)
+const qrInput = document.getElementById('qrCodeImg');
+if (qrInput) {
+  qrInput.addEventListener('change', function (e) {
+    const reader = new FileReader();
+    reader.onload = function (e) {
+      document.getElementById('qrPreview').src = e.target.result;
+    };
+    reader.readAsDataURL(this.files[0]);
+  });
+}
+
 
 
 function toBase64(file) {
@@ -228,16 +264,19 @@ document.getElementById('adminProfileForm').addEventListener('submit', async fun
   };
 
   // UPI ID add karo
-jsonPayload.upi_id = formData.get('upi_id');
+//jsonPayload.upi_id = formData.get('upi_id');
 // Add ads_count to payload
-jsonPayload.ads_count = formData.get('ads_count');
+//jsonPayload.ads_count = formData.get('ads_count');
 
 
 // QR Code file ko base64 me convert karo
-const qrFile = formData.get('qrCodeImg');
-if (qrFile && qrFile.size > 0) {
-  jsonPayload.qr_code = await toBase64(qrFile);
+const qrInputFile = formData.get("qrCodeImg");
+if (qrInputFile && qrInputFile.size > 0) {
+  jsonPayload.qr_code = await toBase64(qrInputFile);
+} else {
+  jsonPayload.qr_code = null; // safe for backend
 }
+
 
 
   // Only add base64 if image file selected

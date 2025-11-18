@@ -1,88 +1,111 @@
 import { pool } from "../config/db.js";
 
-
-
 export const planlist = async (req, res) => {
   try {
     const { type } = req.body;
 
+    // 🔹 1. Validate required fields
     if (!type) {
-      return res.status(200).json({ 
-        success: false, 
-        message: "type is required", 
-        data: [] 
+      return res.status(404).json({
+        message: "type is required",
+        data: []
       });
     }
+
     if (!["1", 1].includes(type)) {
-      return res.status(200).json({
-        success: false,
+      return res.status(400).json({
         message: "Type must be 1 plans",
         data: []
       });
     }
-    const query = `SELECT * FROM plans`;
-    const [rows] = await pool.query(query);
+
+    // 🔹 2. Fetch all plans
+    const [rows] = await pool.query(`SELECT * FROM plans`);
 
     if (rows.length === 0) {
-      return res.status(200).json({
-        success: false,
+      return res.status(400).json({
         message: `No plans found for type ${type}`,
         data: []
       });
     }
 
-    // Parse perks JSON & group by name
-    const groupedPlans = {};
-rows.forEach((plan) => {
-  try {
-    plan.perks = JSON.parse(plan.perks);
-  } catch (e) {
-    plan.perks = {};
-  }
+    // 🔹 3. Clean & format data
+    const formattedPlans = rows.map(plan => {
+      // ✅ Parse perks safely
+      try {
+        plan.perks = JSON.parse(plan.perks);
+      } catch {
+        plan.perks = {};
+      }
 
-  // ✅ Convert description string to array
-  if (plan.description) {
-    // split by newlines or commas, ya agar tumhare DB me '\n' se separate hai to use
-    plan.description = plan.description
-      .split(/\r?\n/)       // newlines ke liye
-      .map(d => d.trim())   // extra spaces remove
-      .filter(d => d);      // empty strings remove
-  } else {
-    plan.description = [];
-  }
+      // ✅ Clean up description string
+      if (plan.description) {
+        let cleanDesc = plan.description
+          .replace(/\\/g, "") // remove backslashes
+          .replace(/(^"|"$)/g, ""); // remove extra quotes if any
 
-  if (!groupedPlans[plan.name]) {
-    groupedPlans[plan.name] = [];
-  }
+        plan.description = cleanDesc
+          .split(/["\n,]+/) // split on newlines, commas, or quotes
+          .map(d => d.trim())
+          .filter(d => d);
+      } else {
+        plan.description = [];
+      }
 
-  groupedPlans[plan.name].push(plan);
-});
+      return {
+        id: plan.id,
+        name: plan.name,
+        description: plan.description,
+        billing_cycle: plan.billing_cycle,
+        price: plan.price,
+        tax: plan.tax,
+        days: plan.days,
+        perks: plan.perks,
+        status: plan.status,
+        off: plan.off
+      };
+    });
 
+    // 🔹 4. Final response
+    return res.status(200).json({
+      message: "Plan list fetched successfully",
+      data: formattedPlans
+    });
 
-
-// Flatten all plans into a single array
-const plansArray = [];
-Object.values(groupedPlans).forEach(plans => {
-  plansArray.push(...plans);
-});
-
-return res.status(200).json({
-  success: true,
-  message: "Plan list fetched successfully",
-  data: plansArray
-});
-
-
-   } catch (err) {
+  } catch (err) {
     console.error("Plan List API Error:", err);
-    return res.status(200).json({ 
-      success: false, 
-      message: "Server error", 
-      data: [] 
+    return res.status(500).json({
+      message: "Server error",
+      error: err.message
     });
   }
 };
 
+// ✅ Get all text sliders
+export const getPlansFaq = async (req, res) => {
+  try {
+    const [rows] = await pool.query("SELECT * FROM text_slider");
+
+    if (rows.length === 0) {
+      return res.status(404).json({
+        message: "No text sliders found",
+        data: []
+      });
+    }
+
+    return res.status(200).json({
+      message: "Text sliders fetched successfully",
+      data: rows
+    });
+
+  } catch (err) {
+    console.error("Error fetching text sliders:", err);
+    return res.status(500).json({
+      message: "Server error",
+      error: err.message
+    });
+  }
+};
 
 // export const userPayments = async (req, res) => {
 //   try {
@@ -131,7 +154,7 @@ export const userPayments = async (req, res) => {
 
     // ---- Validation ----
     if (!user_id) {
-      return res.status(200).json({
+      return res.status(400).json({
         success: false,
         message: "user_id is required",
         data: []
@@ -140,7 +163,26 @@ export const userPayments = async (req, res) => {
 
     // ---- Query user active payments ----
     let [rows] = await pool.query(
-      `SELECT *
+      `SELECT 
+id,
+user_id,
+plan_id,
+order_id,
+payment_id,
+signature,
+amount,
+currency,
+type,
+status,
+gateway_type,
+created_at,
+expire_at,
+day,
+Filter_Both As swipe,
+Filter_Gender As message,
+Filter_Region As profile,
+No_Ads As audio,
+Rear_Camra As vedio
        FROM payments
        WHERE user_id = ?
          AND status = 'success'
@@ -154,7 +196,7 @@ export const userPayments = async (req, res) => {
       const [planRows] = await pool.query(
         `SELECT *
          FROM plans
-         WHERE id = 5
+         WHERE id = 1
          LIMIT 1`
       );
 
@@ -184,11 +226,11 @@ export const userPayments = async (req, res) => {
           created_at: new Date(),
           expire_at: new Date(new Date().setDate(new Date().getDate() + plan.days)),
           day: plan.days,
-          Filter_Both: perks["Filter-Both"]?.toString() || "false",
-          Filter_Gender: perks["Filter-Gender"]?.toString() || "false",
-          Filter_Region: perks["Filter-Region"]?.toString() || "false",
-          No_Ads: perks["No Ads"]?.toString() || "false",
-          Rear_Camra: perks["Rear Camra"]?.toString() || "false"
+          swipe: perks["Swipe"]?.toString() || "false",
+          message: perks["Message"]?.toString() || "false",
+          profile: perks["profile"]?.toString() || "false",
+          audio: perks["Audio"]?.toString() || "false",
+          video: perks["Video"]?.toString() || "false"
         }];
       }
     }
@@ -202,10 +244,9 @@ export const userPayments = async (req, res) => {
 
   } catch (error) {
     console.error("DB Error:", error);
-    return res.status(200).json({
-      success: false,
+    return res.status(503).json({
+      success: error,
       message: "Internal server error",
-      data: []
     });
   }
 };

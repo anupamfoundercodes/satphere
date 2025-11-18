@@ -31,7 +31,7 @@ if (!admin.apps.length) {
 
 async function insertNotification(user_id, title, message, senderid,type) {
   if (!user_id || !title || !message) {
-    throw new Error("Missing required fields (user_id, title, message)");
+    throw new Error("Missing required fields (user_id, title, message,type)");
   }
 
   const query = `
@@ -58,20 +58,75 @@ router.post("/callingNotifications", async (req, res) => {
 
   if (!token || !title || !message || !user_id || !type) {
     return res.status(400).json({
-      success: false,
+     
       message: "Token, title, message, and user_id, type are required",
     });
   }
 
   // ✅ Added this part
   const [rows] = await pool.query(
-    "SELECT profile_pic FROM users WHERE id = ? LIMIT 1",
+    "SELECT img,first_name, token AS otherToken FROM users WHERE id = ? LIMIT 1",
     [sender_id]
   );
   let profile_pic = "";
-  if (rows.length > 0 && rows[0].profile_pic) {
+  let otherToken = "";
+  let first_name = "";
+  if (rows.length > 0 && rows[0].img) {
+    const baseURL = process.env.APP_URL || "https://root..satphere.com/";
+    profile_pic = `${baseURL}${rows[0].img}`;
+    otherToken = rows[0].otherToken || "";
+  }
+console.log("profile_pic: ",profile_pic);
+console.log("otherToken: ",otherToken);
+  // ✅ Keep your existing payload logic
+  const payload = {
+    notification: { title, body: message },
+    token,
+    data: {
+      type: String(type),
+      channel: String(channel),
+      profile_pic: String(profile_pic || ""),
+      otherToken: String(otherToken || ""),
+      first_name: String(first_name || "")
+    }
+  };
+
+  try {
+    await insertNotification(user_id, title, message, sender_id,type);
+    console.log("✅ Notification saved in DB");
+
+    const response = await admin.messaging().send(payload);
+    res.json({
+      message: "Notification sent successfully",
+      response,
+    });
+  } catch (err) {
+    console.error("❌ Error:", err);
+    res.status(503).json({
+      message: "Failed to send notification",
+      error: err.message,
+    });
+  }
+});
+router.post("/callingNotificationsok", async (req, res) => {
+  const { token, title, message, data, user_id, sender_id, type, channel } = req.body;
+  console.log("calling notification", req.body);
+
+  if (!token || !title || !message || !user_id || !type) {
+    return res.status(400).json({
+      message: "Token, title, message, and user_id, type are required",
+    });
+  }
+
+  // ✅ Added this part
+  const [rows] = await pool.query(
+    "SELECT img FROM users WHERE id = ? LIMIT 1",
+    [sender_id]
+  );
+  let profile_pic = "";
+  if (rows.length > 0 && rows[0].img) {
     const baseURL = process.env.APP_URL || "https://yourdomain.com/";
-    profile_pic = `${baseURL}${rows[0].profile_pic}`;
+    profile_pic = `${baseURL}${rows[0].img}`;
   }
 console.log("profile_pic: ",profile_pic);
   // ✅ Keep your existing payload logic
@@ -91,9 +146,9 @@ console.log("profile_pic: ",profile_pic);
 
     const response = await admin.messaging().send(payload);
     res.json({
-      success: true,
       message: "Notification sent successfully",
       response,
+      payload,
     });
   } catch (err) {
     console.error("❌ Error:", err);
@@ -108,13 +163,12 @@ console.log("profile_pic: ",profile_pic);
 
 // 📌 Single notification
 router.post("/sendnotifications", async (req, res) => {
-  const { token, title, message, data, user_id, sender_id } = req.body;
+  const { token, title, message, data, user_id, sender_id ,type} = req.body;
 
   if (!token || !title || !message || !user_id) {
     return res
       .status(400)
       .json({
-        success: false,
         message: "Token, title, message, and user_id are required",
       });
   }
@@ -126,19 +180,17 @@ router.post("/sendnotifications", async (req, res) => {
   };
 
   try {
-    await insertNotification(user_id, title, message, sender_id);
+    await insertNotification(user_id, title, message, sender_id ,type);
     console.log("✅ Notification saved in DB");
 
     const response = await admin.messaging().send(payload);
     res.json({
-      success: true,
       message: "Notification sent successfully",
       response,
     });
   } catch (err) {
     console.error("❌ Error:", err);
     res.status(503).json({
-      success: false,
       message: "Failed to send notification",
       error: err.message,
     });

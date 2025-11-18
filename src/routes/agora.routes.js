@@ -5,10 +5,6 @@ import pkg from "agora-access-token";   // 👈 CommonJS ko import karna ka sahi
 const { RtcTokenBuilder, RtcRole } = pkg;
 
 
-
-// import express from "express";
-// import { RtcTokenBuilder, RtcRole } from "agora-access-token";
-
 const router = express.Router();
 
 // 🔑 Replace with your Agora App ID & Certificate
@@ -21,16 +17,13 @@ const APP_CERTIFICATE = process.env.APP_CERTIFICATE;
 // In-memory store (production me DB use karo)
 const channelHosts = new Map();
 
-// const APP_ID = "4bd666f239cb4b83a4fdb878f4fe763";
-// const APP_CERTIFICATE = "62dd525074e64422b83f6c996fbca47";
-
 // Generate Token Endpoint
 
 router.post("/generate-token", (req, res) => {
-  const { channelName, userId } = req.body;
+  const { channelName, user_id } = req.body;
 
-  if (!channelName || !userId) {
-    return res.status(400).json({ error: "channelName and userId required" });
+  if (!channelName || !user_id) {
+    return res.status(400).json({ message: "channelName and user_id required" });
   }
 
   // Expiration time (1 hour)
@@ -44,7 +37,7 @@ router.post("/generate-token", (req, res) => {
 
   if (!channelHosts.has(channelName)) {
     // First user → host
-    channelHosts.set(channelName, userId);
+    channelHosts.set(channelName, user_id);
     role = RtcRole.PUBLISHER;
     isHost = true;
   } else {
@@ -57,13 +50,12 @@ router.post("/generate-token", (req, res) => {
     AGORA_APP_ID,
     AGORA_APP_CERTIFICATE,
     channelName,
-    userId,
+    user_id,
     role,
     privilegeExpiredTs
   );
 
   return res.json({
-    success: true,
     message: "Token generated successfully",
     token,
     isHost,
@@ -78,7 +70,7 @@ const{channelName,userId}= req.body;
   console.log(channelName);
 
   if (!channelName || !userId) {
-    return res.status(400).json({ error: "channelName and userId required" });
+    return res.status(400).json({ message: "channelName and userId required" });
   }
 
   // Get role
@@ -110,7 +102,6 @@ const{channelName,userId}= req.body;
   );
 
   return res.json({
-      success:true,
       message:"Token ganrated sucessfully",
     token,
     isHost,
@@ -124,7 +115,7 @@ router.get("/generate-token1", (req, res) => {
   console.log(channelName);
 
   if (!channelName || !userId) {
-    return res.status(400).json({ error: "channelName and userId required" });
+    return res.status(400).json({ message: "channelName and userId required" });
   }
 
   // Get role
@@ -156,7 +147,6 @@ router.get("/generate-token1", (req, res) => {
   );
 
   return res.json({
-      success:true,
       message:"Token ganrated sucessfully",
     token,
     isHost,
@@ -166,44 +156,3 @@ router.get("/generate-token1", (req, res) => {
 export default router;
 
 
-// API Endpoint to generate token
-// router.post("/generateToken", (req, res) => {
-//   const {channelName,uid }= req.body;
-//   if (!channelName) {
-//     return res.status(200).json({ error: "channelName is required" });
-//   }
-//   if (!uid) {
-//     return res.status(200).json({ error: "uid is required" });
-//   }
-
-//   // UID (user id) - agar pass na kare to 0 rakh do
-//   //const uid = req.query.uid ? parseInt(req.query.uid) : 0;
-
-//   // Role (Broadcaster/Publisher)
-//   const role = RtcRole.PUBLISHER;
-
-//   // Expiration time (1 hour)
-//   const expirationTimeInSeconds = 3600;
-//   const currentTimestamp = Math.floor(Date.now() / 1000);
-//   const privilegeExpiredTs = currentTimestamp + expirationTimeInSeconds;
-
-//   // Generate token
-//   const token = RtcTokenBuilder.buildTokenWithUid(
-//     APP_ID,
-//     APP_CERTIFICATE,
-//     channelName,
-//     uid,
-//     role,
-//     privilegeExpiredTs
-//   );
-// console.log("APP_ID",APP_ID);
-// console.log("APP_CERTIFICATE",APP_CERTIFICATE);
-//   return res.json({
-//     channelName,
-//     uid,
-//     token,
-//     expiredAt: privilegeExpiredTs,
-//   });
-// });
-
-// export default router;

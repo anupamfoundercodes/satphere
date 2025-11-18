@@ -35,18 +35,18 @@ export const upload = multer({
 // =====================================================
 export const uploadUserImages = async (req, res) => {
   try {
-    const { userId } = req.body;
+    const { user_id } = req.body;
     const files = req.files;
 
-    if (!userId)
-      return res.status(400).json({ success: false, message: "userId is required" });
+    if (!user_id)
+      return res.status(400).json({ success: false, message: "user_id is required" });
     if (!files || files.length === 0)
       return res.status(400).json({ success: false, message: "No images uploaded" });
 
     for (const file of files) {
       await pool.query(
         "INSERT INTO user_images (user_id, image, status) VALUES (?, ?, 'ACTIVE')",
-        [userId, `/userimage/${file.filename}`]
+        [user_id, `/userimage/${file.filename}`]
       );
     }
 

@@ -29,14 +29,13 @@ export const getNotifications = async (req, res) => {
       FROM notifications t
       LEFT JOIN users u ON t.senderid = u.id
       WHERE t.user_id = ? OR (t.user_id = 0 AND t.created_at >= NOW() - INTERVAL 7 DAY)
-      ORDER BY t.created_at DESC
+      ORDER BY t.created_at DESC, t.id DESC
       `,
       [user_id]
     );
 
     if (!rows || rows.length === 0) {
       return res.json({
-        success: false,
         message: "No data found",
         count: 0,
         data: []
@@ -70,8 +69,7 @@ export const getNotifications = async (req, res) => {
   img: row.img ? `${BASE_URL}/${row.img}` : null
 }));
 
-    res.json({ 
-      success: true,  
+    res.json({  
       message: "Notification Get Successfully",
       count: unreadCount,
       data: dataWithFullURL 
@@ -88,7 +86,7 @@ export const userSendNotification = async (req, res) => {
   const { user_id, title, message, senderid } = req.body;
 
   if (!user_id || !title || !message || !senderid) {
-    return res.status(400).json({ success: false, msg: "All fields are required" });
+    return res.status(400).json({ msg: "All fields are required" });
   }
 
   try {
@@ -98,14 +96,13 @@ export const userSendNotification = async (req, res) => {
     );
 
     return res.status(200).json({
-      success: true,
       msg: "Notification sent successfully",
       notification_id: result.insertId
     });
 
   } catch (err) {
     console.error("❌ User Send Notification Error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).json({  message: "Server error" });
   }
 };
 //------------------------------------------------------------------------------
@@ -113,10 +110,10 @@ export const userCountRead = async (req, res) => {
   const { user_id, notification_id } = req.body;
 
   if (!user_id) {
-    return res.status(400).json({ success: false, message: "Please enter user_id" });
+    return res.status(400).json({ message: "Please enter user_id" });
   }
   if (!notification_id) {
-    return res.status(400).json({ success: false, message: "Please enter notification_id" });
+    return res.status(400).json({  message: "Please enter notification_id" });
   }
 
   try {
@@ -127,7 +124,7 @@ export const userCountRead = async (req, res) => {
     );
 
     if (exactResult.length > 0) {
-      return res.status(200).json({ success: true, message: "Notification already marked as read" });
+      return res.status(200).json({ message: "Notification already marked as read" });
     }
 
     // ✅ Check if user_id exists with any notification_id
@@ -142,18 +139,18 @@ export const userCountRead = async (req, res) => {
         `UPDATE notification_read SET notification_id = ?, read_at = NOW() WHERE user_id = ?`,
         [notification_id, user_id]
       );
-      return res.status(200).json({ success: true, message: "Notification updated as read" });
+      return res.status(200).json({  message: "Notification updated as read" });
     } else {
       // Insert new row
       await pool.query(
         `INSERT INTO notification_read (user_id, notification_id, read_at) VALUES (?, ?, NOW())`,
         [user_id, notification_id]
       );
-      return res.status(200).json({ success: true, message: "Notification inserted as read" });
+      return res.status(200).json({  message: "Notification inserted as read" });
     }
   } catch (err) {
     console.error("❌ Error in userCountRead:", err);
-    return res.status(500).json({ success: false, message: "Database error while marking as read" });
+    return res.status(500).json({ message: "Database error while marking as read" });
   }
 };
 
@@ -165,7 +162,6 @@ export const deleteNotification = async (req, res) => {
 
   if (!user_id || !notification_id) {
     return res.status(400).json({
-      success: false,
       message: "user_id and notification_id are required",
     });
   }
@@ -179,7 +175,6 @@ export const deleteNotification = async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        success: false,
         message: "This Notification Delete By Admin",
       });
     }
@@ -191,13 +186,11 @@ export const deleteNotification = async (req, res) => {
     ]);
 
     return res.json({
-      success: true,
       message: "Notification deleted successfully",
     });
   } catch (err) {
     console.error("❌ Delete Notification Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error",
     });
   }

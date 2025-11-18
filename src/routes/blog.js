@@ -59,6 +59,9 @@ router.get('/charts', (req, res) => {
   res.render('charts');
 });
 
+
+
+
 // router.get('/',requireAdmin,  async (req, res) => {
 //   try {
 //     const [rows] = await pool.query("SELECT COUNT(*) AS total FROM users");
@@ -251,10 +254,17 @@ router.get("/viewprofile/:id", requireAdmin, async (req, res) => {
 router.get("/editprofile/:id", requireAdmin, async (req, res) => {
   try {
     const { id } = req.params;
+
     const [rows] = await pool.query(
-      `SELECT id, email, match_count, game_count, phone, password, status,
-              username, name, profile_pic, cover_pic, gender, interests, dob,
-              about, latitude, longitude
+      `SELECT 
+        id, mobile_no, email, first_name, last_name, gender, dob,
+        state, city, address, pincode, img, religion, sub_religion,
+        profession, status, token, caste, blood_group, residency_year,
+        family_income, mother_name, father_name, any_disability,
+        mangalik, about, hobbies, horoscopes, diet, height, skin_tone,
+        brother_count, sister_count, marital_status, child,
+        highest_education, organization, course, work_type,
+        company_name, income
        FROM users WHERE id = ?`,
       [id]
     );
@@ -266,58 +276,56 @@ router.get("/editprofile/:id", requireAdmin, async (req, res) => {
   }
 });
 
+
 // POST update profile
 router.post("/update-profile", requireAdmin, async (req, res) => {
   try {
-    const {
-      id, email, match_count, game_count, phone, password, status,
-      username, name, gender, dob, about, latitude, longitude,
-      interests, profile_pic, cover_pic
-    } = req.body;
-    // console.log(req.body);
+    const data = req.body;
+    const { id, img } = data;
 
-    if (!id) return res.json({ success: false, msg: "User ID is required" });
+    if (!id)
+      return res.json({ success: false, msg: "User ID is required" });
 
-    let profilePath = null;
-    let coverPath = null;
+    let imgPath = null;
 
     // Save profile image if sent
-    if (profile_pic) {
-      const profileData = profile_pic.replace(/^data:image\/\w+;base64,/, "");
-      profilePath = `/images/users/user_profile_${id}.png`;
-      fs.writeFileSync(path.join("public", profilePath), Buffer.from(profileData, "base64"));
+    if (img) {
+      const imgData = img.replace(/^data:image\/\w+;base64,/, "");
+      imgPath = `/images/users/user_${id}.png`;
+      fs.writeFileSync(
+        path.join("public", imgPath),
+        Buffer.from(imgData, "base64")
+      );
     }
 
-    // Save cover image if sent
-    if (cover_pic) {
-      const coverData = cover_pic.replace(/^data:image\/\w+;base64,/, "");
-      coverPath = `/images/users/user_cover_${id}.png`;
-      fs.writeFileSync(path.join("public", coverPath), Buffer.from(coverData, "base64"));
+    // Remove img from update object (handled separately)
+    delete data.img;
+
+    // Convert hobbies / horoscopes etc if array
+    if (Array.isArray(data.hobbies)) data.hobbies = JSON.stringify(data.hobbies);
+    if (Array.isArray(data.horoscopes)) data.horoscopes = JSON.stringify(data.horoscopes);
+
+    // Build Dynamic Query
+    let fields = [];
+    let values = [];
+
+    Object.keys(data).forEach((key) => {
+      if (key !== "id") {
+        fields.push(`${key} = ?`);
+        values.push(data[key] || "");
+      }
+    });
+
+    if (imgPath) {
+      fields.push("img = ?");
+      values.push(imgPath);
     }
 
-    // Convert interests to JSON string
-    const interestsString = interests ? JSON.stringify(interests) : "[]";
+    values.push(id);
 
-    // Build dynamic query
-    const updateQuery = `
-      UPDATE users SET
-        email=?, match_count=?, game_count=?, phone=?, password=?, status=?,
-        username=?, name=?, gender=?, dob=?, about=?, latitude=?, longitude=?, interests=?
-        ${profilePath ? ", profile_pic=?" : ""}
-        ${coverPath ? ", cover_pic=?" : ""}
-      WHERE id=?`;
+    const updateQuery = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
 
-    const params = [
-      email, match_count, game_count, phone, password, status,
-      username, name, gender, dob, about, latitude, longitude, interestsString
-    ];
-
-    if (profilePath) params.push(profilePath);
-    if (coverPath) params.push(coverPath);
-
-    params.push(id);
-
-    await pool.query(updateQuery, params);
+    await pool.query(updateQuery, values);
 
     res.json({ success: true, msg: "Profile updated successfully" });
 
@@ -587,10 +595,15 @@ router.post("/sendnotificationtouser",requireAdmin,  async (req, res) => {
 router.get('/transactions',requireAdmin,  async (req, res) => {
   try {
     const [results] = await pool.query(`
-      SELECT p.*, u.name, u.phone
-      FROM payments p
-      LEFT JOIN users u ON p.user_id = u.id
-      ORDER BY p.created_at DESC
+		SELECT 
+		  p.*, 
+		  u.first_name AS name, 
+		  u.mobile_no AS phone,
+		  pl.name AS plan_name
+		FROM payments p
+		LEFT JOIN users u ON p.user_id = u.id
+		LEFT JOIN plans pl ON p.plan_id = pl.id
+		ORDER BY p.created_at DESC;
     `);
 
     res.render('transaction', { payments: results });
@@ -662,11 +675,11 @@ router.patch('/transactions/:id/status', requireAdmin, async (req, res) => {
            WHERE id = ?`,
           [
             status, createdAt, expireAt,
-            normalize(perks["Filter-Both"]),
-            normalize(perks["Filter-Gender"]),
-            normalize(perks["Filter-Region"]),
-            normalize(perks["No Ads"]),
-            normalize(perks["Rear Camra"]),
+            normalize(perks["Swipe"]),
+            normalize(perks["Message"]),
+            normalize(perks["Profile"]),
+            normalize(perks["Audio"]),
+            normalize(perks["Video"]),
             id
           ]
         );
@@ -684,51 +697,65 @@ router.patch('/transactions/:id/status', requireAdmin, async (req, res) => {
 
 router.post('/transactions/update', async (req, res) => {
   try {
-    const { id, day, Filter_Both, Filter_Gender, Filter_Region, No_Ads, Rear_Camra, created_at, expire_at} = req.body;
+    const { 
+      id, 
+      day, 
+      Filter_Both, 
+      Filter_Gender, 
+      Filter_Region, 
+      No_Ads, 
+      Rear_Camra, 
+      created_at, 
+      expire_at 
+    } = req.body;
 
-    // 1️⃣ Update the payment record
-    await pool.query(
+    console.log("Update Request Body:", req.body);
+
+    if (!id) {
+      return res.json({ success: false, msg: "ID is required" });
+    }
+
+    // Convert datetime (IF needed)
+    const createdAtFormatted = created_at ? created_at.replace("T", " ") : null;
+    const expireAtFormatted  = expire_at ? expire_at.replace("T", " ") : null;
+
+    // --- UPDATE QUERY ---
+    const [result] = await pool.query(
       `UPDATE payments 
-       SET day=?, Filter_Both=?, Filter_Gender=?, Filter_Region=?, No_Ads=?, Rear_Camra=?, created_at=?, expire_at=? 
+       SET 
+         day=?, 
+         Filter_Both=?, 
+         Filter_Gender=?, 
+         Filter_Region=?, 
+         No_Ads=?, 
+         Rear_Camra=?, 
+         created_at=?, 
+         expire_at=? 
        WHERE id=?`,
-      [day, Filter_Both, Filter_Gender, Filter_Region, No_Ads, Rear_Camra, created_at, expire_at, id]
+      [
+        day,
+        Filter_Both,
+        Filter_Gender,
+        Filter_Region,
+        No_Ads,
+        Rear_Camra,
+        createdAtFormatted,
+        expireAtFormatted,
+        id
+      ]
     );
 
-    // 2️⃣ Get the plan_id from the updated payment
-    const [paymentRows] = await pool.query(
-      `SELECT plan_id,user_id FROM payments WHERE id=?`,
-      [id]
-    );
-   
-    if (paymentRows.length > 0) {
-  const planId = paymentRows[0].plan_id;
-    const user_id = paymentRows[0].user_id;
+    console.log("SQL Result:", result);
 
-  console.log("🧾 Plan ID:", planId, "User ID:", user_id);
+    if (result.affectedRows === 0) {
+      return res.json({ success: false, msg: "No record found with this ID" });
+    }
 
-  const [userCheck] = await pool.query(`SELECT id, oauth_sub FROM users WHERE id=?`, [user_id]);
-  if (userCheck.length === 0) {
-    console.log("⚠️ No user found with id:", user_id);
-  } else {
-    console.log("Before update → oauth_sub:", userCheck[0].oauth_sub);
+    return res.json({ success: true, msg: "Updated successfully" });
 
-    const [updateResult] = await pool.query(
-      `UPDATE users SET oauth_sub=? WHERE id=?`,
-      [planId, user_id]
-    );
-
-    console.log("Rows updated:", updateResult.affectedRows);
-
-    const [verify] = await pool.query(`SELECT oauth_sub FROM users WHERE id=?`, [user_id]);
-    console.log("After update → oauth_sub:", verify[0].oauth_sub);
-  }
-}
-
-
-    res.json({ success: true });
   } catch (err) {
     console.error("Update error:", err);
-    res.json({ success: false, msg: "Update failed" });
+    return res.json({ success: false, msg: err.message || "Error updating" });
   }
 });
 
@@ -788,7 +815,7 @@ router.get('/plans', requireAdmin, async (req, res) => {
 // Inline field update
 router.post('/plans/update-field',requireAdmin,  async (req, res) => {
   const { id, field, value } = req.body;
-  const allowedFields = ['name', 'billing_cycle', 'price', 'days', 'perks', 'off','description'];
+  const allowedFields = ['name', 'billing_cycle', 'price','tax', 'days', 'perks', 'off','description'];
   if (!allowedFields.includes(field)) {
     return res.status(200).json({ success: false, message: 'Invalid field' });
   }
@@ -815,25 +842,68 @@ router.get('/plans/delete/:id',requireAdmin,  async (req, res) => {
 });
 
 // ADD new plan
-router.post('/plans/add',requireAdmin,  async (req, res) => {
-  const { name, billing_cycle, price, days, perks, off } = req.body;
-
-  if (!name || !billing_cycle || !price || !days) {
-    return res.json({ success: false, message: 'Missing required fields' });
-  }
-
+router.post('/plans/add', async (req, res) => {
   try {
-    await pool.query(
-      `INSERT INTO plans (name, billing_cycle, price, days, perks, status, off)
-       VALUES (?, ?, ?, ?, ?, '1', ?)`,
-      [name, billing_cycle, price, days, perks || '{}', off || 0]
+    const { name, billing_cycle, days, price, tax, off, status } = req.body;
+
+    // --- Validation ---
+    if (!name || !billing_cycle || !days || !price || !tax || !off) {
+      return res.status(200).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
+
+    // Default perks
+    const defaultPerks = {
+      Swipe: "10",
+      Message: true,
+      Pofile: true,
+      Audio: true,
+      Video: true
+    };
+
+    const [insert] = await pool.query(
+      `INSERT INTO plans (
+        name, billing_cycle, days, price, tax, off, status, perks, description
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+
+      [
+        name,
+        billing_cycle,
+        days,
+        price,
+        tax,
+        off,
+        status,
+        JSON.stringify(defaultPerks),  // 👉 default perks inserted
+        JSON.stringify()             // 👉 default empty description
+      ]
     );
-    res.json({ success: true });
-  } catch (err) {
-    console.error('Insert error:', err.message);
-    res.status(500).json({ success: false });
+
+    if (insert.affectedRows > 0) {
+      return res.status(200).json({
+        success: true,
+        message: "Plan created successfully",
+      });
+    } else {
+      return res.status(200).json({
+        success: false,
+        message: "Insert failed",
+      });
+    }
+
+  } catch (error) {
+    console.log("PLAN INSERT ERROR:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+      error: error.message
+    });
   }
 });
+
+
 // Toggle plan status
 router.post('/plans/status-toggle',requireAdmin,  async (req, res) => {
   const { id, status } = req.body;

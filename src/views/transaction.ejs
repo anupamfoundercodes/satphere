@@ -83,7 +83,7 @@ html, body {
 
           <div class="row mb-3">
             <div class="col-md-6">
-              <input type="text" id="userSearch" class="form-control" placeholder="Search by User ID, Order Id, Payment Id">
+              <input type="text" id="userSearch" class="form-control" placeholder="Search by User Name, Order Id, Plan Name">
             </div>
           </div>
 
@@ -98,7 +98,7 @@ html, body {
                         <tr>
                           <th>#</th>
                           <th>User Name</th>
-                          <th>Plan ID</th>
+                          <th>Plan Name</th>
                           <th>Order ID</th>
                           <th>Payment ID</th>
                           <th>Type</th>
@@ -107,11 +107,11 @@ html, body {
                           <th>Currency</th>
                           <th>Status</th>
                           <th>Duration Days</th>
-                            <th>Filter Earning</th>
                             <th>Swipe</th>
-                            <th>Filter Media</th>
-                            <th>No Ads</th>
-                            <th>Rear Camra</th>                          
+                            <th>Message</th>
+                            <th>Profile</th>
+                            <th>Audio Call</th>
+                            <th>Video Call</th>                          
                           <th>Created At</th>
                           <th>Expire At</th>
                             <th>Action</th>
@@ -123,7 +123,7 @@ html, body {
                             <tr>
                               <td><%= index + 1 %></td>
                               <td><%= p.name %></td>
-                              <td><%= p.plan_id %></td>
+                              <td><%= p.plan_name %></td>
                               <td><%= p.order_id %></td>
                               <td><%= p.payment_id || '-' %></td>
                               <td><%= p.type || '-' %></td>
@@ -202,7 +202,7 @@ html, body {
                             </td>
                                 <td>
                                   <button 
-                                    class="btn btn-primary btn-sm edit-btn"
+                                    class="btn btn-danger btn-sm edit-btn"
                                     data-id="<%= p.id %>"
                                     data-day="<%= p.day %>"
                                     data-filter_both="<%= p.Filter_Both %>"
@@ -243,8 +243,8 @@ html, body {
   <div class="modal-dialog">
     <div class="modal-content">
       <form id="editForm">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit Payment</h5>
+        <div class="modal-header bg-danger">
+          <h5 class="modal-title ">Edit Payment</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
         </div>
         <div class="modal-body">
@@ -320,7 +320,7 @@ html, body {
         </div>
 
         <div class="modal-footer">
-          <button type="submit" class="btn btn-success">Save Changes</button>
+          <button type="submit" class="btn btn-danger">Save Changes</button>
         </div>
       </form>
     </div>
@@ -350,7 +350,7 @@ html, body {
       rows.forEach(row => {
         const userId = row.cells[1]?.textContent.toLowerCase() || '';
         const orderId = row.cells[3]?.textContent.toLowerCase() || '';
-        const paymentId = row.cells[4]?.textContent.toLowerCase() || '';
+        const paymentId = row.cells[2]?.textContent.toLowerCase() || '';
 
         if (userId.includes(searchTerm) || orderId.includes(searchTerm) || paymentId.includes(searchTerm)) {
           row.style.display = "";

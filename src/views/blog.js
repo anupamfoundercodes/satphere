@@ -26,6 +26,62 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
+router.post('/transactions/update1', async (req, res) => {
+  try {
+    const { 
+      id, day, 
+      Filter_Both, Filter_Gender, Filter_Region, 
+      No_Ads, Rear_Camra, 
+      created_at, expire_at
+    } = req.body;
+
+    console.log("🔄 Update Request:", req.body);
+
+    // ⛔ Required
+    if (!id) {
+      return res.json({ msg: "ID is required" });
+    }
+    if (!day) {
+      return res.json({ msg: "Day is required" });
+    }
+
+    // 🕒 Fix datetime format (optional)
+    const createdAtFormatted = created_at ? created_at.replace("T", " ") : null;
+    const expireAtFormatted  = expire_at  ? expire_at.replace("T", " ") : null;
+
+    // 📝 Update Query
+    await db.query(
+      `UPDATE payments 
+       SET day=?, 
+           Filter_Both=?, 
+           Filter_Gender=?, 
+           Filter_Region=?, 
+           No_Ads=?, 
+           Rear_Camra=?, 
+           created_at=?, 
+           expire_at=? 
+       WHERE id=?`,
+      [
+        day || null,
+        Filter_Both || null,
+        Filter_Gender || null,
+        Filter_Region || null,
+        No_Ads || null,
+        Rear_Camra || null,
+        createdAtFormatted,
+        expireAtFormatted,
+        id
+      ]
+    );
+
+    return res.json({ msg: "Updated successfully" });
+
+  } catch (err) {
+    console.error("Update error:", err);
+    return res.json({ msg: err.message || "Error updating" });
+  }
+});
+
 
 
 router.get('/login', (req, res) => {

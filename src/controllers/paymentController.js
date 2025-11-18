@@ -1,167 +1,126 @@
 import { pool } from "../config/db.js";
-import Razorpay from "razorpay";
 import crypto from "crypto";
-import Insta from "instamojo-nodejs";
 import axios from "axios";
-
-const razorpay = new Razorpay({
-  key_id: process.env.RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
-
-//instamozo start
-export const createInstamojoOrder = async (req, res) => {
-  try {
-    const { amount, currency = "INR", user_id, plan_id } = req.body;
-
-    if (!amount || !user_id || !plan_id) {
-      return res
-        .status(400)
-        .json({ success: false, message: "Missing required fields" });
-    }
-
-    // InstaMojo Environment
-    const baseUrl =
-      process.env.INSTAMOJO_ENV === "PROD"
-        ? "https://www.instamojo.com/api/1.1/payment-requests/"
-        : "https://test.instamojo.com/api/1.1/payment-requests/";
-
-    // Unique Transaction ID
-    const txnId = "IM_" + Date.now();
-
-    // Create Payment Request
-    const response = await axios.post(
-      baseUrl,
-      {
-        purpose: `Plan_${plan_id}`,
-        amount: amount,
-        currency: currency,
-        buyer_name: `User_${user_id}`,
-        email: `user${user_id}@example.com`,
-        phone: "9999999999",
-        send_email: true,
-        send_sms: true,
-        allow_repeated_payments: false,
-        redirect_url: "https://pookichat.codescards.com/payment/success", // ✅ Update as per frontend
-      },
-      {
-        headers: {
-          "X-Api-Key": process.env.INSTAMOJO_API_KEY,
-          "X-Auth-Token": process.env.INSTAMOJO_AUTH_TOKEN,
-        },
-      }
-    );
-
-    const order = response.data;
-
-    // DB में Save
-    await pool.query(
-      `INSERT INTO payments (user_id, plan_id, order_id, amount, currency, status, gateway_type, created_at, expire_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, NOW(), DATE_ADD(NOW(), INTERVAL 1 DAY))`,
-      [user_id, plan_id, txnId, amount, currency, "created", "instamojo"]
-    );
-
-    return res.json({
-      success: true,
-      gateway: "instamojo",
-      payment_url: order.payment_request.longurl, // ✅ Frontend इस URL को open करेगा
-      order,
-    });
-  } catch (err) {
-    console.error("InstaMojo Order Error:", err.response?.data || err.message);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to create InstaMojo order",
-       error: err.response?.data || err.message,
-    });
-  }
-};
-
-//instammozo end
-// ✅ Order Create (pehle se banaya)
-export const razorpayorder = async (req, res) => {
-  try {
-    const { user_id, plan_id, amount } = req.body;
-
-    const options = {
-      amount: amount * 100,
-      currency: "INR",
-      receipt: "order_" + Date.now(),
-    };
-
-    const order = await razorpay.orders.create(options);
-
-    await pool.query(
-      `INSERT INTO payments (user_id, plan_id, order_id, amount, currency, status, gateway_type)
-       VALUES (?, ?, ?, ?, ?, ?, ?)`,
-      [user_id, plan_id, order.id, amount, "INR", "pending", "razorpay"]
-    );
-
-    return res.json({
-      success: true,
-      message: "Razorpay order created",
-      data: {
-        order_id: order.id,
-        amount: order.amount,
-        currency: order.currency,
-        gateway: "razorpay",
-      },
-    });
-  } catch (err) {
-    console.error("Razorpay Order Create Error:", err);
-    return res.status(500).json({
-      success: false,
-      message: "Failed to create Razorpay order",
-    });
-  }
-};
 
 // ✅ Payment Verify
 export const verifyPayment = async (req, res) => {
   try {
-    const { order_id, payment_id, signature } = req.body;
+    const { order_id, status } = req.body;
 
-    // Generate expected signature
-    const expectedSignature = crypto
-      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
-      .update(order_id + "|" + payment_id)
-      .digest("hex");
+    // Validate
+    if (!order_id) return res.status(400).json({ message: "order_id is required" });
+    if (!status) return res.status(400).json({ message: "status is required" });
 
-    if (expectedSignature === signature) {
-      // Success → update DB
-      await pool.query(
-        `UPDATE payments 
-         SET payment_id=?, signature=?, status=? 
-         WHERE order_id=?`,
-        [payment_id, signature, "success", order_id]
+    if (!["pending","success", "failed"].includes(status)) {
+      return res.status(400).json({ message: "Invalid status value" });
+    }
+
+    // Fetch payment
+    const [rows] = await pool.query(
+      "SELECT * FROM payments WHERE order_id = ? LIMIT 1",
+      [order_id]
+    );
+
+    if (rows.length === 0) {
+      return res.status(404).json({ message: `No payment found with order_id: ${order_id}` });
+    }
+
+    const payment = rows[0];
+    const plan_id = payment.plan_id; // ⭐ यहीं से plan_id ले रहे हैं
+
+    // Only pending can be updated
+		if (!["pending", "created"].includes(payment.status)) {
+		  return res.status(400).json({
+			message: "Only pending or created payments can be updated",
+		  });
+		}
+
+    // ---------- SUCCESS CASE ----------
+    if (status === "success") {
+
+      // fetch plan from DB
+      const [planRows] = await pool.query(
+        "SELECT perks, days FROM plans WHERE id = ? LIMIT 1",
+        [plan_id]
       );
 
-      return res.json({
-        success: true,
-        message: "Payment verified successfully",
-      });
-    } else {
-      // Failed → update DB
+      if (planRows.length === 0) {
+        return res.status(404).json({ message: "Plan not found" });
+      }
+
+      const plan = planRows[0];
+
+      // Parse perks JSON safely
+      let perks = {};
+      try {
+        perks = JSON.parse(plan.perks || "{}");
+      } catch (e) {
+        console.error("Invalid perks JSON:", plan.perks);
+      }
+
+      // Dates
+      const days = plan.days;
+      const createdAt = new Date();
+      const expireAt = new Date();
+      expireAt.setDate(expireAt.getDate() + (plan.days || 0));
+
+      // Normalize
+      const normalize = (val) => {
+        if (val === true) return "true";
+        if (val === false) return "false";
+        if (typeof val === "number") return val.toString();
+        if (typeof val === "string" && val.trim() !== "") return val.trim();
+        return "false";
+      };
+
+      // Update payment
       await pool.query(
         `UPDATE payments 
-         SET payment_id=?, signature=?, status=? 
+         SET day=?, status=?, created_at=?, expire_at=?,
+             Filter_Both=?, Filter_Gender=?, Filter_Region=?, 
+             No_Ads=?, Rear_Camra=?
          WHERE order_id=?`,
-        [payment_id, signature, "failed", order_id]
+        [
+          days,
+          status,
+          createdAt,
+          expireAt,
+          normalize(perks["Swipe"]),
+          normalize(perks["Message"]),
+          normalize(perks["Profile"]),
+          normalize(perks["Audio"]),
+          normalize(perks["Video"]),
+          order_id
+        ]
       );
 
-      return res.json({
-        success: false,
-        message: "Payment verification failed",
+      return res.status(200).json({
+        message: "Payment verified and updated successfully",
+        updated_status: status,
+        plan_id: plan_id,
       });
     }
-  } catch (err) {
-    console.error("Razorpay Verify Error:", err);
+
+    // ---------- FAILED CASE ----------
+    await pool.query(
+      "UPDATE payments SET status=? WHERE order_id=?",
+      [status, order_id]
+    );
+
+    return res.status(200).json({
+      message: `Payment marked as ${status}`,
+      plan_id: plan_id,
+    });
+
+  } catch (error) {
+    console.error("Error in verifyPayment:", error);
     return res.status(500).json({
-      success: false,
-      message: "Server error during verification",
+      message: "Internal Server Error",
+      error: error.message,
     });
   }
 };
+
 
 export const createCashfreeOrder = async (req, res) => {
   try {
@@ -170,7 +129,7 @@ export const createCashfreeOrder = async (req, res) => {
     if (!amount || !user_id || !plan_id) {
       return res
         .status(400)
-        .json({ success: false, message: "Missing required fields" });
+        .json({  message: "Missing required fields" });
     }
 
     // Cashfree Order ID
@@ -178,7 +137,7 @@ export const createCashfreeOrder = async (req, res) => {
 
     // Cashfree Environment
     const baseUrl =
-      process.env.CASHFREE_ENV === "PROD"
+      process.env.CASHFREE_ENV == "PROD"
         ? "https://api.cashfree.com/pg/orders"
         : "https://sandbox.cashfree.com/pg/orders";
 
@@ -205,7 +164,7 @@ export const createCashfreeOrder = async (req, res) => {
       }
     );
 
-    const order = response.data;
+    const data = response.data;
 
     // DB में Save
     await pool.query(
@@ -217,54 +176,15 @@ export const createCashfreeOrder = async (req, res) => {
     return res.json({
       success: true,
       gateway: "cashfree",
-      order,
+      data,
     });
   } catch (err) {
     console.error("Cashfree Order Error:", err.response?.data || err.message);
     return res.status(500).json({
-      success: false,
+      success: err.message,
       message: "Failed to create Cashfree order",
     });
   }
 };
-
-export const paymentcheck = async (req, res) => {
-  try {
-    const [rows] = await pool.query(
-      "SELECT name, img, status FROM payment_gateways ORDER BY id ASC"
-    );
-
-    if (rows.length === 0) {
-      return res.json({
-        success: false,
-        message: "No payment gateways found",
-        gateways: []
-      });
-    }
-
-    const gateways = rows.map(g => ({
-      name: g.name,
-      img: g.img,
-      status: g.status === 1 ? "active" : "inactive"
-    }));
-
-    return res.json({
-      success: true,
-      message: "Payment gateways fetched successfully",
-      gateways
-    });
-  } catch (err) {
-    console.error("Get Payment Gateways Error:", err);
-    return res.status(200).json({
-      success: false,
-      message: "Server error",
-      gateways: []
-    });
-  }
-};
-
-
-////////instamozo
-
 
 
