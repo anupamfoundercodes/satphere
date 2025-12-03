@@ -25,6 +25,9 @@ import matchRoutes from "./routes/match.routes.js";
 import walletRoutes from "./routes/wallet.routes.js";
 import mediaRoutes from './routes/media.routes.js';
 import listRoutes from "./routes/list.routes.js";
+import astrologyRoutes from "./routes/astrology.routes.js";
+
+
 import path from "path";
 import { fileURLToPath } from "url";
 import cookieParser from "cookie-parser";
@@ -79,5 +82,7 @@ app.use("/api", matchRoutes);
 app.use("/api", walletRoutes)
 app.use("/api", mediaRoutes);
 app.use("/api", listRoutes);
+app.use("/api", astrologyRoutes);//match making
 app.use("/", socketRoutes);
+
 export default app;

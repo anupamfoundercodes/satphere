@@ -4,43 +4,31 @@ import { pool } from "../config/db.js";   // pool import
 
 export const adminSignin = async (req, res) => {
   const { email, password } = req.body;
-//   console.log("Email received:", email);
-// console.log("password:", password);
 
   try {
-    const [results] = await pool.query(
-      "SELECT * FROM admin WHERE email = ?",
-      [email]
-    );
+    const [results] = await pool.query("SELECT * FROM admin WHERE email = ?", [email]);
 
     if (!results || results.length === 0) {
-      return res.render("login", { alertMessage: "Invalid Email" });
+      // Send JSON for fetch login
+      return res.json({ success: false, message: "Invalid Email" });
     }
-    
-    // console.log("Signin email:", email);
-    // console.log("Signin password:", password);
-    // console.log("DB result:", results);
 
     const admin = results[0];
-
     const isMatch = await bcrypt.compare(password, admin.password);
     if (!isMatch) {
-      return res.render("login", { alertMessage: "Invalid Credential" });
+      return res.json({ success: false, message: "Invalid Credential" });
     }
 
-    const token = jwt.sign(
-      { id: admin.id },
-      process.env.JWT_SECRET || "default_secret",
-      { expiresIn: "1h" }
-    );
-
+    const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET || "default_secret", { expiresIn: "1h" });
     res.cookie("token", token, { httpOnly: true });
-    return res.redirect("/");
+
+    return res.json({ success: true, message: "Login successful" });
   } catch (err) {
     console.error("Signin DB Error:", err);
-    return res.status(500).json({ success: false, msg: "Database error" });
+    return res.status(500).json({ success: false, message: "Database error" });
   }
 };
+
 
 // Update password by email
 export const updatePassword = async (req, res) => {

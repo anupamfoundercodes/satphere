@@ -286,6 +286,7 @@ export const friendlist = async (req, res) => {
 
     return res.status(200).json({
       message,
+      count: type == 0 ? uniqueFriends.length : 0,
       data: uniqueFriends,
     });
   } catch (err) {

@@ -1814,7 +1814,155 @@ router.post('/delete-banner', requireAdmin, async (req, res) => {
     res.json({ success: false, message: 'DB error' });
   }
 });
+//--------------------------------------------Religion List---------------------------------------------------
+// =============================
+// Religion Routes
+// =============================
 
+// Religion List Page
+router.get("/religionshow", requireAdmin, async (req, res) => {
+  try {
+    const [religions] = await pool.query("SELECT * FROM religion ORDER BY id DESC");
+    res.render("religions", { religions });
+  } catch (err) {
+    console.error("Error fetching religions:", err.message);
+    res.status(500).send("Database error");
+  }
+});
+
+// Add Religion
+router.post("/religions/add", requireAdmin, async (req, res) => {
+  const { religion_name } = req.body;
+  if (!religion_name) {
+    return res.json({ success: false, message: "Religion name is required" });
+  }
+
+  try {
+    await pool.query("INSERT INTO religion (religion_name) VALUES (?)", [religion_name]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Insert Religion error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Update Religion
+router.post("/religions/update-field", requireAdmin, async (req, res) => {
+  const { id, value } = req.body;
+
+  try {
+    await pool.query("UPDATE religion SET religion_name = ? WHERE id = ?", [value, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Update Religion error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+//status update
+router.post("/religions/status-toggle", requireAdmin, async (req, res) => {
+  const { id, status } = req.body;
+
+  try {
+    await pool.query("UPDATE religion SET status = ? WHERE id = ?", [status, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Status update error:", err);
+    res.json({ success: false });
+  }
+});
+
+// Delete Religion
+router.get("/religions/delete/:id", requireAdmin, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM religion WHERE id = ?", [req.params.id]);
+    res.json({ success: true, message: "Religion deleted successfully" });
+  } catch (err) {
+    console.error("Delete Religion error:", err.message);
+    res.json({ success: false, message: "Database error" });
+  }
+});
+
+
+
+// =============================
+// Sub Religion Routes
+// =============================
+
+// List Sub Religions
+router.get("/subreligions/:religion_id", requireAdmin, async (req, res) => {
+  try {
+    const [subReligions] = await pool.query(
+      "SELECT * FROM sub_religion WHERE religion_id = ? ORDER BY id DESC",
+      [req.params.religion_id]
+    );
+
+    res.json({ success: true, data: subReligions });
+  } catch (err) {
+    console.error("Error fetching sub religions:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Add Sub Religion
+router.post("/subreligions/add", requireAdmin, async (req, res) => {
+  const { religion_id, name } = req.body;
+
+  if (!religion_id || !name) {
+    return res.json({ success: false, message: "Missing required fields" });
+  }
+
+  try {
+    await pool.query(
+      "INSERT INTO sub_religion (religion_id, name, status) VALUES (?, ?, 'active')",
+      [religion_id, name]
+    );
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Insert SubReligion error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Update Sub Religion
+router.post("/subreligions/update-field", requireAdmin, async (req, res) => {
+  const { id, value } = req.body;
+
+  try {
+    await pool.query("UPDATE sub_religion SET name = ? WHERE id = ?", [value, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Update SubReligion error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Toggle Sub Religion Status
+router.post("/subreligions/status-toggle", requireAdmin, async (req, res) => {
+  const { id, status } = req.body;
+
+  if (!["active", "inactive"].includes(status)) {
+    return res.json({ success: false, message: "Invalid status" });
+  }
+
+  try {
+    await pool.query("UPDATE sub_religion SET status = ? WHERE id = ?", [status, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Toggle Status error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Delete Sub Religion
+router.get("/subreligions/delete/:id", requireAdmin, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM sub_religion WHERE id = ?", [req.params.id]);
+    res.redirect("back");
+  } catch (err) {
+    console.error("Delete SubReligion error:", err.message);
+    res.redirect("back");
+  }
+});
 export default router;
 
 

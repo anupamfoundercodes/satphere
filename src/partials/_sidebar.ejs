@@ -157,13 +157,16 @@
         <a class="nav-link" href="/social-links"> Support </a>
       </li>
            <li class="nav-item">
+        <a class="nav-link" href="/religionshow"> Religion List</a>
+      </li>
+           <li class="nav-item">
         <a class="nav-link" href="/regions"> Region List </a>
       </li>
     </ul>
   </div>
 </li>
 <!--Banner-->
-<li class="nav-item">
+ <!--<li class="nav-item">
   <a class="nav-link" data-bs-toggle="collapse" href="#banner" aria-expanded="false" aria-controls="banner">
     <span class="menu-title">UI Banner</span>
     <i class="mdi mdi-image-area menu-icon"></i>
@@ -173,12 +176,12 @@
       <li class="nav-item">
         <a class="nav-link" href="/banner-ui"> Banner images </a>
       </li>
-    <!-- <li class="nav-item">
+    <li class="nav-item">
         <a class="nav-link" href="/reports"> Repots </a>
-      </li>-->
+      </li>
     </ul>
   </div>
-</li>
+</li>-->
 
 
 <!-- Settings -->
@@ -360,7 +363,7 @@
 
 <style>
 .sidebar {
-  background:linear-gradient(135deg, #fff7f9, #fee0e4, #ef6e80); !important;
+  background:linear-gradient(135deg, #fff7f9, #fff7f9, #fff7f9); !important;
   color: #fff !important;
 }
 .sidebar .nav-item:hover i,
@@ -369,7 +372,22 @@
 .sidebar .nav-item:hover a {
   color: #ff758c !important; /* text & icon color pink ho jaye */
 }
+/* Sidebar Main Links */
+#sidebar .nav-item > .nav-link:hover .menu-title,
+#sidebar .nav-item > .nav-link:hover .menu-icon {
+    color: #ab68ff ;
+    font-weight: 600 !important;
+}
+
+/* Submenu Links */
+#sidebar .sub-menu .nav-link:hover {
+    color: #ab68ff ;
+    font-weight: 600 !important;
+}
+
 </style>
+
+
 <!--<style>
 /* 🌸 Sidebar Light Red-Pink Theme */
 .sidebar {

@@ -65,7 +65,7 @@ Your One-Time Password (OTP) is:
 It is valid for a short time. Do not share this OTP with anyone.
 
 Regards,
-Honey With Moon
+Satphere
       `,
     };
 
@@ -168,7 +168,7 @@ Your One-Time Password (OTP) for email verification is:
 It is valid for a short time. Do not share this OTP with anyone.
 
 Regards,
-Honey With Moon`,
+Satphere`,
     };
 
     await transporter.sendMail(mailOptions);

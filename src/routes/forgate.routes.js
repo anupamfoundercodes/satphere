@@ -39,14 +39,22 @@ router.post("/forgot-password", async (req, res) => {
   try {
     const { email } = req.body;
     console.log(req.body);
+
     if (!email) {
-      return res.status(400).json({ success: false, message: "Email is required" });
+      return res
+        .status(400)
+        .json({ success: false, message: "Email is required" });
     }
 
     // Find admin user
-    const [rows] = await pool.query("SELECT * FROM admin WHERE email = ?", [email]);
+    const [rows] = await pool.query("SELECT * FROM admin WHERE email = ?", [
+      email,
+    ]);
+
     if (rows.length === 0) {
-      return res.status(404).json({ success: false, message: "Email not found" });
+      return res
+        .status(404)
+        .json({ success: false, message: "Email not found" });
     }
 
     const adminUser = rows[0];
@@ -57,7 +65,10 @@ router.post("/forgot-password", async (req, res) => {
 
     // Hash and update the password
     const hashed = await bcrypt.hash(randomPassword, 10);
-    await pool.query("UPDATE admin SET password = ? WHERE email = ?", [hashed, email]);
+    await pool.query("UPDATE admin SET password = ? WHERE email = ?", [
+      hashed,
+      email,
+    ]);
 
     // Prepare email
     const mailOptions = {
@@ -77,20 +88,24 @@ Please log in and change your password immediately.
 If you did not request this reset, please contact support.
 
 Regards,
-Dating App
+Satphere
       `,
     };
 
     // Send email
     await transporter.sendMail(mailOptions);
 
-    return res.json({ success: true, message: "New password sent to your email" });
-  } catch (error) {
-    console.error("Error in /forgot-password:", error);
-    return res.status(500).json({ success: false, message: "Internal server error" });
+    return res.json({
+      success: true,
+      message: "New password sent to your email",
+    });
+  } catch (err) {
+    console.error("Error in /forgot-password:", err);
+    return res
+      .status(500)
+      .json({ success: false, message: "Internal server error" });
   }
 });
-
 router.post("/otpSend",otpsend);
 router.post("/otpVerify",otpverify);
 router.post("/changePassword", changePassword);

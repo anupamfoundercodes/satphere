@@ -658,7 +658,7 @@ export const loginUserVerify = async (req, res) => {
     const user = rows[0];
 
     // If email login, check password
-    if (email) {
+  /* if (email) {
       if (!password) {
         return res.status(400).json({
           message: "Password is required",
@@ -672,7 +672,7 @@ export const loginUserVerify = async (req, res) => {
           userId: null
         });
       }
-    }
+    }*/
 
     // Check inactive user
     if (user.status === "inactive") {

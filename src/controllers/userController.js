@@ -52,9 +52,13 @@ const isValidYear = (year) => {
 };
 
 const isValidIncome = (income) => {
-  // allow plain numbers, optional commas, or "L"/"K" suffixes
-  return /^(\d{1,3}(,\d{3})*|\d+)(\.\d+)?([KkLl])?$/.test(income);
+  const regex =
+    /^₹?\s*\d{1,3}(?:,\d{2,3})*(?:\.\d+)?\s*(K|k|L|l|CR|Cr|cr)?\s*(thousand|lakh|lac|crore)?(?:\s*[-–]\s*₹?\s*\d{1,3}(?:,\d{2,3})*(?:\.\d+)?\s*(K|k|L|l|CR|Cr|cr)?\s*(thousand|lakh|lac|crore)?)?$/;
+
+  return true; // <-- validation off
 };
+
+
 
 
 // ✅ Use APP_URL from .env
@@ -85,24 +89,24 @@ export const updateProfile = async (req, res) => {
     } = req.body;
 
     if (!user_id) {
-      return res.status(400).json({ success: false, msg: "User ID is required" });
+      return res.status(400).json({ message: "User ID is required" });
     }
 
     const [existingUser] = await pool.query("SELECT id FROM users WHERE id = ?", [user_id]);
     if (existingUser.length === 0) {
-      return res.status(404).json({ success: false, msg: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     const fields = [];
     const values = [];
 
     if (mobile_no) {
-      if (!isValidPhone(mobile_no)) return res.status(422).json({ success: false, msg: "Invalid mobile number" });
+      if (!isValidPhone(mobile_no)) return res.status(422).json({ message: "Invalid mobile number" });
       fields.push("mobile_no=?"); values.push(mobile_no);
     }
 
     if (email) {
-      if (!isValidEmail(email)) return res.status(422).json({ success: false, msg: "Invalid email" });
+      if (!isValidEmail(email)) return res.status(422).json({ message: "Invalid email" });
       fields.push("email=?"); values.push(email);
     }
 
@@ -111,26 +115,34 @@ export const updateProfile = async (req, res) => {
     }
 
     if (first_name) {
-      if (!isValidName(first_name)) return res.status(422).json({ success: false, msg: "Invalid first name" });
+      if (!isValidName(first_name)) return res.status(422).json({ message: "Invalid first name" });
       fields.push("first_name=?"); values.push(first_name);
     }
 
     if (last_name) {
-      if (!isValidName(last_name)) return res.status(422).json({ success: false, msg: "Invalid last name" });
+      if (!isValidName(last_name)) return res.status(422).json({ message: "Invalid last name" });
       fields.push("last_name=?"); values.push(last_name);
     }
 
     if (gender) {
-      if (!isValidGender(gender)) return res.status(422).json({ success: false, msg: "Invalid gender" });
+      if (!isValidGender(gender)) return res.status(422).json({ message: "Invalid gender" });
       fields.push("gender=?"); values.push(gender);
     }
 
     if (dob) {
-      if (!isValidDobFormat(dob)) return res.status(422).json({ success: false, msg: "Invalid DOB format (YYYY-MM-DD)" });
-      if (!isAdult(dob)) return res.status(422).json({ success: false, msg: "User must be at least 18 years old" });
+      if (!isValidDobFormat(dob)) return res.status(422).json({ message: "Invalid DOB format (YYYY-MM-DD)" });
+      if (!isAdult(dob)) return res.status(422).json({ message: "User must be at least 18 years old" });
       fields.push("dob=?"); values.push(dob);
     }
 
+    if (img) {
+  const base64Regex = /^data:image\/(png|jpg|jpeg|gif);base64,/;
+
+  if (!base64Regex.test(img)) {
+    return res.status(422).json({ message: "Invalid img format" });
+  }
+}
+    
     if (state && state !== "0") fields.push("state=?"), values.push(state);
     if (city && city !== "0") fields.push("city=?"), values.push(city);
     if (address) fields.push("address=?"), values.push(address);
@@ -167,7 +179,7 @@ export const updateProfile = async (req, res) => {
 
 
     if (fields.length === 0) {
-      return res.status(400).json({ success: false, msg: "No valid data provided to update" });
+      return res.status(400).json({ message: "No valid data provided to update" });
     }
 
     fields.push("updated_at=NOW()");
@@ -176,19 +188,17 @@ export const updateProfile = async (req, res) => {
     const query = `UPDATE users SET ${fields.join(", ")} WHERE id=?`;
     await pool.query(query, values);
 
-    res.status(200).json({ success: true, msg: "Profile updated successfully" });
+    res.status(200).json({ message: "Profile updated successfully" });
 
   } catch (err) {
   if (err.code === 'ER_DUP_ENTRY') {
     return res.status(409).json({     // ✅ 409 Conflict → for duplicate entries
-      success: false,
-      msg: 'Mobile number or email already exists'
+     message: 'Mobile number or email already exists'
     });
   }
 
   res.status(500).json({               // ✅ 500 → internal server error (default)
-    success: false,
-    msg: 'Error updating profile',
+    message: 'Error updating profile',
     error: err.message
   });
 }
@@ -199,23 +209,23 @@ export const updatePersonalDetails = async (req, res) => {
   try {
     const { user_id, caste, blood_group, residency_year, family_income, mother_name, father_name, any_disability } = req.body;
 
-    if (!user_id) return res.status(400).json({ success: false, msg: "User ID required" });
+    if (!user_id) return res.status(400).json({ message: "User ID required" });
 
     const [exist] = await pool.query("SELECT id FROM users WHERE id=?", [user_id]);
-    if (exist.length === 0) return res.status(404).json({ success: false, msg: "User not found" });
+    if (exist.length === 0) return res.status(404).json({ message: "User not found" });
 
     const fields = [];
     const values = [];
 
-    if (caste) { if (!isValidName(caste)) return res.json({ success: false, msg: "Invalid caste" }); fields.push("caste=?"); values.push(caste); }
-    if (blood_group) { if (!/^(A|B|AB|O)[+-]$/.test(blood_group)) return res.json({ success: false, msg: "Invalid blood group" }); fields.push("blood_group=?"); values.push(blood_group); }
-    if (residency_year) { if (!isValidYear(residency_year)) return res.json({ success: false, msg: "Invalid residency year" }); fields.push("residency_year=?"); values.push(residency_year); }
-    if (family_income) { if (!isValidIncome(family_income)) return res.json({ success: false, msg: "Invalid family income" }); fields.push("family_income=?"); values.push(family_income); }
-    if (mother_name) { if (!isValidName(mother_name)) return res.json({ success: false, msg: "Invalid mother name" }); fields.push("mother_name=?"); values.push(mother_name); }
-    if (father_name) { if (!isValidName(father_name)) return res.json({ success: false, msg: "Invalid father name" }); fields.push("father_name=?"); values.push(father_name); }
+    if (caste) { if (!isValidName(caste)) return res.json({ message: "Invalid caste" }); fields.push("caste=?"); values.push(caste); }
+    if (blood_group) { if (!/^(A|B|AB|O)[+-]$/.test(blood_group)) return res.json({ message: "Invalid blood group" }); fields.push("blood_group=?"); values.push(blood_group); }
+    if (residency_year) { if (!isValidYear(residency_year)) return res.json({ message: "Invalid residency year" }); fields.push("residency_year=?"); values.push(residency_year); }
+    if (family_income) { if (!isValidIncome(family_income)) return res.json({message: "Invalid family income" }); fields.push("family_income=?"); values.push(family_income); }
+    if (mother_name) { if (!isValidName(mother_name)) return res.json({ message: "Invalid mother name" }); fields.push("mother_name=?"); values.push(mother_name); }
+    if (father_name) { if (!isValidName(father_name)) return res.json({message: "Invalid father name" }); fields.push("father_name=?"); values.push(father_name); }
     if (any_disability) { fields.push("any_disability=?"); values.push(any_disability); }
 
-    if (fields.length === 0) return res.json({ success: false, msg: "No valid data provided" });
+    if (fields.length === 0) return res.json({message: "No valid data provided" });
 
     fields.push("updated_at=NOW()");
     values.push(user_id);
@@ -223,8 +233,8 @@ export const updatePersonalDetails = async (req, res) => {
     await pool.query(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, values);
     res.json({ success: true, msg: "Personal details updated successfully" });
   } catch (err) {
-    if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ success: false, msg: "Duplicate entry", error: err.message });
-    res.status(500).json({ success: false, msg: "Error updating personal details", error: err.message });
+    if (err.code === 'ER_DUP_ENTRY') return res.status(409).json({ message: "Duplicate entry", error: err.message });
+    res.status(500).json({ message: "Error updating personal details", error: err.message });
   }
 };
 
@@ -232,15 +242,15 @@ export const updateLifestyle = async (req, res) => {
   try {
     const { user_id, mangalik, about, hobbies,horoscopes, diet, height, skin_tone, brother_count, sister_count } = req.body;
 
-    if (!user_id) return res.status(400).json({ success: false, msg: "User ID required" });
+    if (!user_id) return res.status(400).json({ message: "User ID required" });
 
     const [exist] = await pool.query("SELECT id FROM users WHERE id=?", [user_id]);
-    if (exist.length === 0) return res.status(404).json({ success: false, msg: "User not found" });
+    if (exist.length === 0) return res.status(404).json({ message: "User not found" });
 
     const fields = [];
     const values = [];
 
-    if (mangalik) { if (!["yes", "no"].includes(mangalik.toLowerCase())) return res.json({ success: false, msg: "Invalid mangalik value" }); fields.push("mangalik=?"); values.push(mangalik); }
+    if (mangalik) { if (!["yes", "no"].includes(mangalik.toLowerCase())) return res.json({ message: "Invalid mangalik value" }); fields.push("mangalik=?"); values.push(mangalik); }
     if (about) { fields.push("about=?"); values.push(about); }
     if (hobbies) { fields.push("hobbies=?"); values.push(hobbies); }
     if (horoscopes) { fields.push("horoscopes=?"); values.push(horoscopes); }
@@ -250,15 +260,15 @@ export const updateLifestyle = async (req, res) => {
     if (brother_count !== undefined && !isNaN(brother_count)) { fields.push("brother_count=?"); values.push(brother_count); }
     if (sister_count !== undefined && !isNaN(sister_count)) { fields.push("sister_count=?"); values.push(sister_count); }
 
-    if (fields.length === 0) return res.json({ success: false, msg: "No valid data provided" });
+    if (fields.length === 0) return res.json({ message: "No valid data provided" });
 
     fields.push("updated_at=NOW()");
     values.push(user_id);
 
     await pool.query(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, values);
-    res.json({ success: true, msg: "Lifestyle details updated successfully" });
+    res.json({message: "Lifestyle details updated successfully" });
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error updating lifestyle details", error: err.message });
+    res.status(500).json({ message: "Error updating lifestyle details", error: err.message });
   }
 };
 
@@ -266,10 +276,10 @@ export const updateProfessional = async (req, res) => {
   try {
     const { user_id, marital_status, child, highest_education, organization, course, work_type, company_name, income } = req.body;
 
-    if (!user_id) return res.status(400).json({ success: false, msg: "User ID required" });
+    if (!user_id) return res.status(400).json({ message: "User ID required" });
 
     const [exist] = await pool.query("SELECT id FROM users WHERE id=?", [user_id]);
-    if (exist.length === 0) return res.status(404).json({ success: false, msg: "User not found" });
+    if (exist.length === 0) return res.status(404).json({ message: "User not found" });
 
     const fields = [];
     const values = [];
@@ -281,17 +291,17 @@ export const updateProfessional = async (req, res) => {
     if (course) { fields.push("course=?"); values.push(course); }
     if (work_type) { fields.push("work_type=?"); values.push(work_type); }
     if (company_name) { fields.push("company_name=?"); values.push(company_name); }
-    if (income) { if (!isValidIncome(income)) return res.json({ success: false, msg: "Invalid income format" }); fields.push("income=?"); values.push(income); }
+    if (income) { if (!isValidIncome(income)) return res.json({message: "Invalid income format" }); fields.push("income=?"); values.push(income); }
 
-    if (fields.length === 0) return res.json({ success: false, msg: "No valid data provided" });
+    if (fields.length === 0) return res.json({ message: "No valid data provided" });
 
     fields.push("updated_at=NOW()");
     values.push(user_id);
 
     await pool.query(`UPDATE users SET ${fields.join(", ")} WHERE id=?`, values);
-    res.json({ success: true, msg: "Professional details updated successfully" });
+    res.json({ message: "Professional details updated successfully" });
   } catch (err) {
-    res.status(500).json({ success: false, msg: "Error updating professional details", error: err.message });
+    res.status(500).json({message: "Error updating professional details", error: err.message });
   }
 };
 
@@ -305,7 +315,7 @@ export const updateProfilechange = async (req, res) => {
       interests, profile_pic, cover_pic
     } = req.body;
 
-    if (!id) return res.json({ success: false, msg: "User ID is required" });
+    if (!id) return res.json({ message: "User ID is required" });
 
     const fields = [];
     const values = [];
@@ -345,7 +355,7 @@ export const updateProfilechange = async (req, res) => {
     }
 
     if (fields.length === 0) {
-      return res.json({ success: false, msg: "No data provided to update" });
+      return res.json({ message: "No data provided to update" });
     }
 
     values.push(id); // For WHERE clause
@@ -353,20 +363,18 @@ export const updateProfilechange = async (req, res) => {
 
     await pool.query(query, values);
 
-    res.json({ success: true, msg: "Profile updated successfully" });
+    res.json({ message: "Profile updated successfully" });
 
   } catch (err) {
   if (err.code === 'ER_DUP_ENTRY') {
     return res.status(409).json({     // ✅ 409 Conflict → for duplicate entries
-      success: false,
-      msg: 'Mobile number or email already exists',
+      message: 'Mobile number or email already exists',
       error: err.message
     });
   }
 
   res.status(500).json({               // ✅ 500 → internal server error (default)
-    success: false,
-    msg: 'Error updating profile',
+    message: 'Error updating profile',
     error: err.message
   });
 }
@@ -433,7 +441,7 @@ export const updateProfile1 = async (req, res) => {
     }
 
     if (fields.length === 0) {
-      return res.status(200).json({ success: false, message: "No fields to update", userId });
+      return res.status(200).json({message: "No fields to update", userId });
     }
 
     const query = `UPDATE users SET ${fields.join(", ")} WHERE id = ?`;
@@ -442,13 +450,13 @@ export const updateProfile1 = async (req, res) => {
     const [result] = await pool.query(query, values);
 
     if (result.affectedRows === 0) {
-      return res.status(200).json({ success: false, message: "User not found", userId });
+      return res.status(200).json({ message: "User not found", userId });
     }
 
-    return res.status(200).json({ success: true, message: "Updated successfully", userId });
+    return res.status(200).json({message: "Updated successfully", userId });
   } catch (err) {
     console.error("Update Profile Error:", err);
-    return res.status(200).json({ success: false, message: "Server error", userId });
+    return res.status(200).json({ message: "Server error", userId });
   }
 };
 
@@ -462,7 +470,7 @@ const calculateProfileCompletion = (user) => {
   const totalFields = Object.keys(user).filter((key) => !excludeFields.includes(key));
   const filledFields = totalFields.filter((key) => {
     const value = user[key];
-    return value !== null && value !== "" && value !== 0;
+    return value !== null && value !== "";
   });
 
   // Calculate %
@@ -476,7 +484,6 @@ export const getProfile = async (req, res) => {
 
   if (!userId) {
     return res.status(400).json({
-      success: false,
       message: "User ID is required",
       user: null,
     });
@@ -491,8 +498,7 @@ export const getProfile = async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        success: false,
-        message: "User not found",
+      message: "User not found",
         user: null,
       });
     }
@@ -530,7 +536,6 @@ export const getProfile = async (req, res) => {
 
     //  Return response
     return res.status(200).json({
-      success: true,
       message: "Profile fetched successfully",
       user: user,
     });
@@ -538,7 +543,6 @@ export const getProfile = async (req, res) => {
   } catch (err) {
     console.error("Get Profile Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error",
       user: null,
     });
@@ -552,7 +556,6 @@ export const getProfileother = async (req, res) => {
 
   if (!userId) {
     return res.status(400).json({
-      success: false,
       message: "User ID is required",
       user: null,
     });
@@ -567,7 +570,6 @@ export const getProfileother = async (req, res) => {
 
     if (rows.length === 0) {
       return res.status(404).json({
-        success: false,
         message: "User not found",
         user: null,
       });
@@ -601,7 +603,6 @@ export const getProfileother = async (req, res) => {
     user.profile = profileCompletion; // Add % to response
     //  Return response
     return res.status(200).json({
-      success: true,
       message: "Profile fetched successfully",
       user: user,
     });
@@ -609,7 +610,6 @@ export const getProfileother = async (req, res) => {
   } catch (err) {
     console.error("Get Profile Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error",
       user: null,
     });
@@ -623,15 +623,15 @@ export const updateOnlineStatus = async (req, res) => {
 
   // Validation
   if (!user_id) {
-    return res.status(400).json({ success: false, message: "UserId is required" });
+    return res.status(400).json({  message: "UserId is required" });
   }
 
   if (online_status === undefined) {
-    return res.status(400).json({ success: false, message: "online_status is required (0 or 1)" });
+    return res.status(400).json({ message: "online_status is required (0 or 1)" });
   }
 
   if (online_status !== 0 && online_status !== 1 && online_status !== "0" && online_status !== "1") {
-    return res.status(400).json({ success: false, message: "Online value must be 0 or 1" });
+    return res.status(400).json({ message: "Online value must be 0 or 1" });
   }
 
   try {
@@ -641,18 +641,17 @@ export const updateOnlineStatus = async (req, res) => {
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json({
-      success: true,
       message: online_status == 1 ? "User is online" : "User is offline",
       online_status: Number(online_status)
     });
 
   } catch (err) {
     console.error("Update Online Status Error:", err);
-    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+    return res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
@@ -661,15 +660,15 @@ export const updateLiveStatus = async (req, res) => {
 
   // Validation
   if (!user_id) {
-    return res.status(400).json({ success: false, message: "UserId is required" });
+    return res.status(400).json({ message: "UserId is required" });
   }
 
   if (live_status === undefined) {
-    return res.status(400).json({ success: false, message: "live_status is required (0 or 1)" });
+    return res.status(400).json({ message: "live_status is required (0 or 1)" });
   }
 
   if (live_status !== 0 && live_status !== 1 && live_status !== "0" && live_status !== "1") {
-    return res.status(400).json({ success: false, message: "Live value must be 0 or 1" });
+    return res.status(400).json({ message: "Live value must be 0 or 1" });
   }
 
   try {
@@ -679,18 +678,17 @@ export const updateLiveStatus = async (req, res) => {
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json({
-      success: true,
       message: live_status == 1 ? "User is live" : "User is not live",
       live_status: Number(live_status)
     });
 
   } catch (err) {
     console.error("Update Live Status Error:", err);
-    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+    return res.status(500).json({message: "Server error", error: err.message });
   }
 };
 
@@ -700,15 +698,15 @@ export const updatEarning = async (req, res) => {
  
   // Validation
   if (!user_id) {
-    return res.status(400).json({ success: false, message: "UserId is required" });
+    return res.status(400).json({ message: "UserId is required" });
   }
 
   if (earning_status === undefined) {
-    return res.status(400).json({ success: false, message: "earning_status is required (0 or 1)" });
+    return res.status(400).json({  message: "earning_status is required (0 or 1)" });
   }
 
   if (earning_status !== 0 && earning_status !== 1 && earning_status !== "0" && earning_status !== "1") {
-    return res.status(400).json({ success: false, message: "Earning value must be 0 or 1" });
+    return res.status(400).json({ message: "Earning value must be 0 or 1" });
   }
 
   try {
@@ -718,18 +716,17 @@ export const updatEarning = async (req, res) => {
     );
 
     if (result.affectedRows === 0) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({ message: "User not found" });
     }
 
     return res.status(200).json({
-      success: true,
       message: earning_status == 1 ? "Paid profile view has been enabled." : "Paid profile view has been disabled.",
       earning_status: Number(earning_status)
     });
 
   } catch (err) {
     console.error("Update Online Status Error:", err);
-    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+    return res.status(500).json({message: "Server error", error: err.message });
   }
 };
 // Update user's latitude and longitude
@@ -739,7 +736,6 @@ export const updateUserLocation = async (req, res) => {
 
     if (!user_id || !latitude || !longitude) {
       return res.status(400).json({
-        success: false,
         message: "user_id, latitude and longitude are required",
       });
     }
@@ -752,7 +748,6 @@ export const updateUserLocation = async (req, res) => {
 
     if (userRows.length === 0) {
       return res.status(404).json({
-        success: false,
         message: "User not found",
       });
     }
@@ -764,7 +759,6 @@ export const updateUserLocation = async (req, res) => {
     );
 
     return res.status(200).json({
-      success: true,
       message: "User location updated successfully",
       data: { user_id, latitude, longitude },
     });
@@ -772,7 +766,6 @@ export const updateUserLocation = async (req, res) => {
   } catch (err) {
     console.error("Update Location API Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error",
     });
   }
@@ -783,11 +776,11 @@ export const updateInterestStatus = async (req, res) => {
 
   // ------------------- Validation -------------------
   if (!user_id) {
-    return res.status(200).json({ success: false, message: "UserId is required" });
+    return res.status(200).json({ message: "UserId is required" });
   }
 
   if (!Array.isArray(interests) || interests.length === 0) {
-    return res.status(200).json({ success: false, message: "interests must be a non-empty array" });
+    return res.status(200).json({  message: "interests must be a non-empty array" });
   }
 
   // Allowed interests
@@ -796,7 +789,6 @@ export const updateInterestStatus = async (req, res) => {
 
   if (invalidInterests.length > 0) {
     return res.status(200).json({ 
-      success: false, 
       message: `Invalid interests: ${invalidInterests.join(", ")}` 
     });
   }
@@ -811,21 +803,20 @@ export const updateInterestStatus = async (req, res) => {
     );
 
     if (result.affectedRows === 0) {
-      return res.status(200).json({ success: false, message: "User not found" });
+      return res.status(200).json({ message: "User not found" });
     }
 
     // ------------------- Response -------------------
     // Return array as string values (not JSON string)
     const interestsString = interests.join(",");
     return res.status(200).json({
-      success: true,
       message: "Interests updated successfully",
       interests: interestsString  // ["dating"] or ["dating","video"] etc
     });
 
   } catch (err) {
     console.error("Update Interest Error:", err);
-    return res.status(500).json({ success: false, message: "Server error", error: err.message });
+    return res.status(500).json({message: "Server error", error: err.message });
   }
 };
 

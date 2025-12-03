@@ -22,14 +22,12 @@ export const getBanners = async (req, res) => {
     }));
 
     res.status(200).json({
-      success: true,
       count: banners.length,
       banners,
     });
   } catch (error) {
     console.error("Error fetching banners:", error);
     res.status(500).json({
-      success: false,
       message: "Server error while fetching banners",
     });
   }
@@ -39,7 +37,7 @@ export const getBanners = async (req, res) => {
 export const getStatesLinks = async (req, res) => {
   try {
     // 🔹 Fetch all states from country_id = 101
-    const [states] = await pool.query(`SELECT * FROM states WHERE country_id = 101`);
+    const [states] = await pool.query(`SELECT id, state as name FROM state WHERE status = 'active'`);
     
     // 🔹 Fetch all religions
     const [religions] = await pool.query(`SELECT * FROM religion`);
@@ -47,7 +45,6 @@ export const getStatesLinks = async (req, res) => {
     // ✅ If both tables empty
     if ((!states || states.length === 0) && (!religions || religions.length === 0)) {
       return res.status(404).json({
-        success: false,
         message: "No data found for states or religions",
         data: {
           states: [],
@@ -58,7 +55,6 @@ export const getStatesLinks = async (req, res) => {
 
     // ✅ Success
     return res.status(200).json({
-      success: true,
       message: "States and religions fetched successfully",
       data: {
         states,
@@ -69,7 +65,6 @@ export const getStatesLinks = async (req, res) => {
   } catch (err) {
     console.error("❌ getStatesLinks Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error while fetching states and religions",
       error: err.message
     });
@@ -78,33 +73,30 @@ export const getStatesLinks = async (req, res) => {
 
 
 // 🆕 New API: Get Cities by State ID
-export const getCitiesByState = async (req, res) => {
+export const getDistrictByState = async (req, res) => {
   try {
     const { state_id } = req.body;
 
     // Validation
     if (!state_id) {
       return res.status(400).json({
-        success: false,
         message: "state_id is required"
       });
     }
 
     // Query cities table
     const [rows] = await pool.query(
-      "SELECT * FROM cities WHERE state_id = ?",
+      `SELECT id, district_name As name, state_id FROM district WHERE state_id = ? AND status = 'active'`,
       [state_id]
     );
 
     return res.status(200).json({
-      success: true,
-      message: "Cities fetched successfully",
+      message: "District fetched successfully",
       cities: rows
     });
   } catch (err) {
-    console.error("Get Cities Error:", err);
+    console.error("Get District Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error",
       cities: []
     });
@@ -119,21 +111,19 @@ export const getSubReligionByReligion = async (req, res) => {
     // 🔹 Validation
     if (!religion_id) {
       return res.status(400).json({
-        success: false,
         message: "religion_id is required"
       });
     }
 
     // 🔹 Query sub_religion table
     const [rows] = await pool.query(
-      "SELECT * FROM sub_religion WHERE religion_id = ?",
+      `SELECT * FROM sub_religion WHERE religion_id = ? AND  status = 'active'`,
       [religion_id]
     );
 
     // 🔹 If no data found
     if (!rows || rows.length === 0) {
       return res.status(404).json({
-        success: false,
         message: "No sub religions found for this religion_id",
         sub_religions: []
       });
@@ -141,14 +131,12 @@ export const getSubReligionByReligion = async (req, res) => {
 
     // 🔹 Success response
     return res.status(200).json({
-      success: true,
       message: "Sub religions fetched successfully",
       sub_religions: rows
     });
   } catch (err) {
     console.error("Get Sub Religion Error:", err);
     return res.status(500).json({
-      success: false,
       message: "Server error while fetching sub religions",
       sub_religions: []
     });
@@ -168,7 +156,6 @@ export const getPersonalList = async (req, res) => {
 
     // ✅ Return structured response
     return res.status(200).json({
-      success: true,
       message: "Get Professional List fetched successfully",
       data: {
         horoscopes: horoscopes[0],
@@ -181,7 +168,6 @@ export const getPersonalList = async (req, res) => {
   } catch (error) {
     console.error("Error fetching profile options:", error);
     return res.status(500).json({
-      success: false,
       message: "Server error while fetching profile options",
       error: error.message
     });
@@ -199,7 +185,6 @@ export const getFemilyList = async (req, res) => {
     const [years] = await pool.query("SELECT * FROM years ORDER BY id ASC");
 
     return res.status(200).json({
-      success: true,
       message: "Master data fetched successfully",
       data: {
         blood_groups: bloodGroups,
@@ -212,7 +197,6 @@ export const getFemilyList = async (req, res) => {
   console.error("Get Master Data Error:", error.message);
 
   return res.status(500).json({
-    success: false,
     message: "Server error while fetching master data",
     error: error.message
   });
@@ -239,7 +223,6 @@ export const getProfessionalList = async (req, res) => {
     ]);
 
     return res.status(200).json({
-      success: true,
       message: "Master data fetched successfully",
       data: {
         marital_status,
@@ -254,7 +237,6 @@ export const getProfessionalList = async (req, res) => {
   } catch (error) {
     console.error("Get Master Data Error:", error.message);
     return res.status(500).json({
-      success: false,
       message: "Server error while fetching master data",
       error: error.message
     });

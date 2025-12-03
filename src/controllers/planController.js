@@ -20,7 +20,7 @@ export const planlist = async (req, res) => {
     }
 
     // 🔹 2. Fetch all plans
-    const [rows] = await pool.query(`SELECT * FROM plans`);
+    const [rows] = await pool.query(`SELECT * FROM plans where status = 1`);
 
     if (rows.length === 0) {
       return res.status(400).json({
@@ -162,34 +162,38 @@ export const userPayments = async (req, res) => {
     }
 
     // ---- Query user active payments ----
-    let [rows] = await pool.query(
-      `SELECT 
-id,
-user_id,
-plan_id,
-order_id,
-payment_id,
-signature,
-amount,
-currency,
-type,
-status,
-gateway_type,
-created_at,
-expire_at,
-day,
-Filter_Both As swipe,
-Filter_Gender As message,
-Filter_Region As profile,
-No_Ads As audio,
-Rear_Camra As vedio
-       FROM payments
-       WHERE user_id = ?
-         AND status = 'success'
-         AND expire_at >= NOW()
-       ORDER BY created_at DESC`,
-      [user_id]
-    );
+let [rows] = await pool.query(
+  `SELECT 
+    p.id,
+    p.user_id,
+    p.plan_id,
+    pl.name AS plan_name,
+    p.order_id,
+    p.payment_id,
+    p.signature,
+    p.amount,
+    p.currency,
+    p.type,
+    p.status,
+    p.gateway_type,
+    p.created_at,
+    p.expire_at,
+    p.day,
+    p.Filter_Both AS swipe,
+    p.Filter_Gender AS message,
+    p.Filter_Region AS profile,
+    p.No_Ads AS audio,
+    p.Rear_Camra AS video
+   FROM payments p
+   LEFT JOIN plans pl ON p.plan_id = pl.id
+   WHERE p.user_id = ?
+     AND p.status = 'success'
+     AND p.expire_at >= NOW()
+   ORDER BY p.created_at DESC
+   LIMIT 1`,
+  [user_id]
+);
+
 
     if (rows.length === 0) {
       // User ke paas active payment nahi → fetch plan id = 5
@@ -216,6 +220,7 @@ Rear_Camra As vedio
           id: 0,
           user_id,
           plan_id: plan.id,
+		  plan_name: plan.name,
           order_id: null,
           payment_id: null,
           signature: null,
@@ -234,7 +239,15 @@ Rear_Camra As vedio
         }];
       }
     }
-
+    // Convert true/false to 1/0
+rows = rows.map(row => ({
+  ...row,
+  swipe: row.swipe === "true" || row.swipe === true ? 1 : 0,
+  message: row.message === "true" || row.message === true ? 1 : 0,
+  profile: row.profile === "true" || row.profile === true ? 1 : 0,
+  audio: row.audio === "true" || row.audio === true ? 1 : 0,
+  video: row.video === "true" || row.video === true ? 1 : 0
+}));
     // ---- Response ----
     return res.status(200).json({
       success: true,
@@ -401,15 +414,4 @@ export const userPlanUpdate = async (req, res) => {
     });
   }
 };
-
-
-
-
-
-
-
-
-
-
-
 

@@ -131,10 +131,10 @@
 						  <div class="col-md-6">
 							<label>Old Password</label>
 							<div class="position-relative">
-							  <input type="password" name="oldPassword" id="oldPassword" class="form-control">
+							  <input type="password" name="oldPassword" id="oldPassword" class="form-control" oninput="this.value=this.value.replace(/\s/g,'')">
 							  <i class="mdi mdi-eye toggle-eye"
 								 data-target="oldPassword"
-								 style="position:absolute; right:15px; top:12px; cursor:pointer; font-size:20px;">
+								 style="position:absolute; right:15px; top:12px; cursor:pointer; font-size:20px;" >
 							  </i>
 							</div>
 						  </div>
@@ -142,7 +142,7 @@
 						  <div class="col-md-6">
 							<label>New Password</label>
 							<div class="position-relative">
-							  <input type="password" name="newPassword" id="newPassword" class="form-control">
+							  <input type="password" name="newPassword" id="newPassword" class="form-control" oninput="this.value=this.value.replace(/\s/g,'')">
 							  <i class="mdi mdi-eye toggle-eye"
 								 data-target="newPassword"
 								 style="position:absolute; right:15px; top:12px; cursor:pointer; font-size:20px;">

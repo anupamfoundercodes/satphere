@@ -11,8 +11,8 @@ export const verifyPayment = async (req, res) => {
     if (!order_id) return res.status(400).json({ message: "order_id is required" });
     if (!status) return res.status(400).json({ message: "status is required" });
 
-    if (!["pending","success", "failed"].includes(status)) {
-      return res.status(400).json({ message: "Invalid status value" });
+   if (!["pending", "success", "failed"].includes(String(status).toLowerCase())) {
+    return res.status(422).json({ message: "Invalid status" });
     }
 
     // Fetch payment
@@ -36,7 +36,7 @@ export const verifyPayment = async (req, res) => {
 		}
 
     // ---------- SUCCESS CASE ----------
-    if (status === "success") {
+    if (status && status.toLowerCase() === "success") {
 
       // fetch plan from DB
       const [planRows] = await pool.query(

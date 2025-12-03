@@ -261,15 +261,19 @@ router.post("/sendmultiplenotifications", async (req, res) => {
 
 router.post('/sendTopicNotification', async (req, res) => {
   const { title, message, type, sender_id} = req.body;
-   const topic = "Topic";
+   const topic = process.env.TOPIC
   if (!topic || !title || !message) {
     return res.status(400).json({ success: false, message: 'Topic, title, and message are required' });
   }
 
   try {
     // . DB Insert (Optional - अगर सभी पर log चाहिए)
-    await insertNotification(null, title, message,  sender_id||null,type);
-
+    //await insertNotification(null, title, message,  sender_id||null,type);
+      await pool.query(
+        `INSERT INTO notifications (user_id, title, message, senderid,type, is_read, created_at) 
+         VALUES (?, ?, ?, ?,?, ?, ?)`,
+        [0, title, message, 0,type, 0, new Date()]
+      );
     // Topic पर Notification भेजो
     await admin.messaging().send({
       notification: { title, body: message },
@@ -290,6 +294,7 @@ router.post('/sendTopicNotification', async (req, res) => {
     });
   }
 });
+
 
 
 export default router;
