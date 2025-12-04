@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <%- include('../partials/_head') %>
+
   <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
   <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
   <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
@@ -11,18 +12,13 @@
   <link rel="stylesheet" href="/css/style.css">
 
   <style>
-    .editable {
-      background-color: #fff9c4; 
-      cursor: text;
-      min-width:120px;
-    }
-    .editable:focus {
-      outline: 2px solid #4caf50;
-    }
-    .badge-success { background-color: #28a745; color: #fff; }
-    .badge-danger { background-color: #dc3545; color: #fff; }
-    .table-title { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
-    .small-muted { font-size:0.9rem; color:#6c757d; }
+    .editable { background-color:#fff9c4; cursor:text; min-width:120px; }
+    .editable:focus { outline:2px solid #4caf50; }
+    .badge-success{background:#28a745;color:#fff;}
+    .badge-danger{background:#dc3545;color:#fff;}
+    .table-title{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+    .small-muted{font-size:0.9rem;color:#6c757d;}
+    #tableContainer { max-height: 60vh; overflow-y: auto; }
   </style>
 </head>
 
@@ -36,35 +32,54 @@
       <div class="content-wrapper">
         <h3 class="page-title">Master Data Tables</h3>
 
-        <div class="row mb-4">
-          <div class="col-md-4">
-            <% if (typeof tables !== 'undefined' && Object.keys(tables).length > 0) { %>
-            <select id="tableDropdown" class="form-control">
-              <% Object.keys(tables).forEach(tbl => { %>
-                <option value="<%= tbl %>" <%= (typeof defaultTable !== 'undefined' && tbl === defaultTable) ? "selected" : "" %>>
-                  <%= tables[tbl] %>
-                </option>
-              <% }) %>
-            </select>
-            <% } else { %>
-              <div>No tables defined.</div>
-            <% } %>
+        <!-- TABLE LIST (View buttons) -->
+        <div class="card mb-4">
+          <div class="card-body">
+            <h4>Available Tables</h4>
+            <div class="table-responsive mt-3">
+              <table class="table table-bordered table-striped">
+                <thead>
+                  <tr>
+                    <th>SR No</th>
+                    <th>Table Name</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                <% if (tables && Object.keys(tables).length > 0) { 
+                    let i = 1;
+                    Object.keys(tables).forEach(tbl => { %>
+                      <tr>
+                        <td><%= i++ %></td>
+                        <td><%= tables[tbl] %></td>
+                        <td>
+                          <button class="btn btn-sm btn-info viewTableBtn" data-table="<%= tbl %>">View</button>
+                        </td>
+                      </tr>
+                <% }) } else { %>
+                  <tr><td colspan="3" class="text-center text-danger">No tables found.</td></tr>
+                <% } %>
+                </tbody>
+              </table>
+            </div>
           </div>
+        </div>
 
+        <!-- Search + Add Row -->
+        <div class="row mb-3">
           <div class="col-md-4">
             <input type="text" id="searchInput" class="form-control" placeholder="Search...">
           </div>
-
+          <div class="col-md-4"></div>
           <div class="col-md-4 text-end">
             <button class="btn btn-danger" id="addBtn">Add New</button>
           </div>
         </div>
 
-        <div id="tableContainer">
-          <!-- Table will render here -->
-        </div>
-      </div>
+        <!-- DYNAMIC TABLE -->
+        <div id="tableContainer"></div>
 
+      </div>
       <%- include('../partials/_footer') %>
     </div>
   </div>
@@ -90,7 +105,7 @@
   </div>
 </div>
 
-<!-- Scripts -->
+<!-- JS -->
 <script src="/vendors/js/vendor.bundle.base.js"></script>
 <script src="/js/off-canvas.js"></script>
 <script src="/js/misc.js"></script>
@@ -99,151 +114,198 @@
 <%- include('../partials/_script') %>
 
 <script>
-let currentTable = "<%= typeof defaultTable !== 'undefined' ? defaultTable : '' %>";
+let currentTable = "";
 let currentRows = [];
 let currentColumns = [];
 
 document.addEventListener("DOMContentLoaded", () => {
-  if (currentTable) loadTable(currentTable);
 
-  document.getElementById("tableDropdown")?.addEventListener("change", function () {
-    currentTable = this.value;
-    loadTable(currentTable);
+  // VIEW BUTTON CLICK
+  document.querySelectorAll(".viewTableBtn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      currentTable = this.dataset.table;
+      loadTable(currentTable);
+    });
   });
 
+  // SEARCH
   document.getElementById("searchInput")?.addEventListener("input", function () {
     renderTable(currentTable, currentRows, this.value.trim().toLowerCase());
   });
 
-  document.getElementById("addBtn")?.addEventListener("click", () => {
+  // ADD MODAL
+  document.getElementById("addBtn").addEventListener("click", () => {
+    if (!currentTable) return alert("Please select a table using View button.");
     document.getElementById("addInput").value = "";
     new bootstrap.Modal(document.getElementById("addModal")).show();
   });
 
+  // SAVE NEW RECORD
   document.getElementById("saveAddBtn")?.addEventListener("click", () => {
     const value = document.getElementById("addInput").value.trim();
     if (!value) return alert("Enter a value");
+
     fetch("/add-record", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ table: currentTable, fieldValue: value })
-    }).then(r => r.json()).then(resp => {
+    })
+    .then(r => r.json())
+    .then(resp => {
       if (!resp.success) return alert(resp.message || "Failed to add");
       bootstrap.Modal.getInstance(document.getElementById("addModal")).hide();
       loadTable(currentTable);
-    }).catch(e => { console.error(e); alert("Failed to add"); });
+    });
   });
+
 });
 
+// LOAD TABLE DATA
 function loadTable(tbl) {
-  document.getElementById("tableContainer").innerHTML = `<div class="text-center py-4">Loading...</div>`;
-  fetch(`/get-table-data/${encodeURIComponent(tbl)}`)
-    .then(res => res.json())
+  document.getElementById("tableContainer").innerHTML =
+    `<div class="text-center py-4">Loading...</div>`;
+
+  fetch("/get-table-data/" + encodeURIComponent(tbl))
+    .then(r => r.json())
     .then(data => {
       if (!data.success) {
-        document.getElementById("tableContainer").innerHTML = `<div class="text-danger">Failed to load table</div>`;
+        document.getElementById("tableContainer").innerHTML =
+          `<div class="text-danger">Failed to load table</div>`;
         return;
       }
+
       currentRows = data.rows || [];
-      currentColumns = currentRows.length > 0 ? Object.keys(currentRows[0]) : [];
+      currentColumns = currentRows.length ? Object.keys(currentRows[0]) : [];
       renderTable(tbl, currentRows);
-    }).catch(err => {
-      console.error(err);
-      document.getElementById("tableContainer").innerHTML = `<div class="text-danger">Error loading table</div>`;
     });
 }
 
 function renderTable(tbl, rows, filter = "") {
   let filtered = rows;
+
   if (filter) {
-    filtered = rows.filter(r => Object.values(r).some(v => String(v||"").toLowerCase().includes(filter)));
+    filtered = rows.filter(r =>
+      Object.values(r).some(v =>
+        String(v || "").toLowerCase().includes(filter)
+      )
+    );
   }
 
-  let html = `<div class="card"><div class="card-body"><div class="table-title">
-    <h4 class="card-title mb-0">${tbl.toUpperCase()}</h4>
-    <div class="small-muted">Rows: ${filtered.length}</div>
-  </div><div class="table-responsive mt-3">
-  <table class="table table-striped table-hover"><thead><tr><th>#</th>`;
+  let html = `
+    <div class="card">
+    <div class="card-body">
+      <div class="table-title">
+        <h4 class="card-title mb-0">${tbl.toUpperCase()}</h4>
+        <div class="small-muted">Rows: ${filtered.length}</div>
+      </div>
+      <div class="table-responsive mt-3">
+      <table class="table table-striped table-hover">
+      <thead><tr><th>#</th>
+  `;
 
-  currentColumns.forEach(col => html += `<th>${col}</th>`);
+  currentColumns.forEach(col => {
+    if (col !== "id") html += `<th>${col}</th>`;
+  });
+
   html += `<th>Actions</th></tr></thead><tbody>`;
 
   filtered.forEach((row, index) => {
     html += `<tr data-id="${row.id}"><td>${index + 1}</td>`;
+
     currentColumns.forEach(col => {
-      const val = row[col] == null ? "" : row[col];
-      if (col === "id") html += `<td>${val}</td>`;
-      else if (col === "status") {
-        const badgeClass = String(val) === "active" ? "badge-success" : "badge-danger";
-        html += `<td><span class="badge ${badgeClass} toggleStatus" data-id="${row.id}" data-status="${val}">${val}</span></td>`;
+      const val = row[col] ?? "";
+
+      if (col === "id") return;
+
+      if (col === "status") {
+        html += `<td><button class="btn btn-sm ${val=="active"?"btn-success":"btn-danger"} statusBtn">${val}</button></td>`;
       } else {
-        html += `<td class="editable" contenteditable="true" data-field="${col}">${escapeHtml(val)}</td>`;
+        html += `<td contenteditable='true' class='editable' data-field="${col}">${val}</td>`;
       }
     });
-    html += `<td><button class="btn btn-sm btn-danger deleteBtn" data-id="${row.id}">Delete</button></td></tr>`;
+
+    html += `
+      <td>
+        <button class="btn btn-sm btn-info saveRowBtn">Save</button>
+        <button class="btn btn-sm btn-danger deleteRowBtn">Delete</button>
+      </td>
+    </tr>`;
   });
 
   html += `</tbody></table></div></div></div>`;
   document.getElementById("tableContainer").innerHTML = html;
 
-  bindEvents(tbl);
-}
+  // Save button listener
+  document.querySelectorAll(".saveRowBtn").forEach(btn => btn.addEventListener("click", saveRow));
 
-function bindEvents(tbl) {
-  document.querySelectorAll(".editable").forEach(cell => {
-    cell.addEventListener("focus", () => cell.dataset._orig = cell.innerText.trim());
-    cell.addEventListener("blur", () => {
-      const id = cell.closest("tr").dataset.id;
-      const field = cell.dataset.field;
-      const value = cell.innerText.trim();
-      if (value === cell.dataset._orig) return;
-      fetch("/update-record", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ table: tbl, id, field, value })
-      }).then(r => r.json()).then(resp => {
-        if (!resp.success) { alert(resp.message || "Update failed"); loadTable(tbl); }
-        else { const r = currentRows.find(rr => String(rr.id) === String(id)); if (r) r[field]=value; }
-      }).catch(e=>{ console.error(e); alert("Update failed"); loadTable(tbl); });
-    });
-    cell.addEventListener("keypress", e => { if(e.key==="Enter"){ e.preventDefault(); cell.blur(); }});
-  });
+  // Delete button listener
+  document.querySelectorAll(".deleteRowBtn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const tr = this.closest("tr");
+      const id = tr.dataset.id;
+      if (!confirm("Are you sure to delete this row?")) return;
 
-  document.querySelectorAll(".deleteBtn").forEach(btn => {
-    btn.onclick = () => {
-      if (!confirm("Delete this record?")) return;
       fetch("/delete-record", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ table: tbl, id: btn.dataset.id })
-      }).then(r=>r.json()).then(resp => {
-        if (!resp.success) return alert(resp.message || "Delete failed");
-        loadTable(tbl);
-      }).catch(e=>{ console.error(e); alert("Delete failed"); });
-    };
+        body: JSON.stringify({ table: currentTable, id })
+      })
+      .then(r => r.json())
+      .then(resp => {
+        if (resp.success) loadTable(currentTable);
+        else alert(resp.message || "Failed to delete");
+      })
+      .catch(() => alert("Failed to delete"));
+    });
   });
 
-  document.querySelectorAll(".toggleStatus").forEach(st => {
-    st.onclick = () => {
-      const id = st.dataset.id;
-      const current = st.dataset.status;
-      const newStatus = current==="active"?"inactive":"active";
+  // Toggle status listener (har table render ke baad)
+  document.querySelectorAll(".statusBtn").forEach(btn => {
+    btn.addEventListener("click", function () {
+      const tr = this.closest("tr");
+      const id = tr.dataset.id;
+      const currentStatus = this.innerText.trim();
+      const newStatus = currentStatus === "active" ? "inactive" : "active";
+
       fetch("/toggle-status", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ table: tbl, id, status: newStatus })
-      }).then(r=>r.json()).then(resp => {
-        if (!resp.success) return alert(resp.message || "Status change failed");
-        loadTable(tbl);
-      }).catch(e=>{ console.error(e); alert("Status change failed"); });
-    };
+        body: JSON.stringify({ table: currentTable, id, status: newStatus })
+      })
+      .then(r => r.json())
+      .then(resp => {
+        if (resp.success) loadTable(currentTable);
+        else alert(resp.message || "Failed to update status");
+      })
+      .catch(() => alert("Failed to update status"));
+    });
   });
 }
 
-function escapeHtml(str) {
-  if (str===null || str===undefined) return "";
-  return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+
+// SAVE ROW
+function saveRow(e) {
+  const tr = e.target.closest("tr");
+  const id = tr.dataset.id;
+
+  const data = {};
+  tr.querySelectorAll("[data-field]").forEach(td => {
+    data[td.dataset.field] = td.innerText.trim();
+  });
+
+  fetch("/update-record", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ table: currentTable, id, data })
+  })
+  .then(r => r.json())
+  .then(resp => {
+    alert(resp.message || "Updated");
+    loadTable(currentTable);
+  });
 }
+
 </script>
+
 </body>
 </html>

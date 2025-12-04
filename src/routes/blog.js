@@ -2120,7 +2120,8 @@ router.get("/tableshow", requireAdmin, async (req, res) => {
       diet: "Diet Types",
       Course: "Courses",
       child_count: "Child Count",
-      blood_groups: "Blood Groups"
+      blood_groups: "Blood Groups",
+     demo_table: "Demo Table"
     };
 
     let results = {};
@@ -2153,6 +2154,7 @@ const tables = [
   { table: "Course", col: "course_name" },
   { table: "child_count", col: "child_count_label" },
   { table: "blood_groups", col: "name" },
+  { table: "demo_table", col: "name" },
 ];
 
 // helper: find meta for a table
@@ -2273,14 +2275,14 @@ router.post("/toggle-status", requireAdmin, async (req, res) => {
     const newStatus = status === "active" ? "active" : "inactive";
 
     await pool.query(
-      `UPDATE \`${table}\` SET status = ?, updated_at = NOW() WHERE id = ?`,
+      `UPDATE \`${table}\` SET status = ? WHERE id = ?`,
       [newStatus, id]
     );
 
     res.json({ success: true });
   } catch (err) {
     console.error(err);
-    res.json({ success: false, message: "DB error" });
+    res.json({ success: false, message: err});
   }
 });
 export default router;
