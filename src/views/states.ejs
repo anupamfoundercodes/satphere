@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <%- include('../partials/_head') %>
+    <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+    <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+    <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/style.css">
+
+    <style>
+      .editable {
+        background-color: #fdfd96;
+        cursor: text;
+      }
+      .editable:focus {
+        outline: 2px solid #4caf50;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-scroller">
+      <%- include('../partials/_navbar') %>
+      <div class="container-fluid page-body-wrapper">
+        <%- include('../partials/_sidebar') %>
+        <div class="main-panel">
+          <div class="content-wrapper">
+            <div class="page-header">
+              <h3 class="page-title">Manage States & Districts</h3>
+            </div>
+
+            <!-- States Section -->
+            <div class="row mb-4">
+              <div class="col-md-6">
+                <input type="text" id="stateSearch" class="form-control" placeholder="Search State">
+              </div>
+              <div class="col-md-6 text-end">
+                <button class="btn btn-danger" id="addStateBtn">Add State</button>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">States</h4>
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="statesTable">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>State</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <% if (states && states.length > 0) { %>
+                            <% states.forEach((st, index) => { %>
+                              <tr data-id="<%= st.id %>">
+                                <td><%= index + 1 %></td>
+                                <td contenteditable="true" class="editable" data-field="state"><%= st.state %></td>
+                                <td>
+                                  <label class="badge <%= st.status === 'active' ? 'badge-success' : 'badge-danger' %> toggle-state-status"
+                                    style="cursor:pointer;" data-id="<%= st.id %>" data-status="<%= st.status %>">
+                                    <%= st.status === 'active' ? 'Active' : 'Inactive' %>
+                                  </label>
+                                </td>
+                                <td>
+                                  <button class="btn btn-sm btn-info view-districts" data-id="<%= st.id %>" data-name="<%= st.state %>">Districts</button>
+                                  <button class="btn btn-sm btn-danger delete-state" data-id="<%= st.id %>">Delete</button>
+                                </td>
+                              </tr>
+                            <% }) %>
+                          <% } else { %>
+                            <tr>
+                              <td colspan="4" class="text-center text-muted">No states found</td>
+                            </tr>
+                          <% } %>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- District Section -->
+            <div class="row mt-5" id="districtSection" style="display:none;">
+              <div class="col-lg-12 grid-margin stretch-card">
+                <div class="card">
+                  <div class="card-body">
+                    <h4 class="card-title">Districts of <span id="currentStateName"></span></h4>
+                    <button class="btn btn-danger mb-3" id="addDistrictBtn">Add District</button>
+                    <input type="text" id="districtSearch" placeholder="Search District..." class="form-control mb-3">
+                    <div class="table-responsive">
+                      <table class="table table-striped" id="districtsTable">
+                        <thead>
+                          <tr>
+                            <th>#</th>
+                            <th>District Name</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                          </tr>
+                        </thead>
+                        <tbody id="districtBody">
+                          <!-- Filled by JS -->
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <%- include('../partials/_footer') %>
+        </div>
+      </div>
+    </div>
+
+<!-- Add State Modal -->
+<div class="modal fade" id="addStateModal" tabindex="-1" aria-labelledby="addStateLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="addStateLabel">Add New State</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="newStateName" class="form-control" placeholder="Enter state name">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="saveStateBtn">Add State</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add District Modal -->
+<div class="modal fade" id="addDistrictModal" tabindex="-1" aria-labelledby="addDistrictLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="addDistrictLabel">Add District</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <input type="text" id="newDistrictName" class="form-control" placeholder="Enter district name">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="saveDistrictBtn">Add District</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Custom Bootstrap Modal for Alerts / Confirmations -->
+<div class="modal fade" id="customAlertModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="customAlertTitle">Alert</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body" id="customAlertMessage"></div>
+      <div class="modal-footer" id="customAlertButtons"></div>
+    </div>
+  </div>
+</div>
+
+    <!-- Scripts -->
+    <script src="/vendors/js/vendor.bundle.base.js"></script>
+    <script src="/js/off-canvas.js"></script>
+    <script src="/js/misc.js"></script>
+    <script src="/js/settings.js"></script>
+    <script src="/js/todolist.js"></script>
+    <%- include('../partials/_script') %>
+
+<script>
+/* --------------------
+   helper custom modal
+   -------------------- */
+function showCustomModal({ title = "Alert", message = "", buttons = [] }) {
+  const modalEl = document.getElementById("customAlertModal");
+  document.getElementById("customAlertTitle").textContent = title;
+  document.getElementById("customAlertMessage").innerHTML = message;
+
+  const footer = document.getElementById("customAlertButtons");
+  footer.innerHTML = "";
+
+  buttons.forEach(btn => {
+    const button = document.createElement("button");
+    button.textContent = btn.text;
+    button.className = "btn " + (btn.class || "btn-secondary");
+    button.addEventListener("click", () => {
+      if (btn.onClick) btn.onClick();
+      const modal = bootstrap.Modal.getInstance(modalEl);
+      modal.hide();
+    });
+    footer.appendChild(button);
+  });
+
+  const modal = new bootstrap.Modal(modalEl);
+  modal.show();
+}
+
+/* --------------------
+   State search
+   -------------------- */
+document.getElementById('stateSearch').addEventListener('input', function () {
+  const filter = this.value.toLowerCase();
+  document.querySelectorAll('#statesTable tbody tr').forEach(row => {
+    const name = row.children[1].textContent.toLowerCase();
+    row.style.display = name.includes(filter) ? '' : 'none';
+  });
+});
+
+/* --------------------
+   Toggle State Status
+   -------------------- */
+document.querySelectorAll('.toggle-state-status').forEach(badge => {
+  badge.addEventListener('click', function () {
+    const id = this.dataset.id;
+    const newStatus = this.dataset.status === 'active' ? 'inactive' : 'active';
+
+    fetch('/states/status-toggle', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, status: newStatus })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        this.dataset.status = newStatus;
+        this.classList.toggle('badge-success');
+        this.classList.toggle('badge-danger');
+        this.textContent = newStatus === 'active' ? 'Active' : 'Inactive';
+      } else {
+        showCustomModal({ title: "Error", message: "Failed to update status", buttons: [{ text: "OK", class: "btn-primary" }] });
+      }
+    });
+  });
+});
+
+/* --------------------
+   Inline State Editing
+   -------------------- */
+document.querySelectorAll('.editable').forEach(cell => {
+  cell.addEventListener('blur', function () {
+    const id = this.closest('tr').dataset.id;
+    const field = this.dataset.field;
+    const value = this.textContent.trim();
+
+    fetch('/states/update-field', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, value })
+    });
+  });
+});
+
+/* --------------------
+   View Districts of a State
+   -------------------- */
+document.querySelectorAll('.view-districts').forEach(btn => {
+  btn.addEventListener('click', function () {
+    const stateId = this.dataset.id;
+    const stateName = this.dataset.name;
+    document.getElementById('currentStateName').textContent = stateName;
+    document.getElementById('districtSection').style.display = 'block';
+
+    fetch(`/districts/${stateId}`)
+      .then(res => res.json())
+      .then(data => {
+        const tbody = document.getElementById('districtBody');
+        tbody.innerHTML = '';
+        if (!data.success || data.data.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" class="text-center text-muted">No districts found</td></tr>';
+        } else {
+          data.data.forEach((dist, index) => {
+            tbody.innerHTML += `
+              <tr data-id="${dist.id}">
+                <td>${index + 1}</td>
+                <td contenteditable="true" class="editable" data-field="district_name">${dist.district_name}</td>
+                <td>
+                  <label class="badge ${dist.status === 'active' ? 'badge-success' : 'badge-danger'} toggle-district-status"
+                    style="cursor:pointer;" data-id="${dist.id}" data-status="${dist.status}">
+                    ${dist.status === 'active' ? 'Active' : 'Inactive'}
+                  </label>
+                </td>
+                <td>
+                  <button class="btn btn-sm btn-danger delete-district" data-id="${dist.id}">Delete</button>
+                </td>
+              </tr>
+            `;
+          });
+        }
+		 setTimeout(() => {
+		  document.getElementById("districtSection")
+			.scrollIntoView({ behavior: "smooth", block: "start" });
+		}, 100);
+
+      });
+  });
+
+});
+
+
+/* --------------------
+   Toggle District Status (delegated)
+   -------------------- */
+document.addEventListener("click", function (e) {
+  if (e.target.classList.contains("toggle-district-status")) {
+    const id = e.target.dataset.id;
+    const currentStatus = e.target.dataset.status;
+    const newStatus = currentStatus === "active" ? "inactive" : "active";
+
+    fetch("/districts/status-toggle", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, status: newStatus })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.success) {
+        e.target.dataset.status = newStatus;
+        e.target.textContent = newStatus === "active" ? "Active" : "Inactive";
+        e.target.classList.toggle("badge-success");
+        e.target.classList.toggle("badge-danger");
+      } else {
+        showCustomModal({ title: "Error", message: "Failed to update status", buttons: [{ text: "OK", class: "btn-primary" }] });
+      }
+    });
+  }
+});
+
+/* --------------------
+   Inline District Editing
+   -------------------- */
+document.addEventListener('blur', function (e) {
+  if (e.target.classList.contains('editable') && e.target.closest('#districtsTable')) {
+    const id = e.target.closest('tr').dataset.id;
+    const value = e.target.textContent.trim();
+
+    fetch('/districts/update-field', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id, value })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        showCustomModal({ title: "Error", message: "Failed to update district", buttons: [{ text: "OK", class: "btn-primary" }] });
+      }
+    });
+  }
+}, true);
+
+/* --------------------
+   Search Districts
+   -------------------- */
+document.getElementById("districtSearch").addEventListener("keyup", function() {
+  let value = this.value.toLowerCase();
+  let rows = document.querySelectorAll("#districtsTable tbody tr");
+  rows.forEach(row => {
+    let text = row.innerText.toLowerCase();
+    row.style.display = text.includes(value) ? "" : "none";
+  });
+});
+
+/* --------------------
+   Delete State
+   -------------------- */
+document.querySelectorAll(".delete-state").forEach(btn => {
+  btn.addEventListener("click", function () {
+    const id = this.dataset.id;
+    const row = this.closest("tr");
+
+    showCustomModal({
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this state?",
+      buttons: [
+        { text: "Cancel", class: "btn-secondary" },
+        { 
+          text: "Delete", 
+          class: "btn-danger", 
+          onClick: () => {
+            fetch(`/states/delete/${id}`)
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  row.remove();
+                  showCustomModal({ title: "Success", message: data.message, buttons: [{ text: "OK", class: "btn-primary" }] });
+                } else {
+                  showCustomModal({ title: "Error", message: "Failed to delete state", buttons: [{ text: "OK", class: "btn-primary" }] });
+                }
+              });
+          } 
+        }
+      ]
+    });
+  });
+});
+
+/* --------------------
+   Delete District (delegated)
+   -------------------- */
+document.addEventListener("click", function(e) {
+  if (e.target.classList.contains("delete-district")) {
+    const id = e.target.dataset.id;
+    const row = e.target.closest("tr");
+
+    showCustomModal({
+      title: "Confirm Delete",
+      message: "Are you sure you want to delete this district?",
+      buttons: [
+        { text: "Cancel", class: "btn-secondary" },
+        {
+          text: "Delete",
+          class: "btn-danger",
+          onClick: () => {
+            fetch(`/districts/delete/${id}`)
+              .then(res => res.json())
+              .then(data => {
+                if (data.success) {
+                  row.remove();
+                  showCustomModal({ title: "Success", message: data.message, buttons: [{ text: "OK", class: "btn-primary" }] });
+                } else {
+                  showCustomModal({ title: "Error", message: data.message || "Failed to delete district", buttons: [{ text: "OK", class: "btn-primary" }] });
+                }
+              });
+          }
+        }
+      ]
+    });
+  }
+});
+
+/* --------------------
+   Add State modal + save
+   -------------------- */
+document.getElementById("addStateBtn").addEventListener("click", () => {
+  const modal = new bootstrap.Modal(document.getElementById('addStateModal'));
+  document.getElementById('newStateName').value = '';
+  modal.show();
+});
+
+document.getElementById("saveStateBtn").addEventListener("click", () => {
+  const stateName = document.getElementById('newStateName').value.trim();
+  if (!stateName) return showCustomModal({ title: "Warning", message: "Please enter a state name", buttons: [{ text: "OK", class: "btn-primary" }] });
+
+  fetch("/states/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ state: stateName })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showCustomModal({ title: "Success", message: "State added successfully!", buttons: [{ text: "OK", class: "btn-primary" }] });
+      location.reload();
+    } else {
+      showCustomModal({ title: "Error", message: "Failed to add state: " + (data.message || ""), buttons: [{ text: "OK", class: "btn-primary" }] });
+    }
+  });
+});
+
+/* --------------------
+   Add District modal + save
+   -------------------- */
+document.getElementById("addDistrictBtn").addEventListener("click", () => {
+  const modal = new bootstrap.Modal(document.getElementById('addDistrictModal'));
+  document.getElementById('newDistrictName').value = '';
+  modal.show();
+});
+
+document.getElementById("saveDistrictBtn").addEventListener("click", () => {
+  const districtName = document.getElementById('newDistrictName').value.trim();
+  const stateId = document.querySelector(".view-districts[data-id]")?.dataset.id;
+  if (!districtName) return showCustomModal({ title: "Warning", message: "Please enter a district name", buttons: [{ text: "OK", class: "btn-primary" }] });
+
+  fetch("/districts/add", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ state_id: stateId, district_name: districtName })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      showCustomModal({ title: "Success", message: "District added successfully!", buttons: [{ text: "OK", class: "btn-primary" }] });
+      location.reload();
+    } else {
+      showCustomModal({ title: "Error", message: "Failed to add district: " + (data.message || ""), buttons: [{ text: "OK", class: "btn-primary" }] });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

@@ -289,6 +289,10 @@ document.querySelectorAll('.view-subreligions').forEach(btn => {
             `;
           });
         }
+		setTimeout(() => {
+		  document.getElementById("subReligionSection")
+			.scrollIntoView({ behavior: "smooth", block: "start" });
+		}, 100);
       });
   });
 });

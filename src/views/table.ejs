@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <%- include('../partials/_head') %>
+  <link rel="stylesheet" href="/vendors/mdi/css/materialdesignicons.min.css">
+  <link rel="stylesheet" href="/vendors/ti-icons/css/themify-icons.css">
+  <link rel="stylesheet" href="/vendors/css/vendor.bundle.base.css">
+  <link rel="stylesheet" href="/vendors/font-awesome/css/font-awesome.min.css">
+  <link rel="stylesheet" href="/css/style.css">
+
+  <style>
+    .editable {
+      background-color: #fff9c4; 
+      cursor: text;
+      min-width:120px;
+    }
+    .editable:focus {
+      outline: 2px solid #4caf50;
+    }
+    .badge-success { background-color: #28a745; color: #fff; }
+    .badge-danger { background-color: #dc3545; color: #fff; }
+    .table-title { display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; }
+    .small-muted { font-size:0.9rem; color:#6c757d; }
+  </style>
+</head>
+
+<body>
+<div class="container-scroller">
+  <%- include('../partials/_navbar') %>
+  <div class="container-fluid page-body-wrapper">
+    <%- include('../partials/_sidebar') %>
+
+    <div class="main-panel">
+      <div class="content-wrapper">
+        <h3 class="page-title">Master Data Tables</h3>
+
+        <div class="row mb-4">
+          <div class="col-md-4">
+            <% if (typeof tables !== 'undefined' && Object.keys(tables).length > 0) { %>
+            <select id="tableDropdown" class="form-control">
+              <% Object.keys(tables).forEach(tbl => { %>
+                <option value="<%= tbl %>" <%= (typeof defaultTable !== 'undefined' && tbl === defaultTable) ? "selected" : "" %>>
+                  <%= tables[tbl] %>
+                </option>
+              <% }) %>
+            </select>
+            <% } else { %>
+              <div>No tables defined.</div>
+            <% } %>
+          </div>
+
+          <div class="col-md-4">
+            <input type="text" id="searchInput" class="form-control" placeholder="Search...">
+          </div>
+
+          <div class="col-md-4 text-end">
+            <button class="btn btn-danger" id="addBtn">Add New</button>
+          </div>
+        </div>
+
+        <div id="tableContainer">
+          <!-- Table will render here -->
+        </div>
+      </div>
+
+      <%- include('../partials/_footer') %>
+    </div>
+  </div>
+</div>
+
+<!-- ADD MODAL -->
+<div class="modal fade" id="addModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content border-danger">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title">Add New Record</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <input id="addInput" class="form-control" placeholder="Enter value">
+        <div class="form-text small-muted mt-2">This will be added to the main column of selected table.</div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button class="btn btn-danger" id="saveAddBtn">Save</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="/vendors/js/vendor.bundle.base.js"></script>
+<script src="/js/off-canvas.js"></script>
+<script src="/js/misc.js"></script>
+<script src="/js/settings.js"></script>
+<script src="/js/todolist.js"></script>
+<%- include('../partials/_script') %>
+
+<script>
+let currentTable = "<%= typeof defaultTable !== 'undefined' ? defaultTable : '' %>";
+let currentRows = [];
+let currentColumns = [];
+
+document.addEventListener("DOMContentLoaded", () => {
+  if (currentTable) loadTable(currentTable);
+
+  document.getElementById("tableDropdown")?.addEventListener("change", function () {
+    currentTable = this.value;
+    loadTable(currentTable);
+  });
+
+  document.getElementById("searchInput")?.addEventListener("input", function () {
+    renderTable(currentTable, currentRows, this.value.trim().toLowerCase());
+  });
+
+  document.getElementById("addBtn")?.addEventListener("click", () => {
+    document.getElementById("addInput").value = "";
+    new bootstrap.Modal(document.getElementById("addModal")).show();
+  });
+
+  document.getElementById("saveAddBtn")?.addEventListener("click", () => {
+    const value = document.getElementById("addInput").value.trim();
+    if (!value) return alert("Enter a value");
+    fetch("/add-record", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ table: currentTable, fieldValue: value })
+    }).then(r => r.json()).then(resp => {
+      if (!resp.success) return alert(resp.message || "Failed to add");
+      bootstrap.Modal.getInstance(document.getElementById("addModal")).hide();
+      loadTable(currentTable);
+    }).catch(e => { console.error(e); alert("Failed to add"); });
+  });
+});
+
+function loadTable(tbl) {
+  document.getElementById("tableContainer").innerHTML = `<div class="text-center py-4">Loading...</div>`;
+  fetch(`/get-table-data/${encodeURIComponent(tbl)}`)
+    .then(res => res.json())
+    .then(data => {
+      if (!data.success) {
+        document.getElementById("tableContainer").innerHTML = `<div class="text-danger">Failed to load table</div>`;
+        return;
+      }
+      currentRows = data.rows || [];
+      currentColumns = currentRows.length > 0 ? Object.keys(currentRows[0]) : [];
+      renderTable(tbl, currentRows);
+    }).catch(err => {
+      console.error(err);
+      document.getElementById("tableContainer").innerHTML = `<div class="text-danger">Error loading table</div>`;
+    });
+}
+
+function renderTable(tbl, rows, filter = "") {
+  let filtered = rows;
+  if (filter) {
+    filtered = rows.filter(r => Object.values(r).some(v => String(v||"").toLowerCase().includes(filter)));
+  }
+
+  let html = `<div class="card"><div class="card-body"><div class="table-title">
+    <h4 class="card-title mb-0">${tbl.toUpperCase()}</h4>
+    <div class="small-muted">Rows: ${filtered.length}</div>
+  </div><div class="table-responsive mt-3">
+  <table class="table table-striped table-hover"><thead><tr><th>#</th>`;
+
+  currentColumns.forEach(col => html += `<th>${col}</th>`);
+  html += `<th>Actions</th></tr></thead><tbody>`;
+
+  filtered.forEach((row, index) => {
+    html += `<tr data-id="${row.id}"><td>${index + 1}</td>`;
+    currentColumns.forEach(col => {
+      const val = row[col] == null ? "" : row[col];
+      if (col === "id") html += `<td>${val}</td>`;
+      else if (col === "status") {
+        const badgeClass = String(val) === "active" ? "badge-success" : "badge-danger";
+        html += `<td><span class="badge ${badgeClass} toggleStatus" data-id="${row.id}" data-status="${val}">${val}</span></td>`;
+      } else {
+        html += `<td class="editable" contenteditable="true" data-field="${col}">${escapeHtml(val)}</td>`;
+      }
+    });
+    html += `<td><button class="btn btn-sm btn-danger deleteBtn" data-id="${row.id}">Delete</button></td></tr>`;
+  });
+
+  html += `</tbody></table></div></div></div>`;
+  document.getElementById("tableContainer").innerHTML = html;
+
+  bindEvents(tbl);
+}
+
+function bindEvents(tbl) {
+  document.querySelectorAll(".editable").forEach(cell => {
+    cell.addEventListener("focus", () => cell.dataset._orig = cell.innerText.trim());
+    cell.addEventListener("blur", () => {
+      const id = cell.closest("tr").dataset.id;
+      const field = cell.dataset.field;
+      const value = cell.innerText.trim();
+      if (value === cell.dataset._orig) return;
+      fetch("/update-record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ table: tbl, id, field, value })
+      }).then(r => r.json()).then(resp => {
+        if (!resp.success) { alert(resp.message || "Update failed"); loadTable(tbl); }
+        else { const r = currentRows.find(rr => String(rr.id) === String(id)); if (r) r[field]=value; }
+      }).catch(e=>{ console.error(e); alert("Update failed"); loadTable(tbl); });
+    });
+    cell.addEventListener("keypress", e => { if(e.key==="Enter"){ e.preventDefault(); cell.blur(); }});
+  });
+
+  document.querySelectorAll(".deleteBtn").forEach(btn => {
+    btn.onclick = () => {
+      if (!confirm("Delete this record?")) return;
+      fetch("/delete-record", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ table: tbl, id: btn.dataset.id })
+      }).then(r=>r.json()).then(resp => {
+        if (!resp.success) return alert(resp.message || "Delete failed");
+        loadTable(tbl);
+      }).catch(e=>{ console.error(e); alert("Delete failed"); });
+    };
+  });
+
+  document.querySelectorAll(".toggleStatus").forEach(st => {
+    st.onclick = () => {
+      const id = st.dataset.id;
+      const current = st.dataset.status;
+      const newStatus = current==="active"?"inactive":"active";
+      fetch("/toggle-status", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ table: tbl, id, status: newStatus })
+      }).then(r=>r.json()).then(resp => {
+        if (!resp.success) return alert(resp.message || "Status change failed");
+        loadTable(tbl);
+      }).catch(e=>{ console.error(e); alert("Status change failed"); });
+    };
+  });
+}
+
+function escapeHtml(str) {
+  if (str===null || str===undefined) return "";
+  return String(str).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+}
+</script>
+</body>
+</html>

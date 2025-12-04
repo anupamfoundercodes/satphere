@@ -1963,6 +1963,326 @@ router.get("/subreligions/delete/:id", requireAdmin, async (req, res) => {
     res.redirect("back");
   }
 });
+
+// STATES & DISTRICTS - backend routes
+// Assumes: const pool = require('...'); and requireAdmin middleware present
+
+// States list page
+router.get("/stateshow", requireAdmin, async (req, res) => {
+  try {
+    const [states] = await pool.query("SELECT id, state, status FROM state ORDER BY id DESC");
+    // NOTE: selecting only the columns we want to show
+    res.render("states", { states });
+  } catch (err) {
+    console.error("Error fetching states:", err.message);
+    res.status(500).send("Database error");
+  }
+});
+
+// Add State
+router.post("/states/add", requireAdmin, async (req, res) => {
+  const { state } = req.body;
+  if (!state) return res.json({ success: false, message: "State name is required" });
+
+  try {
+    await pool.query("INSERT INTO state (state, status) VALUES (?, 'active')", [state]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Insert State error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Update State (inline field)
+router.post("/states/update-field", requireAdmin, async (req, res) => {
+  const { id, value } = req.body;
+  try {
+    await pool.query("UPDATE state SET state = ? WHERE id = ?", [value, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Update State error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Toggle State Status
+router.post("/states/status-toggle", requireAdmin, async (req, res) => {
+  const { id, status } = req.body;
+  if (!["active", "inactive"].includes(status)) return res.json({ success: false, message: "Invalid status" });
+
+  try {
+    await pool.query("UPDATE state SET status = ? WHERE id = ?", [status, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Toggle State Status error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Delete State
+router.get("/states/delete/:id", requireAdmin, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM state WHERE id = ?", [req.params.id]);
+    res.json({ success: true, message: "State deleted successfully" });
+  } catch (err) {
+    console.error("Delete State error:", err.message);
+    res.json({ success: false, message: "Database error" });
+  }
+});
+
+
+// =============================
+// District Routes
+// =============================
+
+// List Districts by state_id
+router.get("/districts/:state_id", requireAdmin, async (req, res) => {
+  try {
+    // Select fields: id, district_name, status (exclude state_id from returned UI payload if you want)
+    const [districts] = await pool.query(
+      "SELECT id, district_name, status FROM district WHERE state_id = ? ORDER BY id DESC",
+      [req.params.state_id]
+    );
+    res.json({ success: true, data: districts });
+  } catch (err) {
+    console.error("Error fetching districts:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Add District
+router.post("/districts/add", requireAdmin, async (req, res) => {
+  const { state_id, district_name } = req.body;
+  if (!state_id || !district_name) {
+    return res.json({ success: false, message: "Missing required fields" });
+  }
+
+  try {
+    await pool.query("INSERT INTO district (state_id, district_name, status) VALUES (?, ?, 'active')", [state_id, district_name]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Insert District error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Update District (name)
+router.post("/districts/update-field", requireAdmin, async (req, res) => {
+  const { id, value } = req.body;
+  try {
+    await pool.query("UPDATE district SET district_name = ? WHERE id = ?", [value, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Update District error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Toggle District Status
+router.post("/districts/status-toggle", requireAdmin, async (req, res) => {
+  const { id, status } = req.body;
+  if (!["active", "inactive"].includes(status)) return res.json({ success: false, message: "Invalid status" });
+
+  try {
+    await pool.query("UPDATE district SET status = ? WHERE id = ?", [status, id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error("Toggle District Status error:", err.message);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// Delete District
+router.get("/districts/delete/:id", requireAdmin, async (req, res) => {
+  try {
+    await pool.query("DELETE FROM district WHERE id = ?", [req.params.id]);
+    // For district deletion we can redirect back (as in your religion code) or return json; I'll return json for consistency
+    res.json({ success: true, message: "District deleted successfully" });
+  } catch (err) {
+    console.error("Delete District error:", err.message);
+    res.json({ success: false, message: "Database error" });
+  }
+});
+// SHOW ALL MASTER TABLES
+router.get("/tableshow", requireAdmin, async (req, res) => {
+  try {
+    const tables = {
+      years: "Years",
+      work_type: "Work Type",
+      university: "University",
+      skin_tones: "Skin Tones",
+      qualification_list: "Qualification List",
+      marital_status: "Marital Status",
+      income_list: "Income List",
+      horoscopes: "Horoscopes",
+      height: "Heights",
+      disability_types: "Disability Types",
+      diet: "Diet Types",
+      Course: "Courses",
+      child_count: "Child Count",
+      blood_groups: "Blood Groups"
+    };
+
+    let results = {};
+
+    for (let tbl in tables) {
+      const [rows] = await pool.query(`SELECT * FROM ${tbl} ORDER BY id DESC`);
+      results[tbl] = rows;
+    }
+
+    res.render("table", { results, tables });
+  } catch (err) {
+    console.error("Error fetching tables:", err);
+    res.status(500).send("Database error");
+  }
+});
+
+// ALL MASTER TABLES - list of allowed tables and the main column name to use for adds
+const tables = [
+  { table: "years", col: "year" },
+  { table: "work_type", col: "name" },
+  { table: "university", col: "name" },
+  { table: "skin_tones", col: "tone_name" },
+  { table: "qualification_list", col: "name" },
+  { table: "marital_status", col: "status_name" },
+  { table: "income_list", col: "income_range" },
+  { table: "horoscopes", col: "name" },
+  { table: "height", col: "height_ft" },
+  { table: "disability_types", col: "name" },
+  { table: "diet", col: "diet_type" },
+  { table: "Course", col: "course_name" },
+  { table: "child_count", col: "child_count_label" },
+  { table: "blood_groups", col: "name" },
+];
+
+// helper: find meta for a table
+function findTableMeta(tbl) {
+  return tables.find(t => t.table === tbl);
+}
+
+// SHOW PAGE
+router.get("/tableshow", requireAdmin, async (req, res) => {
+  try {
+    // send an object mapping tableName -> readable title (we simply reuse table name)
+    res.render("table", {
+      tables: Object.fromEntries(tables.map(t => [t.table, t.table])),
+      defaultTable: tables[0].table
+    });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server error");
+  }
+});
+
+// GET TABLE DATA
+router.get("/get-table-data/:table", requireAdmin, async (req, res) => {
+  try {
+    const tbl = req.params.table;
+    const meta = findTableMeta(tbl);
+    if (!meta) return res.json({ success: false, message: "Invalid table" });
+
+    // safe: table validated against allowed list
+    const [rows] = await pool.query(`SELECT * FROM \`${tbl}\` ORDER BY id DESC`);
+    res.json({ success: true, rows });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// ADD RECORD
+router.post("/add-record", requireAdmin, async (req, res) => {
+  try {
+    const { table, fieldValue } = req.body;
+    const meta = findTableMeta(table);
+    if (!meta) return res.json({ success: false, message: "Invalid table" });
+
+    const column = meta.col;
+    if (!fieldValue || String(fieldValue).trim().length === 0) {
+      return res.json({ success: false, message: "Empty value" });
+    }
+
+    // use prepared statement for value
+    await pool.query(
+      `INSERT INTO \`${table}\` (${column}, status, created_at, updated_at) VALUES (?, 'active', NOW(), NOW())`,
+      [String(fieldValue).trim()]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// UPDATE RECORD - inline edit
+router.post("/update-record", requireAdmin, async (req, res) => {
+  try {
+    const { table, id, field, value } = req.body;
+    const meta = findTableMeta(table);
+    if (!meta) return res.json({ success: false, message: "Invalid table" });
+
+    // basic validations
+    if (!id || !/^\d+$/.test(String(id))) return res.json({ success: false, message: "Invalid id" });
+    if (!field || typeof field !== "string") return res.json({ success: false, message: "Invalid field" });
+
+    // disallow changing id field
+    if (field === "id") return res.json({ success: false, message: "Cannot update id" });
+
+    // allow only safe column names (letters, numbers, underscore)
+    if (!/^[a-zA-Z0-9_]+$/.test(field)) return res.json({ success: false, message: "Invalid field name" });
+
+    // We trust `table` as it's validated earlier; we cannot parametrize column names so we embed them after validation
+    await pool.query(
+      `UPDATE \`${table}\` SET \`${field}\` = ?, updated_at = NOW() WHERE id = ?`,
+      [value, id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// DELETE RECORD
+router.post("/delete-record", requireAdmin, async (req, res) => {
+  try {
+    const { table, id } = req.body;
+    const meta = findTableMeta(table);
+    if (!meta) return res.json({ success: false, message: "Invalid table" });
+    if (!id || !/^\d+$/.test(String(id))) return res.json({ success: false, message: "Invalid id" });
+
+    await pool.query(`DELETE FROM \`${table}\` WHERE id = ?`, [id]);
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "DB error" });
+  }
+});
+
+// TOGGLE STATUS
+router.post("/toggle-status", requireAdmin, async (req, res) => {
+  try {
+    const { table, id, status } = req.body;
+    const meta = findTableMeta(table);
+    if (!meta) return res.json({ success: false, message: "Invalid table" });
+    if (!id || !/^\d+$/.test(String(id))) return res.json({ success: false, message: "Invalid id" });
+
+    // restrict to only 'active' or 'inactive'
+    const newStatus = status === "active" ? "active" : "inactive";
+
+    await pool.query(
+      `UPDATE \`${table}\` SET status = ?, updated_at = NOW() WHERE id = ?`,
+      [newStatus, id]
+    );
+
+    res.json({ success: true });
+  } catch (err) {
+    console.error(err);
+    res.json({ success: false, message: "DB error" });
+  }
+});
 export default router;
 
 
