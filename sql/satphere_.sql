@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Nov 12, 2025 at 09:54 PM
+-- Generation Time: Dec 05, 2025 at 06:08 PM
 -- Server version: 10.6.22-MariaDB-0ubuntu0.22.04.1
 -- PHP Version: 8.4.12
 
@@ -54,7 +54,7 @@ CREATE TABLE `admin` (
 --
 
 INSERT INTO `admin` (`id`, `name`, `email`, `phone`, `location`, `gender`, `dob`, `status`, `password`, `qr_code`, `upi_id`, `img`, `logo`, `created_at`, `updated_at`, `ads_count`, `code`, `old`, `coins`) VALUES
-(1, 'Satphere', 'admin@gmail.com', '6388449711', 'Lucknow', 'male', NULL, 'active', '$2b$10$8OxmiXhQV5tcd.xbkGHBZ.TcV9mTAiUOuW2nV1Fq32V39OrQ9hUVy', '/images/qrcode.png', '638844ttX@yblX', '/images/profile.jpg', '/images/logo_.png', '2025-06-20 14:06:45', '2025-10-29 17:55:11', 10, 'ADMIN123', '$2b$10$OYd4xM1ByfVQOC8eSq4Wq.hfz16sQruWDSlpKYZ03/OPh7qMwOfO6', 5);
+(1, 'Satphere', 'admin@gmail.com', '6388449711', 'Lucknow', 'male', NULL, 'active', '$2b$10$GxBWqW6SDHBICWn5Ihc/0erMfRDbzZMhj3.LMS3bnHJxni3bzZxxu', '/images/qrcode.png', '638844ttX@yblX', '/images/profile.jpg', '/images/logo_.png', '2025-06-20 14:06:45', '2025-11-22 13:54:58', 10, 'ADMIN123', '$2b$10$OYd4xM1ByfVQOC8eSq4Wq.hfz16sQruWDSlpKYZ03/OPh7qMwOfO6', 5);
 
 -- --------------------------------------------------------
 
@@ -86,22 +86,23 @@ INSERT INTO `banner` (`id`, `img_url`, `uploaded_at`, `status`, `action_link`) V
 
 CREATE TABLE `blood_groups` (
   `id` int(11) NOT NULL,
-  `name` varchar(10) NOT NULL
+  `name` varchar(10) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Dumping data for table `blood_groups`
 --
 
-INSERT INTO `blood_groups` (`id`, `name`) VALUES
-(1, 'A+'),
-(2, 'A-'),
-(3, 'B+'),
-(4, 'B-'),
-(5, 'AB+'),
-(6, 'AB-'),
-(7, 'O+'),
-(8, 'O-');
+INSERT INTO `blood_groups` (`id`, `name`, `status`) VALUES
+(1, 'A+', 'active'),
+(2, 'A-', 'active'),
+(3, 'B+', 'active'),
+(4, 'B-', 'active'),
+(5, 'AB+', 'active'),
+(6, 'AB-', 'active'),
+(7, 'O+', 'active'),
+(8, 'O-', 'active');
 
 -- --------------------------------------------------------
 
@@ -111,20 +112,21 @@ INSERT INTO `blood_groups` (`id`, `name`) VALUES
 
 CREATE TABLE `child_count` (
   `id` int(11) NOT NULL,
-  `child_count_label` varchar(20) NOT NULL
+  `child_count_label` varchar(20) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Dumping data for table `child_count`
 --
 
-INSERT INTO `child_count` (`id`, `child_count_label`) VALUES
-(1, '0'),
-(2, '1'),
-(3, '2'),
-(4, '3'),
-(5, '4'),
-(6, 'Above 4');
+INSERT INTO `child_count` (`id`, `child_count_label`, `status`) VALUES
+(1, '0', 'active'),
+(2, '1', 'active'),
+(3, '2', 'active'),
+(4, '3', 'active'),
+(5, '4', 'active'),
+(6, 'Above 4', 'active');
 
 -- --------------------------------------------------------
 
@@ -62906,213 +62908,235 @@ INSERT INTO `countries` (`id`, `shortname`, `name`, `phonecode`) VALUES
 
 CREATE TABLE `Course` (
   `id` int(11) NOT NULL,
-  `course_name` varchar(255) NOT NULL
+  `course_name` varchar(255) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Dumping data for table `Course`
 --
 
-INSERT INTO `Course` (`id`, `course_name`) VALUES
-(1, 'B Com'),
-(2, 'B Sc'),
-(3, 'BA'),
-(4, 'BACHELOR OF MUSIC'),
-(5, 'BBA'),
-(6, 'BBS'),
-(7, 'BCA'),
-(8, 'BFA'),
-(9, 'BFSc'),
-(10, 'BSW'),
-(11, 'INTEGRATED B Sc'),
-(12, 'INTEGRATED BA'),
-(13, 'M Com'),
-(14, 'M Sc'),
-(15, 'MA'),
-(16, 'MSW'),
-(17, 'Ayurveda PG'),
-(18, 'Bachelor of Physio Therapy'),
-(19, 'BAMS'),
-(20, 'BDS'),
-(21, 'BHMS'),
-(22, 'BLT'),
-(23, 'BNYS'),
-(24, 'BPT'),
-(25, 'BUMS'),
-(26, 'DA'),
-(27, 'DFM (FORENSIC)'),
-(28, 'DM'),
-(29, 'DOMS (OPTHOLMOLOGY)'),
-(30, 'Master of Public Health'),
-(31, 'MBBS'),
-(32, 'MD'),
-(33, 'MDS'),
-(34, 'MHA(HEALTH)'),
-(35, 'MPT'),
-(36, 'MS (Medical)'),
-(37, 'MVSC'),
-(38, 'Pharm D Post baccalaureate'),
-(39, 'Pharma D'),
-(40, 'PHD'),
-(41, 'Advanced Diploma Courses'),
-(42, 'Allied health science'),
-(43, 'ANM'),
-(44, 'B Com LLB'),
-(45, 'B Desgn'),
-(46, 'B Ed'),
-(47, 'B PEd'),
-(48, 'B Pharma'),
-(49, 'B Plan'),
-(50, 'B Sc (Nursing)'),
-(51, 'B Voc'),
-(52, 'BA LLB'),
-(53, 'BBA LLB'),
-(54, 'BBT'),
-(55, 'BCJ'),
-(56, 'BHA'),
-(57, 'BHM'),
-(58, 'BLS'),
-(59, 'BNg'),
-(60, 'BPA'),
-(61, 'BPH'),
-(62, 'BSc Ed'),
-(63, 'BTA'),
-(64, 'BTH'),
-(65, 'BTTM'),
-(66, 'BVA'),
-(67, 'BVOC'),
-(68, 'BVSC'),
-(69, 'BVSc and AH'),
-(70, 'CANS'),
-(71, 'CARDIOLOGY TECHNICIAN'),
-(72, 'CAT'),
-(73, 'CCARDIO'),
-(74, 'CCTC'),
-(75, 'CECG'),
-(76, 'CEPT'),
-(77, 'CHI'),
-(78, 'CHT'),
-(79, 'CLT'),
-(80, 'CMLT'),
-(81, 'CMXT'),
-(82, 'COT'),
-(83, 'COTT'),
-(84, 'CRA'),
-(85, 'CRI'),
-(86, 'CRUST'),
-(87, 'CTT'),
-(88, 'D Ed'),
-(89, 'D Pharma'),
-(90, 'DAM'),
-(91, 'DANS'),
-(92, 'DBBT'),
-(93, 'DCARDIO'),
-(94, 'DCBR'),
-(95, 'DCRE'),
-(96, 'DDHY'),
-(97, 'DDIALY'),
-(98, 'DDRA'),
-(99, 'DDTH'),
-(100, 'DEAIE'),
-(101, 'DECG'),
-(102, 'DECSE(MR)'),
-(103, 'DENTAL HYGENIST'),
-(104, 'DEPT'),
-(105, 'DFEM'),
-(106, 'DHA'),
-(107, 'DHFSM'),
-(108, 'DHI'),
-(109, 'DHLS'),
-(110, 'DHLST'),
-(111, 'DHMCT'),
-(112, 'Diploma Courses'),
-(113, 'DMIT'),
-(114, 'DMLT'),
-(115, 'DMRD'),
-(116, 'DMRT'),
-(117, 'DMST'),
-(118, 'DMSY'),
-(119, 'DMXT'),
-(120, 'DO'),
-(121, 'DOA'),
-(122, 'DOM'),
-(123, 'DOT'),
-(124, 'DOTT'),
-(125, 'DPM'),
-(126, 'DPMT'),
-(127, 'DPT'),
-(128, 'DREST'),
-(129, 'DRGA'),
-(130, 'DRTT'),
-(131, 'DRUST'),
-(132, 'DSE'),
-(133, 'DSME'),
-(134, 'DSWMECH'),
-(135, 'DTCD'),
-(136, 'DTE'),
-(137, 'DTT'),
-(138, 'DVR'),
-(139, 'FWT'),
-(140, 'GNM (NURSING)'),
-(141, 'IMA'),
-(142, 'IMSC'),
-(143, 'Integrated MBA'),
-(144, 'ITI Courses'),
-(145, 'LLB'),
-(146, 'LLM'),
-(147, 'M Desgn'),
-(148, 'M Ed'),
-(149, 'M PED'),
-(150, 'M Pharma'),
-(151, 'M Phil'),
-(152, 'M Sc (NURSING)'),
-(153, 'Master in Marketing'),
-(154, 'Master of International Business'),
-(155, 'MBA'),
-(156, 'MBE'),
-(157, 'MBS'),
-(158, 'MCA'),
-(159, 'MCJ'),
-(160, 'MFA'),
-(161, 'MFM'),
-(162, 'MHM'),
-(163, 'MHM'),
-(164, 'MHRD'),
-(165, 'MIT'),
-(166, 'MLT'),
-(167, 'MMS'),
-(168, 'MPA'),
-(169, 'MPH'),
-(170, 'MPHA'),
-(171, 'MPHW'),
-(172, 'MPVA'),
-(173, 'MRM'),
-(174, 'MRMLV'),
-(175, 'MS (Professional)'),
-(176, 'MTA'),
-(177, 'NST'),
-(178, 'PBBSC(NURSING)'),
-(179, 'PMOA'),
-(180, 'Post Graduation Diploma Courses'),
-(181, 'SDEBM'),
-(182, 'SDECN'),
-(183, 'SDECP'),
-(184, 'SDEES'),
-(185, 'SDEIE'),
-(186, 'SDETV'),
-(187, 'UGDPET'),
-(188, 'Aircraft Maintenance Engieering'),
-(189, 'B Arch'),
-(190, 'B Tech'),
-(191, 'BE'),
-(192, 'BFT'),
-(193, 'INTEGRATED ENGINEERING B TECH'),
-(194, 'M Arch'),
-(195, 'M Tech'),
-(196, 'ME'),
-(197, 'MFT'),
-(198, 'MS (Technical)'),
-(199, 'MSIT');
+INSERT INTO `Course` (`id`, `course_name`, `status`) VALUES
+(1, 'B Com', 'active'),
+(2, 'B Sc', 'active'),
+(3, 'BA', 'active'),
+(4, 'BACHELOR OF MUSIC', 'active'),
+(5, 'BBA', 'active'),
+(6, 'BBS', 'active'),
+(7, 'BCA', 'active'),
+(8, 'BFA', 'active'),
+(9, 'BFSc', 'active'),
+(10, 'BSW', 'active'),
+(11, 'INTEGRATED B Sc', 'active'),
+(12, 'INTEGRATED BA', 'active'),
+(13, 'M Com', 'active'),
+(14, 'M Sc', 'active'),
+(15, 'MA', 'active'),
+(16, 'MSW', 'active'),
+(17, 'Ayurveda PG', 'active'),
+(18, 'Bachelor of Physio Therapy', 'active'),
+(19, 'BAMS', 'active'),
+(20, 'BDS', 'active'),
+(21, 'BHMS', 'active'),
+(22, 'BLT', 'active'),
+(23, 'BNYS', 'active'),
+(24, 'BPT', 'active'),
+(25, 'BUMS', 'active'),
+(26, 'DA', 'active'),
+(27, 'DFM (FORENSIC)', 'active'),
+(28, 'DM', 'active'),
+(29, 'DOMS (OPTHOLMOLOGY)', 'active'),
+(30, 'Master of Public Health', 'active'),
+(31, 'MBBS', 'active'),
+(32, 'MD', 'active'),
+(33, 'MDS', 'active'),
+(34, 'MHA(HEALTH)', 'active'),
+(35, 'MPT', 'active'),
+(36, 'MS (Medical)', 'active'),
+(37, 'MVSC', 'active'),
+(38, 'Pharm D Post baccalaureate', 'active'),
+(39, 'Pharma D', 'active'),
+(40, 'PHD', 'active'),
+(41, 'Advanced Diploma Courses', 'active'),
+(42, 'Allied health science', 'active'),
+(43, 'ANM', 'active'),
+(44, 'B Com LLB', 'active'),
+(45, 'B Desgn', 'active'),
+(46, 'B Ed', 'active'),
+(47, 'B PEd', 'active'),
+(48, 'B Pharma', 'active'),
+(49, 'B Plan', 'active'),
+(50, 'B Sc (Nursing)', 'active'),
+(51, 'B Voc', 'active'),
+(52, 'BA LLB', 'active'),
+(53, 'BBA LLB', 'active'),
+(54, 'BBT', 'active'),
+(55, 'BCJ', 'active'),
+(56, 'BHA', 'active'),
+(57, 'BHM', 'active'),
+(58, 'BLS', 'active'),
+(59, 'BNg', 'active'),
+(60, 'BPA', 'active'),
+(61, 'BPH', 'active'),
+(62, 'BSc Ed', 'active'),
+(63, 'BTA', 'active'),
+(64, 'BTH', 'active'),
+(65, 'BTTM', 'active'),
+(66, 'BVA', 'active'),
+(67, 'BVOC', 'active'),
+(68, 'BVSC', 'active'),
+(69, 'BVSc and AH', 'active'),
+(70, 'CANS', 'active'),
+(71, 'CARDIOLOGY TECHNICIAN', 'active'),
+(72, 'CAT', 'active'),
+(73, 'CCARDIO', 'active'),
+(74, 'CCTC', 'active'),
+(75, 'CECG', 'active'),
+(76, 'CEPT', 'active'),
+(77, 'CHI', 'active'),
+(78, 'CHT', 'active'),
+(79, 'CLT', 'active'),
+(80, 'CMLT', 'active'),
+(81, 'CMXT', 'active'),
+(82, 'COT', 'active'),
+(83, 'COTT', 'active'),
+(84, 'CRA', 'active'),
+(85, 'CRI', 'active'),
+(86, 'CRUST', 'active'),
+(87, 'CTT', 'active'),
+(88, 'D Ed', 'active'),
+(89, 'D Pharma', 'active'),
+(90, 'DAM', 'active'),
+(91, 'DANS', 'active'),
+(92, 'DBBT', 'active'),
+(93, 'DCARDIO', 'active'),
+(94, 'DCBR', 'active'),
+(95, 'DCRE', 'active'),
+(96, 'DDHY', 'active'),
+(97, 'DDIALY', 'active'),
+(98, 'DDRA', 'active'),
+(99, 'DDTH', 'active'),
+(100, 'DEAIE', 'active'),
+(101, 'DECG', 'active'),
+(102, 'DECSE(MR)', 'active'),
+(103, 'DENTAL HYGENIST', 'active'),
+(104, 'DEPT', 'active'),
+(105, 'DFEM', 'active'),
+(106, 'DHA', 'active'),
+(107, 'DHFSM', 'active'),
+(108, 'DHI', 'active'),
+(109, 'DHLS', 'active'),
+(110, 'DHLST', 'active'),
+(111, 'DHMCT', 'active'),
+(112, 'Diploma Courses', 'active'),
+(113, 'DMIT', 'active'),
+(114, 'DMLT', 'active'),
+(115, 'DMRD', 'active'),
+(116, 'DMRT', 'active'),
+(117, 'DMST', 'active'),
+(118, 'DMSY', 'active'),
+(119, 'DMXT', 'active'),
+(120, 'DO', 'active'),
+(121, 'DOA', 'active'),
+(122, 'DOM', 'active'),
+(123, 'DOT', 'active'),
+(124, 'DOTT', 'active'),
+(125, 'DPM', 'active'),
+(126, 'DPMT', 'active'),
+(127, 'DPT', 'active'),
+(128, 'DREST', 'active'),
+(129, 'DRGA', 'active'),
+(130, 'DRTT', 'active'),
+(131, 'DRUST', 'active'),
+(132, 'DSE', 'active'),
+(133, 'DSME', 'active'),
+(134, 'DSWMECH', 'active'),
+(135, 'DTCD', 'active'),
+(136, 'DTE', 'active'),
+(137, 'DTT', 'active'),
+(138, 'DVR', 'active'),
+(139, 'FWT', 'active'),
+(140, 'GNM (NURSING)', 'active'),
+(141, 'IMA', 'active'),
+(142, 'IMSC', 'active'),
+(143, 'Integrated MBA', 'active'),
+(144, 'ITI Courses', 'active'),
+(145, 'LLB', 'active'),
+(146, 'LLM', 'active'),
+(147, 'M Desgn', 'active'),
+(148, 'M Ed', 'active'),
+(149, 'M PED', 'active'),
+(150, 'M Pharma', 'active'),
+(151, 'M Phil', 'active'),
+(152, 'M Sc (NURSING)', 'active'),
+(153, 'Master in Marketing', 'active'),
+(154, 'Master of International Business', 'active'),
+(155, 'MBA', 'active'),
+(156, 'MBE', 'active'),
+(157, 'MBS', 'active'),
+(158, 'MCA', 'active'),
+(159, 'MCJ', 'active'),
+(160, 'MFA', 'active'),
+(161, 'MFM', 'active'),
+(162, 'MHM', 'active'),
+(163, 'MHM', 'active'),
+(164, 'MHRD', 'active'),
+(165, 'MIT', 'active'),
+(166, 'MLT', 'active'),
+(167, 'MMS', 'active'),
+(168, 'MPA', 'active'),
+(169, 'MPH', 'active'),
+(170, 'MPHA', 'active'),
+(171, 'MPHW', 'active'),
+(172, 'MPVA', 'active'),
+(173, 'MRM', 'active'),
+(174, 'MRMLV', 'active'),
+(175, 'MS (Professional)', 'active'),
+(176, 'MTA', 'active'),
+(177, 'NST', 'active'),
+(178, 'PBBSC(NURSING)', 'active'),
+(179, 'PMOA', 'active'),
+(180, 'Post Graduation Diploma Courses', 'active'),
+(181, 'SDEBM', 'active'),
+(182, 'SDECN', 'active'),
+(183, 'SDECP', 'active'),
+(184, 'SDEES', 'active'),
+(185, 'SDEIE', 'active'),
+(186, 'SDETV', 'active'),
+(187, 'UGDPET', 'active'),
+(188, 'Aircraft Maintenance Engieering', 'active'),
+(189, 'B Arch', 'active'),
+(190, 'B Tech', 'active'),
+(191, 'BE', 'active'),
+(192, 'BFT', 'active'),
+(193, 'INTEGRATED ENGINEERING B TECH', 'active'),
+(194, 'M Arch', 'active'),
+(195, 'M Tech', 'active'),
+(196, 'ME', 'active'),
+(197, 'MFT', 'active'),
+(198, 'MS (Technical)', 'active'),
+(199, 'MSIT', 'active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `demo_table`
+--
+
+CREATE TABLE `demo_table` (
+  `id` int(11) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `status` enum('active','inactive') DEFAULT 'active'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Dumping data for table `demo_table`
+--
+
+INSERT INTO `demo_table` (`id`, `name`, `status`) VALUES
+(3, 'test', 'active'),
+(4, 'text update', 'active'),
+(5, 'Either blue', 'active');
 
 -- --------------------------------------------------------
 
@@ -63122,22 +63146,23 @@ INSERT INTO `Course` (`id`, `course_name`) VALUES
 
 CREATE TABLE `diet` (
   `id` int(11) NOT NULL,
-  `diet_type` varchar(100) NOT NULL
+  `diet_type` varchar(100) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `diet`
 --
 
-INSERT INTO `diet` (`id`, `diet_type`) VALUES
-(1, 'Vegetarian'),
-(2, 'Non-Vegetarian'),
-(3, 'Eggetarian'),
-(4, 'Vegan'),
-(5, 'Jain Diet'),
-(6, 'Occasionally Non-Vegetarian'),
-(7, 'Pescatarian'),
-(8, 'Other');
+INSERT INTO `diet` (`id`, `diet_type`, `status`) VALUES
+(1, 'Vegetarian', 'active'),
+(2, 'Non-Vegetarian', 'active'),
+(3, 'Eggetarian', 'active'),
+(4, 'Vegan', 'active'),
+(5, 'Jain Diet', 'active'),
+(6, 'Occasionally Non-Vegetarian', 'active'),
+(7, 'Pescatarian', 'active'),
+(8, 'Other', 'active');
 
 -- --------------------------------------------------------
 
@@ -63147,23 +63172,831 @@ INSERT INTO `diet` (`id`, `diet_type`) VALUES
 
 CREATE TABLE `disability_types` (
   `id` int(11) NOT NULL,
-  `name` varchar(50) NOT NULL
+  `name` varchar(50) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Dumping data for table `disability_types`
 --
 
-INSERT INTO `disability_types` (`id`, `name`) VALUES
-(1, 'None'),
-(2, 'Physical Disability'),
-(3, 'Visual Impairment'),
-(4, 'Hearing Impairment'),
-(5, 'Speech Disability'),
-(6, 'Learning Disability'),
-(7, 'Mental Disability'),
-(8, 'Multiple Disability'),
-(9, 'Other');
+INSERT INTO `disability_types` (`id`, `name`, `status`) VALUES
+(1, 'None', 'active'),
+(2, 'Physical Disability', 'active'),
+(3, 'Visual Impairment', 'active'),
+(4, 'Hearing Impairment', 'active'),
+(5, 'Speech Disability', 'active'),
+(6, 'Learning Disability', 'active'),
+(7, 'Mental Disability', 'active'),
+(8, 'Multiple Disability', 'active'),
+(9, 'Other', 'active');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `district`
+--
+
+CREATE TABLE `district` (
+  `id` int(11) NOT NULL,
+  `state_id` int(11) NOT NULL,
+  `district_name` varchar(100) NOT NULL,
+  `status` enum('active','inactive','delete') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Dumping data for table `district`
+--
+
+INSERT INTO `district` (`id`, `state_id`, `district_name`, `status`, `created_at`, `updated_at`) VALUES
+(1, 1, 'Alluri Sitharama Raju', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(2, 1, 'Anakapalli', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(3, 1, 'Anantapur', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(4, 1, 'Bapatla', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(5, 1, 'Chittoor', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(6, 1, 'East Godavari', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(7, 1, 'Eluru', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(8, 1, 'Guntur', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(9, 1, 'Kakinada', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(10, 1, 'Konaseema', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(11, 1, 'Krishna', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(12, 1, 'Kurnool', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(13, 1, 'Nandyal', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(14, 1, 'Nellore', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(15, 1, 'NTR', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(16, 1, 'Palnadu', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(17, 1, 'Parvathipuram Manyam', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(18, 1, 'Prakasam', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(19, 1, 'Srikakulam', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(20, 1, 'Tirupati', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(21, 1, 'Visakhapatnam', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(22, 1, 'Vizianagaram', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(23, 1, 'West Godavari', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(24, 1, 'YSR Kadapa', 'active', '2025-07-10 16:04:19', '2025-07-10 16:04:19'),
+(25, 1, 'Dr. B. R. Ambedkar Konaseema', 'active', '2025-07-10 16:06:36', '2025-07-10 16:06:36'),
+(26, 1, 'Annamayya', 'active', '2025-07-10 16:06:36', '2025-07-10 16:06:36'),
+(27, 2, 'Anjaw', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(28, 2, 'Changlang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(29, 2, 'East Kameng', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(30, 2, 'East Siang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(31, 2, 'Kamle', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(32, 2, 'Kra Daadi', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(33, 2, 'Kurung Kumey', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(34, 2, 'Lepa Rada', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(35, 2, 'Lohit', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(36, 2, 'Longding', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(37, 2, 'Lower Dibang Valley', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(38, 2, 'Lower Siang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(39, 2, 'Lower Subansiri', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(40, 2, 'Namsai', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(41, 2, 'Pakke-Kessang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(42, 2, 'Papum Pare', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(43, 2, 'Shi Yomi', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(44, 2, 'Siang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(45, 2, 'Tawang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(46, 2, 'Tirap', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(47, 2, 'Upper Dibang Valley', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(48, 2, 'Upper Siang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(49, 2, 'Upper Subansiri', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(50, 2, 'West Kameng', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(51, 2, 'West Siang', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(52, 2, 'Keyi Panyor', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(53, 2, 'Bichom', 'active', '2025-07-10 16:10:20', '2025-07-10 16:10:20'),
+(54, 3, 'Baksa', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(55, 3, 'Barpeta', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(56, 3, 'Biswanath', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(57, 3, 'Bongaigaon', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(58, 3, 'Cachar', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(59, 3, 'Charaideo', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(60, 3, 'Chirang', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(61, 3, 'Darrang', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(62, 3, 'Dhemaji', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(63, 3, 'Dhubri', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(64, 3, 'Dibrugarh', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(65, 3, 'Dima Hasao', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(66, 3, 'Goalpara', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(67, 3, 'Golaghat', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(68, 3, 'Hailakandi', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(69, 3, 'Hojai', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(70, 3, 'Jorhat', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(71, 3, 'Kamrup', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(72, 3, 'Kamrup Metropolitan', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(73, 3, 'Karbi Anglong', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(74, 3, 'Karimganj', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(75, 3, 'Kokrajhar', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(76, 3, 'Lakhimpur', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(77, 3, 'Majuli', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(78, 3, 'Morigaon', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(79, 3, 'Nagaon', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(80, 3, 'Nalbari', 'active', '2025-07-10 16:15:08', '2025-07-10 16:15:08'),
+(81, 3, 'Sivasagar', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(82, 3, 'Sonitpur', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(83, 3, 'South Salmara-Mankachar', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(84, 3, 'Tinsukia', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(85, 3, 'Tamulpur', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(86, 3, 'Udalguri', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(87, 3, 'West Karbi Anglong', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(88, 3, 'Bajali', 'active', '2025-07-10 16:15:09', '2025-07-10 16:15:09'),
+(89, 4, 'Araria', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(90, 4, 'Arwal', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(91, 4, 'Aurangabad', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(92, 4, 'Banka', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(93, 4, 'Begusarai', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(94, 4, 'Bhagalpur', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(95, 4, 'Bhojpur', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(96, 4, 'Buxar', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(97, 4, 'Darbhanga', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(98, 4, 'East Champaran', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(99, 4, 'Gaya', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(100, 4, 'Gopalganj', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(101, 4, 'Jamui', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(102, 4, 'Jehanabad', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(103, 4, 'Kaimur', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(104, 4, 'Katihar', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(105, 4, 'Khagaria', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(106, 4, 'Kishanganj', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(107, 4, 'Lakhisarai', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(108, 4, 'Madhepura', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(109, 4, 'Madhubani', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(110, 4, 'Munger', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(111, 4, 'Muzaffarpur', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(112, 4, 'Nalanda', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(113, 4, 'Nawada', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(114, 4, 'Patna', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(115, 4, 'Purnia', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(116, 4, 'Rohtas', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(117, 4, 'Saharsa', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(118, 4, 'Samastipur', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(119, 4, 'Saran', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(120, 4, 'Sheikhpura', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(121, 4, 'Sheohar', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(122, 4, 'Sitamarhi', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(123, 4, 'Siwan', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(124, 4, 'Supaul', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(125, 4, 'Vaishali', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(126, 4, 'West Champaran', 'active', '2025-07-10 16:16:18', '2025-07-10 16:16:18'),
+(127, 5, 'Balod', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(128, 5, 'Baloda Bazar', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(129, 5, 'Balrampur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(130, 5, 'Bastar', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(131, 5, 'Bemetara', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(132, 5, 'Bijapur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(133, 5, 'Bilaspur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(134, 5, 'Dantewada', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(135, 5, 'Dhamtari', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(136, 5, 'Durg', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(137, 5, 'Gariaband', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(138, 5, 'Gaurela-Pendra-Marwahi', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(139, 5, 'Janjgir-Champa', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(140, 5, 'Jashpur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(141, 5, 'Kabirdham', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(142, 5, 'Kanker', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(143, 5, 'Kondagaon', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(144, 5, 'Korba', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(145, 5, 'Koriya', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(146, 5, 'Mahasamund', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(147, 5, 'Mungeli', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(148, 5, 'Narayanpur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(149, 5, 'Raigarh', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(150, 5, 'Raipur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(151, 5, 'Rajnandgaon', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(152, 5, 'Sukma', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(153, 5, 'Surajpur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(154, 5, 'Surguja', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(155, 5, 'Sarangarh-Bilaigarh', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(156, 5, 'Khairagarh-Chhuikhadan-Gandai', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(157, 5, 'Manendragarh-Chirmiri-Bharatpur', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(158, 5, 'Mohla-Manpur-Ambagarh Chowki', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(159, 5, 'Bharatpur-Sonhat', 'active', '2025-07-10 16:17:28', '2025-07-10 16:17:28'),
+(160, 6, 'North Goa', 'active', '2025-07-10 16:18:59', '2025-07-10 16:18:59'),
+(161, 6, 'South Goa', 'active', '2025-07-10 16:18:59', '2025-07-10 16:18:59'),
+(162, 7, 'Ahmedabad', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(163, 7, 'Amreli', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(164, 7, 'Anand', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(165, 7, 'Aravalli', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(166, 7, 'Banaskantha', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(167, 7, 'Bharuch', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(168, 7, 'Bhavnagar', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(169, 7, 'Bodeli', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(170, 7, 'Botad', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(171, 7, 'Chhota Udaipur', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(172, 7, 'Dahod', 'active', '2025-07-10 16:21:02', '2025-07-10 16:21:02'),
+(173, 7, 'Dang', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(174, 7, 'Devbhoomi Dwarka', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(175, 7, 'Gandhinagar', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(176, 7, 'Gir Somnath', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(177, 7, 'Jamnagar', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(178, 7, 'Junagadh', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(179, 7, 'Kheda', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(180, 7, 'Kutch', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(181, 7, 'Mahisagar', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(182, 7, 'Mehsana', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(183, 7, 'Morbi', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(184, 7, 'Narmada', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(185, 7, 'Navsari', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(186, 7, 'Panchmahal', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(187, 7, 'Patan', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(188, 7, 'Porbandar', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(189, 7, 'Rajkot', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(190, 7, 'Sabarkantha', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(191, 7, 'Surat', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(192, 7, 'Surendranagar', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(193, 7, 'Tapi', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(194, 7, 'Vadodara', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(195, 7, 'Valsad', 'active', '2025-07-10 16:21:03', '2025-07-10 16:21:03'),
+(196, 8, 'Ambala', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(197, 8, 'Bhiwani', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(198, 8, 'Charkhi Dadri', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(199, 8, 'Faridabad', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(200, 8, 'Fatehabad', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(201, 8, 'Gurugram', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(202, 8, 'Hisar', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(203, 8, 'Jhajjar', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(204, 8, 'Jind', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(205, 8, 'Kaithal', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(206, 8, 'Karnal', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(207, 8, 'Kurukshetra', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(208, 8, 'Mahendragarh', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(209, 8, 'Nuh', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(210, 8, 'Palwal', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(211, 8, 'Panchkula', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(212, 8, 'Panipat', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(213, 8, 'Rewari', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(214, 8, 'Rohtak', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(215, 8, 'Sirsa', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(216, 8, 'Sonipat', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(217, 8, 'Yamunanagar', 'active', '2025-07-10 16:21:46', '2025-07-10 16:21:46'),
+(218, 9, 'Bilaspur', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(219, 9, 'Chamba', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(220, 9, 'Hamirpur', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(221, 9, 'Kangra', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(222, 9, 'Kinnaur', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(223, 9, 'Kullu', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(224, 9, 'Lahaul and Spiti', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(225, 9, 'Mandi', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(226, 9, 'Shimla', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(227, 9, 'Sirmaur', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(228, 9, 'Solan', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(229, 9, 'Una', 'active', '2025-07-10 16:22:20', '2025-07-10 16:22:20'),
+(230, 10, 'Bokaro', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(231, 10, 'Chatra', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(232, 10, 'Deoghar', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(233, 10, 'Dhanbad', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(234, 10, 'Dumka', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(235, 10, 'East Singhbhum', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(236, 10, 'Garhwa', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(237, 10, 'Giridih', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(238, 10, 'Godda', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(239, 10, 'Gumla', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(240, 10, 'Hazaribagh', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(241, 10, 'Jamtara', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(242, 10, 'Khunti', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(243, 10, 'Koderma', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(244, 10, 'Latehar', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(245, 10, 'Lohardaga', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(246, 10, 'Pakur', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(247, 10, 'Palamu', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(248, 10, 'Ramgarh', 'active', '2025-07-10 16:24:00', '2025-07-10 16:24:00'),
+(249, 10, 'Ranchi', 'active', '2025-07-10 16:24:01', '2025-07-10 16:24:01'),
+(250, 10, 'Sahibganj', 'active', '2025-07-10 16:24:01', '2025-07-10 16:24:01'),
+(251, 10, 'Seraikela Kharsawan', 'active', '2025-07-10 16:24:01', '2025-07-10 16:24:01'),
+(252, 10, 'Simdega', 'active', '2025-07-10 16:24:01', '2025-07-10 16:24:01'),
+(253, 10, 'West Singhbhum', 'active', '2025-07-10 16:24:01', '2025-07-10 16:24:01'),
+(254, 11, 'Bagalkot', 'active', '2025-07-10 16:24:51', '2025-07-10 16:24:51'),
+(255, 11, 'Ballari', 'active', '2025-07-10 16:24:51', '2025-07-10 16:24:51'),
+(256, 11, 'Belagavi', 'active', '2025-07-10 16:24:51', '2025-07-10 16:24:51'),
+(257, 11, 'Bengaluru Rural', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(258, 11, 'Bengaluru Urban', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(259, 11, 'Bidar', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(260, 11, 'Chamarajanagar', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(261, 11, 'Chikballapur', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(262, 11, 'Chikkamagaluru', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(263, 11, 'Chitradurga', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(264, 11, 'Dakshina Kannada', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(265, 11, 'Davanagere', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(266, 11, 'Dharwad', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(267, 11, 'Gadag', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(268, 11, 'Hassan', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(269, 11, 'Haveri', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(270, 11, 'Kalaburagi', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(271, 11, 'Kodagu', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(272, 11, 'Kolar', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(273, 11, 'Koppal', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(274, 11, 'Mandya', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(275, 11, 'Mysuru', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(276, 11, 'Raichur', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(277, 11, 'Ramanagara', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(278, 11, 'Shivamogga', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(279, 11, 'Tumakuru', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(280, 11, 'Udupi', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(281, 11, 'Uttara Kannada', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(282, 11, 'Vijayapura', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(283, 11, 'Yadgir', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(284, 11, 'Vijayanagara', 'active', '2025-07-10 16:24:52', '2025-07-10 16:24:52'),
+(285, 12, 'Alappuzha', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(286, 12, 'Ernakulam', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(287, 12, 'Idukki', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(288, 12, 'Kannur', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(289, 12, 'Kasaragod', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(290, 12, 'Kollam', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(291, 12, 'Kottayam', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(292, 12, 'Kozhikode', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(293, 12, 'Malappuram', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(294, 12, 'Palakkad', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(295, 12, 'Pathanamthitta', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(296, 12, 'Thiruvananthapuram', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(297, 12, 'Thrissur', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(298, 12, 'Wayanad', 'active', '2025-07-10 16:25:51', '2025-07-10 16:25:51'),
+(299, 13, 'Agar Malwa', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(300, 13, 'Alirajpur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(301, 13, 'Anuppur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(302, 13, 'Ashoknagar', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(303, 13, 'Balaghat', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(304, 13, 'Barwani', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(305, 13, 'Betul', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(306, 13, 'Bhind', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(307, 13, 'Bhopal', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(308, 13, 'Burhanpur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(309, 13, 'Chhatarpur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(310, 13, 'Chhindwara', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(311, 13, 'Damoh', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(312, 13, 'Datia', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(313, 13, 'Dewas', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(314, 13, 'Dhar', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(315, 13, 'Dindori', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(316, 13, 'Guna', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(317, 13, 'Gwalior', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(318, 13, 'Harda', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(319, 13, 'Hoshangabad', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(320, 13, 'Indore', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(321, 13, 'Jabalpur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(322, 13, 'Jhabua', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(323, 13, 'Katni', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(324, 13, 'Khandwa', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(325, 13, 'Khargone', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(326, 13, 'Mandla', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(327, 13, 'Mandsaur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(328, 13, 'Morena', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(329, 13, 'Narsinghpur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(330, 13, 'Neemuch', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(331, 13, 'Niwari', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(332, 13, 'Panna', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(333, 13, 'Raisen', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(334, 13, 'Rajgarh', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(335, 13, 'Ratlam', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(336, 13, 'Rewa', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(337, 13, 'Sagar', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(338, 13, 'Satna', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(339, 13, 'Sehore', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(340, 13, 'Seoni', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(341, 13, 'Shahdol', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(342, 13, 'Shajapur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(343, 13, 'Sheopur', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(344, 13, 'Shivpuri', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(345, 13, 'Sidhi', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(346, 13, 'Singrauli', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(347, 13, 'Tikamgarh', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(348, 13, 'Ujjain', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(349, 13, 'Umaria', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(350, 13, 'Vidisha', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(351, 13, 'Maihar', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(352, 13, 'Nagda', 'active', '2025-07-10 16:26:46', '2025-07-10 16:26:46'),
+(353, 13, 'Chachaura', 'active', '2025-07-10 16:28:28', '2025-07-10 16:28:28'),
+(354, 14, 'Ahmednagar', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(355, 14, 'Akola', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(356, 14, 'Amravati', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(357, 14, 'Aurangabad', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(358, 14, 'Beed', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(359, 14, 'Bhandara', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(360, 14, 'Buldhana', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(361, 14, 'Chandrapur', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(362, 14, 'Dhule', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(363, 14, 'Gadchiroli', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(364, 14, 'Gondia', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(365, 14, 'Hingoli', 'active', '2025-07-10 16:29:20', '2025-07-10 16:29:20'),
+(366, 14, 'Jalgaon', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(367, 14, 'Jalna', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(368, 14, 'Kolhapur', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(369, 14, 'Latur', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(370, 14, 'Mumbai City', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(371, 14, 'Mumbai Suburban', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(372, 14, 'Nagpur', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(373, 14, 'Nanded', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(374, 14, 'Nandurbar', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(375, 14, 'Nashik', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(376, 14, 'Osmanabad', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(377, 14, 'Palghar', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(378, 14, 'Parbhani', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(379, 14, 'Pune', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(380, 14, 'Raigad', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(381, 14, 'Ratnagiri', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(382, 14, 'Sangli', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(383, 14, 'Satara', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(384, 14, 'Sindhudurg', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(385, 14, 'Solapur', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(386, 14, 'Thane', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(387, 14, 'Wardha', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(388, 14, 'Washim', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(389, 14, 'Yavatmal', 'active', '2025-07-10 16:29:21', '2025-07-10 16:29:21'),
+(390, 15, 'Bishnupur', 'active', '2025-07-10 16:30:12', '2025-07-10 16:30:12'),
+(391, 15, 'Chandel', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(392, 15, 'Churachandpur', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(393, 15, 'Imphal East', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(394, 15, 'Imphal West', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(395, 15, 'Jiribam', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(396, 15, 'Kakching', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(397, 15, 'Kamjong', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(398, 15, 'Kangpokpi', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(399, 15, 'Noney', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(400, 15, 'Pherzawl', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(401, 15, 'Senapati', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(402, 15, 'Tamenglong', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(403, 15, 'Tengnoupal', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(404, 15, 'Thoubal', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(405, 15, 'Ukhrul', 'active', '2025-07-10 16:30:13', '2025-07-10 16:30:13'),
+(406, 16, 'East Garo Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(407, 16, 'East Jaintia Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(408, 16, 'East Khasi Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(409, 16, 'North Garo Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(410, 16, 'Ribhoi', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(411, 16, 'South Garo Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(412, 16, 'South West Garo Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(413, 16, 'South West Khasi Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(414, 16, 'West Garo Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(415, 16, 'West Jaintia Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(416, 16, 'West Khasi Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(417, 16, 'Eastern West Khasi Hills', 'active', '2025-07-10 16:30:40', '2025-07-10 16:30:40'),
+(418, 17, 'Aizawl', 'active', '2025-07-10 16:31:10', '2025-07-10 16:31:10'),
+(419, 17, 'Champhai', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(420, 17, 'Hnahthial', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(421, 17, 'Khawzawl', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(422, 17, 'Kolasib', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(423, 17, 'Lawngtlai', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(424, 17, 'Lunglei', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(425, 17, 'Mamit', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(426, 17, 'Saitual', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(427, 17, 'Serchhip', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(428, 17, 'Siaha', 'active', '2025-07-10 16:31:11', '2025-07-10 16:31:11'),
+(429, 18, 'Chümoukedima', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(430, 18, 'Dimapur', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(431, 18, 'Kiphire', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(432, 18, 'Kohima', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(433, 18, 'Longleng', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(434, 18, 'Mokokchung', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(435, 18, 'Mon', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(436, 18, 'Niuland', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(437, 18, 'Noklak', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(438, 18, 'Peren', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(439, 18, 'Phek', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(440, 18, 'Shamator', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(441, 18, 'Tseminyü', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(442, 18, 'Tuensang', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(443, 18, 'Wokha', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(444, 18, 'Zünheboto', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(445, 18, 'Meluri', 'active', '2025-07-10 16:32:28', '2025-07-10 16:32:28'),
+(446, 19, 'Angul', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(447, 19, 'Balangir', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(448, 19, 'Balasore', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(449, 19, 'Bargarh', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(450, 19, 'Bhadrak', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(451, 19, 'Boudh', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(452, 19, 'Cuttack', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(453, 19, 'Deogarh', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(454, 19, 'Dhenkanal', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(455, 19, 'Gajapati', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(456, 19, 'Ganjam', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(457, 19, 'Jagatsinghpur', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(458, 19, 'Jajpur', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(459, 19, 'Jharsuguda', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(460, 19, 'Kalahandi', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(461, 19, 'Kandhamal', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(462, 19, 'Kendrapara', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(463, 19, 'Kendujhar', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(464, 19, 'Khordha', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(465, 19, 'Koraput', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(466, 19, 'Malkangiri', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(467, 19, 'Mayurbhanj', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(468, 19, 'Nabarangpur', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(469, 19, 'Nayagarh', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(470, 19, 'Nuapada', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(471, 19, 'Puri', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(472, 19, 'Rayagada', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(473, 19, 'Sambalpur', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(474, 19, 'Subarnapur', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(475, 19, 'Sundargarh', 'active', '2025-07-10 16:33:15', '2025-07-10 16:33:15'),
+(476, 20, 'Amritsar', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(477, 20, 'Barnala', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(478, 20, 'Bathinda', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(479, 20, 'Faridkot', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(480, 20, 'Fatehgarh Sahib', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(481, 20, 'Fazilka', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(482, 20, 'Ferozepur', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(483, 20, 'Gurdaspur', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(484, 20, 'Hoshiarpur', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(485, 20, 'Jalandhar', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(486, 20, 'Kapurthala', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(487, 20, 'Ludhiana', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(488, 20, 'Malerkotla', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(489, 20, 'Mansa', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(490, 20, 'Moga', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(491, 20, 'Muktsar', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(492, 20, 'Nawanshahr (Shahid Bhagat Singh Nagar)', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(493, 20, 'Pathankot', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(494, 20, 'Patiala', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(495, 20, 'Rupnagar', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(496, 20, 'Sangrur', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(497, 20, 'SAS Nagar (Mohali)', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(498, 20, 'Tarn Taran', 'active', '2025-07-10 16:33:52', '2025-07-10 16:33:52'),
+(499, 21, 'Ajmer', 'active', '2025-07-10 16:45:41', '2025-07-10 16:45:41'),
+(500, 21, 'Alwar', 'active', '2025-07-10 16:45:41', '2025-07-10 16:45:41'),
+(501, 21, 'Balotra', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(502, 21, 'Banswara', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(503, 21, 'Baran', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(504, 21, 'Barmer', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(505, 21, 'Beawar', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(506, 21, 'Bharatpur', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(507, 21, 'Bhilwara', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(508, 21, 'Bikaner', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(509, 21, 'Bundi', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(510, 21, 'Chittorgarh', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(511, 21, 'Churu', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(512, 21, 'Dausa', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(513, 21, 'Deeg', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(514, 21, 'Didwana-Kuchaman', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(515, 21, 'Dholpur', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(516, 21, 'Dungarpur', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(517, 21, 'Hanumangarh', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(518, 21, 'Jaipur', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(519, 21, 'Jaisalmer', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(520, 21, 'Jalore', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(521, 21, 'Jhalawar', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(522, 21, 'Jhunjhunu', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(523, 21, 'Jodhpur', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(524, 21, 'Karauli', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(525, 21, 'Khairthal-Tijara', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(526, 21, 'Kotputli-Behror', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(527, 21, 'Kota', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(528, 21, 'Nagaur', 'active', '2025-07-10 16:45:42', '2025-07-10 16:45:42'),
+(529, 21, 'Pali', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(530, 21, 'Phalodi', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(531, 21, 'Pratapgarh', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(532, 21, 'Rajsamand', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(533, 21, 'Salumbar', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(534, 21, 'Sawai Madhopur', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(535, 21, 'Sikar', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(536, 21, 'Sirohi', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(537, 21, 'Sri Ganganagar', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(538, 21, 'Tonk', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(539, 21, 'Udaipur', 'active', '2025-07-10 16:45:43', '2025-07-10 16:45:43'),
+(540, 22, 'Gangtok', 'active', '2025-07-10 16:46:30', '2025-07-10 16:46:30'),
+(541, 22, 'Gyalshing', 'active', '2025-07-10 16:46:30', '2025-07-10 16:46:30'),
+(542, 22, 'Mangan', 'active', '2025-07-10 16:46:30', '2025-07-10 16:46:30'),
+(543, 22, 'Namchi', 'active', '2025-07-10 16:46:30', '2025-07-10 16:46:30'),
+(544, 22, 'Pakyong', 'active', '2025-07-10 16:46:30', '2025-07-10 16:46:30'),
+(545, 22, 'Soreng', 'active', '2025-07-10 16:46:30', '2025-07-10 16:46:30'),
+(546, 23, 'Ariyalur', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(547, 23, 'Chengalpattu', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(548, 23, 'Chennai', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(549, 23, 'Coimbatore', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(550, 23, 'Cuddalore', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(551, 23, 'Dharmapuri', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(552, 23, 'Dindigul', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(553, 23, 'Erode', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(554, 23, 'Kallakurichi', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(555, 23, 'Kancheepuram', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(556, 23, 'Karur', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(557, 23, 'Krishnagiri', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(558, 23, 'Madurai', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(559, 23, 'Mayiladuthurai', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(560, 23, 'Nagapattinam', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(561, 23, 'Namakkal', 'active', '2025-07-10 16:47:45', '2025-07-10 16:47:45'),
+(562, 23, 'Nilgiris', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(563, 23, 'Perambalur', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(564, 23, 'Pudukkottai', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(565, 23, 'Ramanathapuram', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(566, 23, 'Ranipet', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(567, 23, 'Salem', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(568, 23, 'Sivaganga', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(569, 23, 'Tenkasi', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(570, 23, 'Thanjavur', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(571, 23, 'Theni', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(572, 23, 'Thoothukudi', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(573, 23, 'Tiruchirappalli', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(574, 23, 'Tirunelveli', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(575, 23, 'Tirupathur', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(576, 23, 'Tiruppur', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(577, 23, 'Tiruvallur', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(578, 23, 'Tiruvannamalai', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(579, 23, 'Tiruvarur', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(580, 23, 'Vellore', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(581, 23, 'Viluppuram', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(582, 23, 'Virudhunagar', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(583, 23, 'Kanyakumari', 'active', '2025-07-10 16:47:46', '2025-07-10 16:47:46'),
+(584, 24, 'Adilabad', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(585, 24, 'Bhadradri Kothagudem', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(586, 24, 'Hanamkonda', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(587, 24, 'Hyderabad', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(588, 24, 'Jagtial', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(589, 24, 'Jangaon', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(590, 24, 'Jayashankar Bhupalpally', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(591, 24, 'Jogulamba Gadwal', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(592, 24, 'Kamareddy', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(593, 24, 'Karimnagar', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(594, 24, 'Khammam', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(595, 24, 'Kumuram Bheem Asifabad', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(596, 24, 'Mahabubabad', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(597, 24, 'Mahabubnagar', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(598, 24, 'Mancherial', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(599, 24, 'Medak', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(600, 24, 'Medchal–Malkajgiri', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(601, 24, 'Mulugu', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(602, 24, 'Nagarkurnool', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(603, 24, 'Nalgonda', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(604, 24, 'Narayanpet', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(605, 24, 'Nirmal', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(606, 24, 'Nizamabad', 'active', '2025-07-10 16:48:09', '2025-07-10 16:48:09'),
+(607, 24, 'Peddapalli', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(608, 24, 'Rajanna Sircilla', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(609, 24, 'Ranga Reddy', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(610, 24, 'Sangareddy', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(611, 24, 'Siddipet', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(612, 24, 'Suryapet', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(613, 24, 'Vikarabad', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(614, 24, 'Wanaparthy', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(615, 24, 'Warangal', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(616, 24, 'Yadadri Bhuvanagiri', 'active', '2025-07-10 16:48:10', '2025-07-10 16:48:10'),
+(617, 25, 'Dhalai', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(618, 25, 'Gomati', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(619, 25, 'Khowai', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(620, 25, 'North Tripura', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(621, 25, 'Sepahijala', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(622, 25, 'South Tripura', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(623, 25, 'Unakoti', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(624, 25, 'West Tripura', 'active', '2025-07-10 16:48:36', '2025-07-10 16:48:36'),
+(625, 26, 'Agra', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(626, 26, 'Aligarh', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(627, 26, 'Ambedkar Nagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(628, 26, 'Amethi', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(629, 26, 'Amroha', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(630, 26, 'Auraiya', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(631, 26, 'Ayodhya', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(632, 26, 'Azamgarh', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(633, 26, 'Baghpat', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(634, 26, 'Bahraich', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(635, 26, 'Ballia', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(636, 26, 'Balrampur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(637, 26, 'Banda', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(638, 26, 'Barabanki', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(639, 26, 'Bareilly', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(640, 26, 'Basti', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(641, 26, 'Bhadohi', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(642, 26, 'Bijnor', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(643, 26, 'Budaun', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(644, 26, 'Bulandshahr', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(645, 26, 'Chandauli', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(646, 26, 'Chitrakoot', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37');
+INSERT INTO `district` (`id`, `state_id`, `district_name`, `status`, `created_at`, `updated_at`) VALUES
+(647, 26, 'Deoria', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(648, 26, 'Etah', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(649, 26, 'Etawah', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(650, 26, 'Farrukhabad', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(651, 26, 'Fatehpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(652, 26, 'Firozabad', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(653, 26, 'Gautam Buddha Nagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(654, 26, 'Ghaziabad', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(655, 26, 'Ghazipur', 'active', '2025-07-10 16:49:37', '2025-12-03 14:17:50'),
+(656, 26, 'Gonda', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(657, 26, 'Gorakhpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(658, 26, 'Hamirpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(659, 26, 'Hapur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(660, 26, 'Hardoi', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(661, 26, 'Hathras', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(662, 26, 'Jalaun', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(663, 26, 'Jaunpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(664, 26, 'Jhansi', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(665, 26, 'Kannauj', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(666, 26, 'Kanpur Dehat', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(667, 26, 'Kanpur Nagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(668, 26, 'Kasganj', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(669, 26, 'Kaushambi', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(670, 26, 'Kheri', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(671, 26, 'Kushinagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(672, 26, 'Lalitpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(673, 26, 'Lucknow', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(674, 26, 'Maharajganj', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(675, 26, 'Mahoba', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(676, 26, 'Mainpuri', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(677, 26, 'Mathura', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(678, 26, 'Mau', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(679, 26, 'Meerut', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(680, 26, 'Mirzapur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(681, 26, 'Moradabad', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(682, 26, 'Muzaffarnagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(683, 26, 'Pilibhit', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(684, 26, 'Prayagraj', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(685, 26, 'Raebareli', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(686, 26, 'Rampur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(687, 26, 'Saharanpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(688, 26, 'Sambhal', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(689, 26, 'Sant Kabir Nagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(690, 26, 'Shahjahanpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(691, 26, 'Shamli', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(692, 26, 'Sharawasti', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(693, 26, 'Siddharthnagar', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(694, 26, 'Sitapur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(695, 26, 'Sonbhadra', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(696, 26, 'Sultanpur', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(697, 26, 'Unnao', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(698, 26, 'Varanasi', 'active', '2025-07-10 16:49:37', '2025-07-10 16:49:37'),
+(699, 27, 'Almora', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(700, 27, 'Bageshwar', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(701, 27, 'Chamoli', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(702, 27, 'Champawat', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(703, 27, 'Dehradun', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(704, 27, 'Haridwar', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(705, 27, 'Nainital', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(706, 27, 'Pauri Garhwal', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(707, 27, 'Pithoragarh', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(708, 27, 'Rudraprayag', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(709, 27, 'Tehri Garhwal', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(710, 27, 'Udham Singh Nagar', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(711, 27, 'Uttarkashi', 'active', '2025-07-10 16:51:10', '2025-07-10 16:51:10'),
+(712, 28, 'Alipurduar', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(713, 28, 'Bankura', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(714, 28, 'Birbhum', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(715, 28, 'Cooch Behar', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(716, 28, 'Dakshin Dinajpur', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(717, 28, 'Darjeeling', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(718, 28, 'Hooghly', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(719, 28, 'Howrah', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(720, 28, 'Jalpaiguri', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(721, 28, 'Jhargram', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(722, 28, 'Kalimpong', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(723, 28, 'Kolkata', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(724, 28, 'Malda', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(725, 28, 'Murshidabad', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(726, 28, 'Nadia', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(727, 28, 'North 24 Parganas', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(728, 28, 'Paschim Bardhaman', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(729, 28, 'Paschim Medinipur', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(730, 28, 'Purba Bardhaman', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(731, 28, 'Purba Medinipur', 'active', '2025-07-10 16:51:35', '2025-07-10 16:51:35'),
+(732, 28, 'Purulia', 'active', '2025-07-10 16:51:36', '2025-07-10 16:51:36'),
+(733, 28, 'South 24 Parganas', 'active', '2025-07-10 16:51:36', '2025-07-10 16:51:36'),
+(734, 28, 'Uttar Dinajpur', 'active', '2025-07-10 16:51:36', '2025-07-10 16:51:36'),
+(735, 29, 'Nicobar', 'active', '2025-07-10 16:52:19', '2025-07-10 16:52:19'),
+(736, 29, 'North and Middle Andaman', 'active', '2025-07-10 16:52:19', '2025-07-10 16:52:19'),
+(737, 29, 'South Andaman', 'active', '2025-07-10 16:52:19', '2025-07-10 16:52:19'),
+(738, 30, 'Chandigarh', 'active', '2025-07-10 16:58:42', '2025-12-03 14:36:43'),
+(739, 31, 'Dadra and Nagar Haveli', 'active', '2025-07-10 16:58:58', '2025-07-10 16:58:58'),
+(740, 31, 'Daman', 'active', '2025-07-10 16:58:58', '2025-07-10 16:58:58'),
+(741, 31, 'Diu', 'active', '2025-07-10 16:58:58', '2025-07-10 16:58:58'),
+(742, 32, 'Central Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(743, 32, 'East Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(744, 32, 'New Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(745, 32, 'North Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(746, 32, 'North East Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(747, 32, 'North West Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(748, 32, 'Shahdara', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(749, 32, 'South Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(750, 32, 'South East Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(751, 32, 'South West Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(752, 32, 'West Delhi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(753, 33, 'Anantnag', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(754, 33, 'Bandipora', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(755, 33, 'Baramulla', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(756, 33, 'Budgam', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(757, 33, 'Doda', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(758, 33, 'Ganderbal', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(759, 33, 'Jammu', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(760, 33, 'Kathua', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(761, 33, 'Kishtwar', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(762, 33, 'Kulgam', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(763, 33, 'Kupwara', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(764, 33, 'Poonch', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(765, 33, 'Pulwama', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(766, 33, 'Rajouri', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(767, 33, 'Ramban', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(768, 33, 'Reasi', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(769, 33, 'Samba', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(770, 33, 'Shopian', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(771, 33, 'Srinagar', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(772, 33, 'Udhampur', 'active', '2025-07-10 17:05:58', '2025-07-10 17:05:58'),
+(773, 35, 'Agatti', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(774, 35, 'Amini', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(775, 35, 'Andrott', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(776, 35, 'Bitra', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(777, 35, 'Chetlat', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(778, 35, 'Kadmat', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(779, 35, 'Kavaratti', 'active', '2025-07-10 17:07:26', '2025-07-10 17:07:26'),
+(780, 36, 'Puducherry', 'active', '2025-07-10 17:08:02', '2025-07-10 17:08:02'),
+(781, 36, 'Karaikal', 'active', '2025-07-10 17:08:02', '2025-07-10 17:08:02'),
+(782, 36, 'Mahe', 'active', '2025-07-10 17:08:02', '2025-07-10 17:08:02'),
+(783, 36, 'Yanam', 'active', '2025-07-10 17:08:02', '2025-07-10 17:08:02'),
+(784, 34, 'Leh', 'active', '2025-07-19 15:49:46', '2025-07-19 15:49:46'),
+(785, 34, 'Kargil', 'active', '2025-07-19 15:49:46', '2025-07-19 15:49:46');
 
 -- --------------------------------------------------------
 
@@ -63229,7 +64062,7 @@ CREATE TABLE `friends` (
   `id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   `friend_id` int(11) NOT NULL,
-  `type` tinyint(4) NOT NULL COMMENT '0=request, 1=accept, 2=reject, 3=block',
+  `type` tinyint(4) NOT NULL COMMENT '0=request, 1=accept, 2=reject, 3=block, 4=sortlist,\r\n5=remove sortlist',
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
@@ -63240,20 +64073,47 @@ CREATE TABLE `friends` (
 --
 
 INSERT INTO `friends` (`id`, `user_id`, `friend_id`, `type`, `status`, `created_at`, `updated_at`) VALUES
-(1, 6, 8, 1, 'active', '2025-11-05 12:02:51', '2025-11-12 06:20:58'),
-(2, 8, 6, 1, 'active', '2025-11-05 12:03:33', '2025-11-12 06:20:56'),
+(1, 6, 8, 5, 'active', '2025-11-05 12:02:51', '2025-11-19 08:47:28'),
+(2, 8, 6, 4, 'active', '2025-11-05 12:03:33', '2025-11-17 10:57:21'),
 (3, 1, 8, 1, 'active', '2025-11-05 12:08:13', '2025-11-12 06:20:54'),
 (4, 8, 5, 1, 'active', '2025-11-05 12:09:58', '2025-11-12 06:18:29'),
 (5, 6, 3, 0, 'active', '2025-11-08 09:49:21', '2025-11-12 06:02:02'),
-(6, 6, 5, 0, 'active', '2025-11-08 09:56:36', '2025-11-12 10:36:40'),
-(7, 6, 4, 0, 'active', '2025-11-08 09:56:39', '2025-11-12 12:07:11'),
-(8, 8, 4, 4, 'active', '2025-11-12 04:53:07', '2025-11-12 04:53:07'),
+(6, 6, 5, 0, 'active', '2025-11-08 09:56:36', '2025-11-22 07:03:17'),
+(7, 6, 4, 0, 'active', '2025-11-08 09:56:39', '2025-11-22 07:01:30'),
+(8, 8, 4, 0, 'active', '2025-11-12 04:53:07', '2025-11-26 05:54:01'),
 (9, 4, 8, 4, 'active', '2025-11-12 04:53:34', '2025-11-12 04:53:34'),
 (10, 11, 12, 1, 'active', '2025-11-12 06:07:51', '2025-11-12 06:08:51'),
 (11, 12, 11, 1, 'active', '2025-11-12 06:08:51', '2025-11-12 06:18:25'),
-(23, 6, 12, 4, 'active', '2025-11-12 10:26:10', '2025-11-12 10:53:59'),
-(24, 6, 6, 0, 'active', '2025-11-12 10:30:58', '2025-11-12 10:51:34'),
-(25, 6, 13, 4, 'active', '2025-11-12 10:51:52', '2025-11-12 10:53:54');
+(23, 6, 12, 4, 'active', '2025-11-12 10:26:10', '2025-11-14 06:24:32'),
+(24, 6, 6, 5, 'active', '2025-11-12 10:30:58', '2025-11-26 08:48:08'),
+(25, 6, 13, 1, 'active', '2025-11-12 10:51:52', '2025-11-13 05:01:12'),
+(26, 8, 13, 0, 'active', '2025-11-15 12:22:01', '2025-11-15 12:22:01'),
+(27, 19, 19, 4, 'active', '2025-11-20 04:12:06', '2025-11-20 04:12:06'),
+(28, 6, 19, 0, 'active', '2025-11-22 05:31:56', '2025-11-22 07:01:18'),
+(29, 6, 16, 0, 'active', '2025-11-22 05:35:14', '2025-11-22 07:05:00'),
+(30, 6, 14, 0, 'active', '2025-11-22 05:35:36', '2025-11-22 06:33:33'),
+(31, 2, 19, 0, 'active', '2025-11-22 10:11:53', '2025-11-22 10:44:52'),
+(32, 2, 6, 0, 'active', '2025-11-22 10:36:39', '2025-11-22 10:36:39'),
+(33, 2, 14, 0, 'active', '2025-11-22 10:37:45', '2025-11-22 10:37:45'),
+(34, 2, 16, 5, 'active', '2025-11-22 10:41:32', '2025-11-22 10:47:36'),
+(35, 1, 16, 0, 'active', '2025-11-24 08:39:57', '2025-11-24 08:39:57'),
+(36, 1, 14, 0, 'active', '2025-11-24 08:51:22', '2025-11-24 08:51:22'),
+(37, 1, 19, 4, 'active', '2025-11-24 09:59:25', '2025-11-24 09:59:42'),
+(38, 24, 20, 0, 'active', '2025-11-26 04:52:58', '2025-11-26 04:52:58'),
+(39, 24, 19, 0, 'active', '2025-11-26 04:53:00', '2025-11-26 04:53:00'),
+(40, 24, 24, 1, 'active', '2025-11-26 04:53:08', '2025-11-26 04:54:24'),
+(41, 24, 4, 0, 'active', '2025-11-26 04:53:20', '2025-11-26 04:53:20'),
+(42, 24, 5, 0, 'active', '2025-11-26 04:53:22', '2025-11-26 04:53:22'),
+(43, 6, 23, 5, 'active', '2025-11-26 08:48:15', '2025-11-26 12:35:06'),
+(44, 6, 18, 0, 'active', '2025-11-26 12:11:09', '2025-11-26 12:11:09'),
+(45, 6, 30, 4, 'active', '2025-11-26 12:34:49', '2025-11-26 12:34:49'),
+(46, 6, 29, 4, 'active', '2025-11-26 12:34:57', '2025-11-26 12:34:57'),
+(47, 39, 32, 0, 'active', '2025-11-27 04:11:19', '2025-11-27 04:11:19'),
+(48, 39, 33, 0, 'active', '2025-11-27 04:12:13', '2025-11-27 04:14:39'),
+(49, 39, 34, 0, 'active', '2025-11-27 04:14:42', '2025-11-27 04:14:42'),
+(50, 39, 35, 0, 'active', '2025-11-27 04:14:44', '2025-11-27 04:14:44'),
+(51, 38, 6, 0, 'active', '2025-11-27 09:08:06', '2025-11-27 09:08:06'),
+(52, 6, 38, 1, 'active', '2025-11-27 09:08:26', '2025-11-27 09:08:26');
 
 -- --------------------------------------------------------
 
@@ -63297,7 +64157,7 @@ INSERT INTO `height` (`id`, `height_ft`, `height_cm`, `status`) VALUES
 (22, '6 feet 3 inch', 190, 'active'),
 (23, '6 feet 4 inch', 193, 'active'),
 (24, '6 feet 5 inch', 196, 'active'),
-(25, '6 feet 6 inch', 198, 'inactive');
+(25, '6 feet 6 inch', 197, 'active');
 
 -- --------------------------------------------------------
 
@@ -63310,26 +64170,27 @@ CREATE TABLE `horoscopes` (
   `name` varchar(50) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `title` tinyint(1) NOT NULL DEFAULT 1
+  `title` tinyint(1) NOT NULL DEFAULT 1,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Dumping data for table `horoscopes`
 --
 
-INSERT INTO `horoscopes` (`id`, `name`, `created_at`, `updated_at`, `title`) VALUES
-(1, 'Aries', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(2, 'Taurus', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(3, 'Gemini', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(4, 'Cancer', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(5, 'Leo', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(6, 'Virgo', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(7, 'Libra', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(8, 'Scorpio', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(9, 'Sagittarius', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(10, 'Capricorn', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(11, 'Aquarius', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1),
-(12, 'Pisces', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1);
+INSERT INTO `horoscopes` (`id`, `name`, `created_at`, `updated_at`, `title`, `status`) VALUES
+(1, 'Aries', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(2, 'Taurus', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(3, 'Gemini', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(4, 'Cancer', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(5, 'Leo', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(6, 'Virgo', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(7, 'Libra', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(8, 'Scorpio', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(9, 'Sagittarius', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(10, 'Capricorn', '2025-08-26 09:15:42', '2025-08-26 09:15:42', 1, 'active'),
+(11, 'Aquarius', '2025-08-26 09:15:42', '2025-12-03 12:26:44', 1, 'active'),
+(12, 'Pisces', '2025-08-25 11:15:42', '2025-08-25 11:15:42', 1, 'active');
 
 -- --------------------------------------------------------
 
@@ -63367,7 +64228,7 @@ INSERT INTO `income_list` (`id`, `income_range`, `status`) VALUES
 (17, 'Income in EUR', 'active'),
 (18, 'Income in GBP', 'active'),
 (19, 'Business Varies', 'active'),
-(20, 'Freelancer - Varies', 'active');
+(20, 'Freelancer  Varies', 'active');
 
 -- --------------------------------------------------------
 
@@ -63436,9 +64297,325 @@ CREATE TABLE `notifications` (
 
 INSERT INTO `notifications` (`id`, `user_id`, `title`, `message`, `is_read`, `created_at`, `senderid`, `status`, `type`) VALUES
 (1, 0, 'Suryavanshi_Aman', 'Suryavanshi_Aman want to connect you', 0, '2025-10-24 16:36:03', 0, 0, 'VideoCall'),
-(2, 6, 'neha_chopra', 'neha_chopra want to connect you', 0, '2025-10-25 11:03:33', 3, 0, 'VideoCall'),
+(2, 8, 'neha_chopra', 'neha_chopra want to connect you', 0, '2025-10-25 11:03:33', 3, 0, 'VideoCall'),
 (3, 8, 'Suryavanshi_Aman', 'Suryavanshi_Aman want to connect you', 0, '2025-10-25 11:14:52', 2, 0, 'Call'),
-(4, 8, 'Suryavanshi_Aman', 'Suryavanshi_Aman want to connect you', 0, '2025-10-25 11:14:52', 4, 0, 'Call');
+(29, 2, 'Test Notification', 'Hello, this is a test notification', 0, '2025-11-15 16:55:03', 0, 0, NULL),
+(32, 6, 'New Friend', 'Hello you are new user want to connect you ok', 0, '2025-11-15 17:32:39', 1, 0, 'null'),
+(33, 6, 'Type', 'Hello you are new user want to connect you ok', 0, '2025-11-15 17:32:39', 1, 0, 'null'),
+(34, 6, 'with type', 'Ye push notification chal raha hai laga lo sir', 0, '2025-11-15 17:32:39', 1, 0, 'ok'),
+(35, 8, 'raunit Sent You a Connection Request', 'raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-15 17:51:06', 6, 0, '2'),
+(36, 8, 'raunit Sent You a Connection Request', 'raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-15 17:51:06', 6, 0, '2'),
+(37, 8, 'raunit Sent You a Connection Request', 'raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-15 17:53:51', 6, 0, '2'),
+(38, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-15 17:54:49', 1, 0, '1'),
+(39, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-15 17:54:49', 1, 0, '1'),
+(42, 8, 'ram ', 'ji', 0, '2025-11-17 11:15:22', 6, 0, '1'),
+(43, 8, 'ram ', 'ji', 0, '2025-11-17 11:15:22', 6, 0, '1'),
+(44, 8, 'raunit Katele is calling you 📞', 'Incoming voice call from raunit Katele. Tap to answer!', 0, '2025-11-17 11:19:43', 6, 0, '1'),
+(47, 8, 'raunit Katele is calling you 📞', 'Incoming voice call from raunit Katele. Tap to answer!', 0, '2025-11-17 11:51:19', 6, 0, 'VideoCall'),
+(50, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 12:11:15', 6, 0, 'VideoCall'),
+(51, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 12:11:15', 6, 0, 'VideoCall'),
+(64, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 12:29:41', 8, 0, 'VideoCall'),
+(65, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 12:29:41', 8, 0, 'VideoCall'),
+(66, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 12:29:41', 8, 0, 'VideoCall'),
+(67, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 12:29:41', 1, 0, '1'),
+(68, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 12:29:41', 1, 0, '1'),
+(69, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 12:29:41', 1, 0, '1'),
+(73, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 12:29:41', 6, 0, 'VideoCall'),
+(74, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 12:29:41', 6, 0, 'VideoCall'),
+(75, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 12:29:41', 6, 0, 'VideoCall'),
+(76, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 14:01:53', 1, 0, '1'),
+(77, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 14:04:52', 1, 0, '1'),
+(79, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 14:16:31', 1, 0, '1'),
+(80, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:16:31', 8, 0, 'VideoCall'),
+(81, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:16:31', 8, 0, 'VideoCall'),
+(82, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:16:31', 8, 0, 'VideoCall'),
+(83, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:16:31', 8, 0, 'VideoCall'),
+(84, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:16:31', 8, 0, 'VideoCall'),
+(85, 6, 'New Friend', 'Calling notification is working', 0, '2025-11-17 14:35:41', 1, 0, '1'),
+(86, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:42:33', 6, 0, 'VideoCall'),
+(87, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:42:33', 6, 0, 'VideoCall'),
+(88, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(89, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(90, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(91, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 8, 0, 'VideoCall'),
+(92, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 8, 0, 'VideoCall'),
+(93, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(94, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(95, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(96, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(97, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(98, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(99, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(100, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 14:45:49', 6, 0, 'VideoCall'),
+(101, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:11:05', 6, 0, 'VideoCall'),
+(102, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:11:05', 6, 0, 'VideoCall'),
+(103, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:30:32', 6, 0, 'VideoCall'),
+(104, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(105, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(106, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(107, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(108, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 8, 0, 'VideoCall'),
+(109, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(110, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 8, 0, 'VideoCall'),
+(111, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(112, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:42:57', 6, 0, 'VideoCall'),
+(113, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:57:31', 6, 0, 'VideoCall'),
+(114, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 15:57:31', 8, 0, 'VideoCall'),
+(115, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 15:57:31', 6, 0, 'VideoCall'),
+(116, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:05:57', 8, 0, 'VideoCall'),
+(117, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:05:57', 6, 0, 'VideoCall'),
+(118, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:10:06', 8, 0, 'VideoCall'),
+(119, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 8, 0, 'VideoCall'),
+(120, 8, 'raunit Interested to Your Profile', 'raunit has shown interest in your profile. Check it out now!', 0, '2025-11-17 16:18:02', 6, 0, '1'),
+(121, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 8, 0, 'VideoCall'),
+(122, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 8, 0, 'VideoCall'),
+(123, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 8, 0, 'VideoCall'),
+(124, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 6, 0, 'VideoCall'),
+(125, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 8, 0, 'VideoCall'),
+(126, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 6, 0, 'VideoCall'),
+(127, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:18:02', 8, 0, 'VideoCall'),
+(128, 6, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:37:56', 6, 0, 'VideoCall'),
+(129, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 16:38:29', 8, 0, 'VideoCall'),
+(130, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:38:29', 6, 0, 'VideoCall'),
+(131, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:40:35', 6, 0, 'VideoCall'),
+(132, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:40:35', 6, 0, 'VideoCall'),
+(133, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:40:35', 6, 0, 'VideoCall'),
+(134, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:47:02', 6, 0, 'VideoCall'),
+(135, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:48:14', 6, 0, 'VideoCall'),
+(136, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 16:48:14', 6, 0, 'VideoCall'),
+(137, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:00:56', 6, 0, 'VideoCall'),
+(138, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:02:46', 6, 0, 'VideoCall'),
+(139, 6, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:04:59', 6, 0, 'VideoCall'),
+(140, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:08:12', 6, 0, 'VideoCall'),
+(141, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:08:12', 6, 0, 'VideoCall'),
+(142, 6, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:08:12', 6, 0, 'VideoCall'),
+(143, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 17:08:12', 8, 0, 'VideoCall'),
+(144, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:08:12', 6, 0, 'VideoCall'),
+(145, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:26:44', 6, 0, 'VideoCall'),
+(146, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:26:44', 6, 0, 'VideoCall'),
+(147, 6, 'raunit Interested to Your Profile', 'raunit has shown interest in your profile. Check it out now!', 0, '2025-11-17 17:26:44', 6, 0, '1'),
+(148, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:36:29', 6, 0, 'VideoCall'),
+(149, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:36:29', 6, 0, 'VideoCall'),
+(150, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 17:59:33', 6, 0, 'VideoCall'),
+(151, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:05:58', 6, 0, 'VideoCall'),
+(152, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:05:58', 6, 0, 'VideoCall'),
+(153, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 8, 0, 'VideoCall'),
+(154, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 8, 0, 'VideoCall'),
+(155, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 8, 0, 'VideoCall'),
+(156, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 8, 0, 'VideoCall'),
+(157, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(158, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(159, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(160, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(161, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(162, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(163, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 8, 0, 'VideoCall'),
+(164, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(165, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(166, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(167, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(168, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(169, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(170, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(171, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(172, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(173, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(174, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(175, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(176, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(177, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-17 18:07:46', 6, 0, 'VideoCall'),
+(178, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'VideoCall'),
+(180, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'VideoCall'),
+(182, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'VideoCall'),
+(183, 8, 'raunit Katele is starting a video call 🎥', 'raunit Katele has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'VideoCall'),
+(184, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'VideoCall'),
+(185, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(186, 6, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(187, 6, 'Riya Singh is starting a call 🎥', 'Riya Singh has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(188, 8, 'raunit Katele is starting a call 🎥', 'raunit Katele has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'Call'),
+(189, 6, 'Riya Singh is starting a call 🎥', 'Riya Singh has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(190, 6, 'Riya Singh is starting a call 🎥', 'Riya Singh has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(192, 6, 'Riya Singh is starting a call 🎥', 'Riya Singh has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(193, 8, 'raunit Katele is starting a call 🎥', 'raunit Katele has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'Call'),
+(194, 8, 'raunit Katele is starting a call 🎥', 'raunit Katele has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'Call'),
+(195, 8, 'raunit Katele is starting a call 🎥', 'raunit Katele has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'Call'),
+(196, 6, 'Riya Singh is starting a call 🎥', 'Riya Singh has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 8, 0, 'Call'),
+(197, 8, 'raunit Katele is starting a call 🎥', 'raunit Katele has invited you to a  call. Tap to join!', 0, '2025-11-18 00:00:56', 6, 0, 'Call'),
+(198, 6, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 09:08:05', 16, 0, '2'),
+(199, 6, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 09:08:05', 16, 0, '2'),
+(200, 6, 'Raunit Sent You a Connection Request', 'Raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 09:08:05', 14, 0, '2'),
+(203, 6, 'Anupam Interested to Your Profile', 'Anupam has shown interest in your profile. Check it out now!', 0, '2025-11-22 11:47:38', 16, 0, '1'),
+(204, 6, 'Raunit Interested to Your Profile', 'Raunit has shown interest in your profile. Check it out now!', 0, '2025-11-22 11:47:38', 14, 0, '1'),
+(205, 6, 'Raunit Sent You a Connection Request', 'Raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 11:47:38', 14, 0, '2'),
+(206, 6, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 11:47:38', 16, 0, '2'),
+(208, 6, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 11:47:38', 5, 0, '2'),
+(209, 6, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 11:47:38', 4, 0, '2'),
+(210, 6, 'Anupam Interested to Your Profile', 'Anupam has shown interest in your profile. Check it out now!', 0, '2025-11-22 11:47:38', 16, 0, '1'),
+(211, 6, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 11:47:38', 16, 0, '2'),
+(214, 6, 'test af is starting a call 🎥', 'test af has invited you to a  call. Tap to join!', 0, '2025-11-22 12:44:11', 13, 0, 'Call'),
+(215, 6, 'test af is starting a video call 🎥', 'test af has invited you to a video call. Tap to join!', 0, '2025-11-22 12:44:11', 13, 0, 'VideoCall'),
+(216, 2, 'raunit Sent You a Connection Request', 'raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 12:44:11', 6, 0, '2'),
+(217, 2, 'Raunit Sent You a Connection Request', 'Raunit has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 12:44:11', 14, 0, '2'),
+(218, 2, 'Anupam Interested to Your Profile', 'Anupam has shown interest in your profile. Check it out now!', 0, '2025-11-22 12:44:11', 16, 0, '1'),
+(219, 2, 'Anupam Interested to Your Profile', 'Anupam has shown interest in your profile. Check it out now!', 0, '2025-11-22 12:44:11', 16, 0, '1'),
+(220, 2, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-22 12:44:11', 16, 0, '2'),
+(221, 2, 'Anupam Interested to Your Profile', 'Anupam has shown interest in your profile. Check it out now!', 0, '2025-11-22 12:44:11', 16, 0, '1'),
+(222, 1, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-24 15:03:00', 8, 0, 'VideoCall'),
+(223, 1, 'Riya Singh is starting a video call 🎥', 'Riya Singh has invited you to a video call. Tap to join!', 0, '2025-11-24 22:28:48', 8, 0, 'VideoCall'),
+(224, 24, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-26 09:56:55', 20, 0, '2'),
+(226, 24, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-26 09:56:55', 4, 0, '2'),
+(227, 24, 'Anupam Sent You a Connection Request', 'Anupam has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-26 09:56:55', 5, 0, '2'),
+(228, 24, 'harsh Interested to Your Profile', 'harsh has shown interest in your profile. Check it out now!', 0, '2025-11-26 09:56:55', 24, 0, '1'),
+(229, 24, 'harsh Interested to Your Profile', 'harsh has shown interest in your profile. Check it out now!', 0, '2025-11-26 09:56:55', 24, 0, '1'),
+(230, 24, 'harsh Sent You a Connection Request', 'harsh has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-26 09:56:55', 24, 0, '2'),
+(231, 24, 'harsh Sent You a Connection Request', 'harsh has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-26 09:56:55', 24, 0, '2'),
+(232, 6, 'Mehak Interested to Your Profile', 'Mehak has shown interest in your profile. Check it out now!', 0, '2025-11-26 14:12:49', 30, 0, '1'),
+(233, 6, 'Avneet Interested to Your Profile', 'Avneet has shown interest in your profile. Check it out now!', 0, '2025-11-26 14:12:49', 29, 0, '1'),
+(234, 39, 'Shiv Sent You a Connection Request', 'Shiv has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-27 09:09:19', 32, 0, '2'),
+(235, 39, 'Rupali Interested to Your Profile', 'Rupali has shown interest in your profile. Check it out now!', 0, '2025-11-27 09:09:19', 33, 0, '1'),
+(236, 38, 'Abhishek Sent You a Connection Request', 'Abhishek has sent you a connection request. View their profile and accept if you\'re interested!', 0, '2025-11-27 14:26:57', 6, 0, '2'),
+(237, 6, 'Riya Accepted Your Connection Request', 'Riya has accepted your connection request. You’re now connected — start a conversation!', 0, '2025-11-27 14:26:57', 38, 0, '3'),
+(238, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(239, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(240, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'Call'),
+(241, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(242, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(243, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'VideoCall'),
+(244, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(245, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'VideoCall'),
+(246, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(247, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'VideoCall'),
+(248, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'Call'),
+(249, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'VideoCall'),
+(250, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(251, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'VideoCall'),
+(252, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(253, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(254, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(255, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(256, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(257, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(258, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(259, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'VideoCall'),
+(260, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(261, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(262, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(263, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'Call'),
+(264, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(265, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(266, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(267, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'Call'),
+(268, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 38, 0, 'Call'),
+(269, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(270, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(271, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(272, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(273, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(274, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(275, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(276, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(277, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(278, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(279, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(280, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(281, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(282, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(283, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(284, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-27 14:26:57', 6, 0, 'Call'),
+(285, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 09:14:15', 6, 0, 'Call'),
+(286, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 09:14:15', 6, 0, 'Call'),
+(287, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 09:14:15', 6, 0, 'Call'),
+(288, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 09:14:15', 6, 0, 'Call'),
+(289, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 09:14:15', 6, 0, 'Call'),
+(290, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 09:14:15', 6, 0, 'Call'),
+(291, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(292, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'Call'),
+(293, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'VideoCall'),
+(294, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'Call'),
+(295, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'Call'),
+(296, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'VideoCall'),
+(297, 6, 'Riya Soni is starting a video call 🎥', 'Riya Soni has invited you to a video call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'VideoCall'),
+(298, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 38, 0, 'Call'),
+(299, 38, 'Abhishek Sharma is starting a video call 🎥', 'Abhishek Sharma has invited you to a video call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'VideoCall'),
+(300, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(301, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(302, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(303, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(304, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(305, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(306, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(307, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(308, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(309, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(310, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(311, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 10:25:19', 6, 0, 'Call'),
+(312, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(313, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(314, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(315, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(316, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(317, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(318, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(319, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(320, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(321, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(322, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(323, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(324, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 13:43:40', 6, 0, 'Call'),
+(325, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(326, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(327, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(328, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(329, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(330, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(331, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(332, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(333, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(334, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(335, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(336, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(337, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(338, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(339, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(340, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(341, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(342, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 15:08:04', 6, 0, 'Call'),
+(343, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(344, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(345, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(346, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 38, 0, 'Call'),
+(347, 6, 'Riya Soni is starting a call 🎥', 'Riya Soni has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 38, 0, 'Call'),
+(348, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(349, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(350, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(351, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(352, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-11-28 17:22:08', 6, 0, 'Call'),
+(353, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 09:19:46', 6, 0, 'Call'),
+(354, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 09:19:46', 6, 0, 'Call'),
+(355, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 09:19:46', 6, 0, 'Call'),
+(356, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 09:19:46', 6, 0, 'Call'),
+(357, 6, 'New Friend', 'Calling notification is working', 0, '2025-12-01 11:04:34', 1, 0, '1'),
+(358, 39, 'New Friend', 'Calling notification is working', 0, '2025-12-01 11:04:34', 6, 0, '1'),
+(359, 39, 'New Friend', 'Calling notification is working', 0, '2025-12-01 11:04:34', 6, 0, '1'),
+(360, 39, 'New Friend', 'Calling notification is working', 0, '2025-12-01 11:04:34', 6, 0, '1'),
+(361, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:09:48', 6, 0, 'Call'),
+(362, 39, 'New Friend', 'Calling notification is working', 0, '2025-12-01 11:09:48', 6, 0, '1'),
+(363, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:09:48', 6, 0, 'Call'),
+(364, 39, 'New Friend', 'Calling notification is working', 0, '2025-12-01 11:17:06', 6, 0, '1'),
+(365, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:17:06', 6, 0, 'Call'),
+(366, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:17:06', 6, 0, 'Call'),
+(367, 39, 'Anupam Calling you', 'Calling notification is working', 0, '2025-12-01 11:17:06', 6, 0, '1'),
+(368, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:17:06', 6, 0, 'Call'),
+(371, 39, 'Anupam Calling you', 'Calling notification is working', 0, '2025-12-01 11:17:06', 6, 0, '1'),
+(372, 39, 'Anupam Calling you.', 'Calling notification is working', 0, '2025-12-01 11:17:06', 6, 0, '1'),
+(373, 39, 'Nitin Calling you.', 'Calling notification is working', 0, '2025-12-01 11:17:06', 6, 0, '1'),
+(374, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:17:06', 6, 0, 'Call'),
+(375, 38, 'Abhishek Sharma is starting a call 🎥', 'Abhishek Sharma has invited you to a  call. Tap to join!', 0, '2025-12-01 11:17:06', 6, 0, 'Call'),
+(376, 0, 'hello', 'anu', 0, '2025-12-02 10:28:30', 0, 0, NULL),
+(377, 3, 'hello', 'Anupam test', 0, '2025-12-02 12:58:09', 0, 0, NULL),
+(378, 0, 'hello', 'test db store', 0, '2025-12-02 14:43:11', 0, 0, '5'),
+(379, 0, 'send', 'test', 0, '2025-12-02 15:43:49', 0, 0, '5'),
+(380, 0, 'test', 'satphere', 0, '2025-12-02 15:47:13', 0, 0, '5');
 
 -- --------------------------------------------------------
 
@@ -63458,7 +64635,10 @@ CREATE TABLE `notification_read` (
 --
 
 INSERT INTO `notification_read` (`id`, `notification_id`, `user_id`, `read_at`) VALUES
-(1, 3, 2, '2025-11-06 10:36:36');
+(1, 219, 2, '2025-11-22 16:27:56'),
+(2, 357, 6, '2025-12-01 11:07:45'),
+(3, 75, 8, '2025-11-17 14:13:12'),
+(4, 231, 24, '2025-11-26 10:37:38');
 
 -- --------------------------------------------------------
 
@@ -63493,7 +64673,20 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`id`, `user_id`, `plan_id`, `order_id`, `payment_id`, `signature`, `amount`, `currency`, `type`, `status`, `gateway_type`, `created_at`, `expire_at`, `day`, `Filter_Both`, `Filter_Gender`, `Filter_Region`, `No_Ads`, `Rear_Camra`) VALUES
-(7, 1, 2, 'ORD1761209582820', 'TXN987654320', NULL, 499.00, 'INR', 'credit', 'success', 'manual', '2025-10-22 06:55:00', '2025-10-24 06:55:00', '7', 'false', 'true', 'false', 'true', 'true');
+(1, 6, 2, 'cf_123456778', NULL, NULL, 299.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-17 11:57:00', '2025-12-17 11:57:00', '30', 'false', 'true', 'false', 'true', 'true'),
+(2, 2, 2, 'CF_1763381907989', NULL, NULL, 499.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-17 12:37:00', '2025-12-17 12:37:00', '30', 'true', 'true', 'false', 'true', 'true'),
+(3, 6, 2, 'CF_1763794500426', NULL, NULL, 299.00, 'INR', 'credit', 'created', 'cashfree', '2025-11-22 06:55:00', '2025-11-23 06:55:00', NULL, '', '', '', '', ''),
+(4, 1, 2, 'CF_1763978413452', NULL, NULL, 299.00, 'INR', 'credit', 'created', 'cashfree', '2025-11-24 10:00:14', '2025-11-25 10:00:14', NULL, '', '', '', '', ''),
+(6, 12, 2, 'CF_1763978875041', NULL, NULL, 499.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-24 10:08:44', '2025-12-25 10:08:44', '31', '10', 'true', 'false', 'true', 'true'),
+(7, 3, 2, 'CF_1763978978651', NULL, NULL, 499.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-24 10:10:11', '2025-12-25 10:10:11', '31', '10', 'true', 'false', 'true', 'true'),
+(8, 21, 2, 'CF_1764006980713', NULL, NULL, 299.00, 'INR', 'credit', 'created', 'cashfree', '2025-11-24 17:56:21', '2025-11-25 17:56:21', NULL, '', '', '', '', ''),
+(9, 21, 2, 'CF_1764007218734', NULL, NULL, 299.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-24 18:02:33', '2025-12-25 18:02:33', '31', '10', 'true', 'false', 'true', 'true'),
+(10, 21, 2, 'CF_1764007626002', NULL, NULL, 299.00, 'INR', 'credit', 'created', 'cashfree', '2025-11-24 18:07:06', '2025-11-25 18:07:06', NULL, '', '', '', '', ''),
+(11, 3, 2, 'CF_1764007771765', NULL, NULL, 499.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-24 18:09:45', '2025-12-25 18:09:45', '31', '10', 'true', 'false', 'true', 'true'),
+(12, 21, 2, 'CF_1764007788456', NULL, NULL, 299.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-24 18:10:22', '2025-12-25 18:10:22', '31', '10', 'true', 'false', 'true', 'true'),
+(13, 1, 2, 'CF_1764042436619', NULL, NULL, 299.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-25 03:47:00', '2025-12-26 03:47:00', '31', 'true', 'true', 'true', 'true', 'true'),
+(14, 6, 2, 'CF_1764043419131', NULL, NULL, 499.00, 'INR', 'credit', 'success', 'cashfree', '2025-11-25 04:12:27', '2025-12-26 04:12:27', '31', 'true', 'true', 'true', 'true', 'true'),
+(19, 6, 2, 'CF_1764217121390', NULL, NULL, 499.00, 'INR', 'credit', 'created', 'cashfree', '2025-11-27 04:18:41', '2025-11-28 04:18:41', NULL, '', '', '', '', '');
 
 -- --------------------------------------------------------
 
@@ -63529,6 +64722,7 @@ CREATE TABLE `plans` (
   `description` text DEFAULT NULL,
   `billing_cycle` enum('weekly','monthly') NOT NULL,
   `price` int(11) NOT NULL,
+  `tax` decimal(10,2) DEFAULT 0.00,
   `days` int(11) NOT NULL DEFAULT 0,
   `perks` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL,
   `status` tinyint(1) NOT NULL DEFAULT 1 COMMENT '1=Active, 0=Inactive',
@@ -63539,20 +64733,9 @@ CREATE TABLE `plans` (
 -- Dumping data for table `plans`
 --
 
-INSERT INTO `plans` (`id`, `name`, `description`, `billing_cycle`, `price`, `days`, `perks`, `status`, `off`) VALUES
-(1, 'Free', '\"allows user to swipe other profiles freely.\",, \"allows user to send messages frequently\",, \"allows user to view/post reels\",, \"audio calling feature disabled\",, \"video calling feature disabled\"', 'monthly', 0, 0, '{\"Swipe\":true,\"Message\":false,\"Reel\":true,\"audio\":false,\"video\":false}', 1, 0),
-(2, 'Gold', '\"allows users to swipe other profiles freely.\",, \"allows user to send messages frequently\",, \"allows user to view/post reels\",, \"audio calling feature enabled\",, \"video calling feature enabled\"', 'monthly', 299, 30, '{\"Swipe\":true,\"Message\":true,\"Reel\":true,\"audio\":true,\"video\":true}', 1, 0);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `qualification`
---
-
-CREATE TABLE `qualification` (
-  `id` int(11) NOT NULL,
-  `qualification_name` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+INSERT INTO `plans` (`id`, `name`, `description`, `billing_cycle`, `price`, `tax`, `days`, `perks`, `status`, `off`) VALUES
+(1, 'Free', '\"allows user to swipe other profiles freely.\", \"allows user to send messages frequently\", \"allows user to view/post reels\", \"audio calling feature disabled\", \"video calling feature disabled\",\" other profiles don\'t show freely .\"', 'monthly', 0, 0.00, 0, '{\"Swipe\":true,\"Message\":false,\"Profile\":false,\"Audio\":false,\"Video\":false}', 0, 0),
+(2, 'Gold', '\"allows users to swipe other profiles freely.\", \"allows user to send messages frequently\", \"allows user to view/post reels\", \"audio calling feature enabled\", \"video calling feature enabled\",\" other profiles show.\"', 'monthly', 299, 18.00, 31, '{\"Swipe\":true,\"Message\":true,\"Profile\":true,\"Audio\":true,\"Video\":true}', 1, 0);
 
 -- --------------------------------------------------------
 
@@ -63835,7 +65018,7 @@ CREATE TABLE `regions` (
 INSERT INTO `regions` (`id`, `name`, `title`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'india', '0', 'active', '2025-09-09 05:05:44', '2025-09-09 05:05:44'),
 (11, 'Aisa', '1', 'active', '2025-09-09 05:24:59', '2025-09-09 05:24:59'),
-(12, 'Europ', '1', 'active', '2025-09-09 05:24:59', '2025-10-28 09:05:11');
+(13, 'uk', '1', 'active', '2025-12-02 10:36:57', '2025-12-02 10:36:57');
 
 -- --------------------------------------------------------
 
@@ -63845,25 +65028,26 @@ INSERT INTO `regions` (`id`, `name`, `title`, `status`, `created_at`, `updated_a
 
 CREATE TABLE `religion` (
   `id` int(11) NOT NULL,
-  `religion_name` varchar(100) NOT NULL
+  `religion_name` varchar(100) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `religion`
 --
 
-INSERT INTO `religion` (`id`, `religion_name`) VALUES
-(1, 'Hindu'),
-(2, 'Muslim'),
-(3, 'Christian'),
-(4, 'Sikh'),
-(5, 'Buddhist'),
-(6, 'Jain'),
-(7, 'Parsi'),
-(8, 'Jewish'),
-(9, 'Atheist'),
-(10, 'No Religion'),
-(11, 'Spritual -not religious');
+INSERT INTO `religion` (`id`, `religion_name`, `status`) VALUES
+(1, 'Hindu', 'active'),
+(2, 'Muslim', 'active'),
+(3, 'Christian', 'active'),
+(4, 'Sikh', 'active'),
+(5, 'Buddhist', 'active'),
+(6, 'Jain', 'active'),
+(7, 'Parsi', 'active'),
+(8, 'Jewish', 'active'),
+(9, 'Atheist', 'active'),
+(10, 'No Religion', 'active'),
+(11, 'Spritual-not religiousa', 'active');
 
 -- --------------------------------------------------------
 
@@ -63889,7 +65073,7 @@ CREATE TABLE `skin_tones` (
   `id` int(11) NOT NULL,
   `tone_name` varchar(50) NOT NULL,
   `created_at` timestamp NULL DEFAULT current_timestamp(),
-  `status` varchar(20) DEFAULT 'Active'
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
@@ -63897,9 +65081,9 @@ CREATE TABLE `skin_tones` (
 --
 
 INSERT INTO `skin_tones` (`id`, `tone_name`, `created_at`, `status`) VALUES
-(1, 'Fair', '2025-05-30 05:56:04', 'Active'),
-(2, 'Wheatish', '2025-05-30 05:56:04', 'Active'),
-(3, 'Dark', '2025-05-30 05:56:04', 'Active');
+(1, 'Fair', '2025-05-30 05:56:04', 'active'),
+(2, 'Wheatish', '2025-05-30 05:56:04', 'active'),
+(3, 'Dark', '2025-05-30 05:56:04', 'active');
 
 -- --------------------------------------------------------
 
@@ -63923,7 +65107,68 @@ CREATE TABLE `social_links` (
 INSERT INTO `social_links` (`id`, `name`, `link`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'Support Mail', 'support@satphere.com', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:08:16'),
 (2, 'Contact us', '7705015444', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:08:15'),
-(3, 'Website', 'https://satphere.com', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:00:04');
+(3, 'Website', 'https://satphere.com', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:00:04'),
+(4, 'What are some of the benefits of Premium plans?', 'As a Premium member, you can chat unlimited with your Matches, view their contact numbers and view hidden photos. You also get Premium Assistance on priority. These benefits will help you to accelerate your partner search.', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:00:04'),
+(5, 'What offers and discounts can I avail?', 'You can avail seasonal discounts and promotional offers available during festivals, weekends or special occasions. Keep an eye on banners and notifications!', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:00:04'),
+(6, 'What payment options do you offer?', 'We accept Credit/Debit cards, UPI, Net Banking, Wallets and International payment methods including PayPal.', 'ACTIVE', '2025-08-26 09:53:55', '2025-11-11 07:00:04');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `state`
+--
+
+CREATE TABLE `state` (
+  `id` int(11) NOT NULL,
+  `state` varchar(100) NOT NULL,
+  `link` varchar(255) DEFAULT NULL,
+  `image` varchar(255) DEFAULT NULL,
+  `status` enum('active','inactive','delete') DEFAULT 'active',
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+
+--
+-- Dumping data for table `state`
+--
+
+INSERT INTO `state` (`id`, `state`, `link`, `image`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Andhra Pradesh', 'https://services.india.gov.in/service/detail/apply-for-new-ration-card-in-andhra-pradesh', '/statelogo/ap.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:15:39'),
+(2, 'Arunachal Pradesh', 'https://arunfcs.gov.in', '/statelogo/ar.png', 'active', '2025-07-10 15:38:32', '2025-07-21 17:46:47'),
+(3, 'Assam', 'https://fcsca.assam.gov.in/information-services/detail/how-to-apply-for-ration-cards', '/statelogo/as.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:21:48'),
+(4, 'Bihar', 'https://epds.bihar.gov.in', '/statelogo/br.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:23:23'),
+(5, 'Chhattisgarh', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/cg.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:20:09'),
+(6, 'Goa', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/ga.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:17:19'),
+(7, 'Gujarat', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/gj.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:37:28'),
+(8, 'Haryana', 'https://epds.haryanafood.gov.in', '/statelogo/hr.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:16:03'),
+(9, 'Himachal Pradesh', 'https://epds.hp.gov.in/RC_TEST.aspx', '/statelogo/hp.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:28:40'),
+(10, 'Jharkhand', 'https://jsfss.jharkhand.gov.in', '/statelogo/jh.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:11:04'),
+(11, 'Karnataka', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/ka.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:18:23'),
+(12, 'Kerala', 'https://services.india.gov.in/service/detail/apply-new-ration-card-civil-supplies-department-kerala', '/statelogo/kr.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:18:31'),
+(13, 'Madhya Pradesh', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/mp.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:24:42'),
+(14, 'Maharashtra', 'https://services.india.gov.in/service/detail/maharashtra-demand-for-new-ration-card-1', '/statelogo/mh.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:44:48'),
+(15, 'Manipur', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/mn.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:13:25'),
+(16, 'Meghalaya', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/ml.png', 'active', '2025-07-10 15:38:32', '2025-07-21 17:51:45'),
+(17, 'Mizoram', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/mz.png', 'active', '2025-07-10 15:38:32', '2025-07-21 17:52:35'),
+(18, 'Nagaland', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/nl.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:51:19'),
+(19, 'Odisha', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/od.png', 'active', '2025-07-10 15:38:32', '2025-07-21 17:53:34'),
+(20, 'Punjab', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/pb.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:04:12'),
+(21, 'Rajasthan', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/rj.png', 'active', '2025-07-10 15:38:32', '2025-07-21 17:44:24'),
+(22, 'Sikkim', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/sk.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:47:29'),
+(23, 'Tamil Nadu', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/tn.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:19:25'),
+(24, 'Telangana', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/tg.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:13:49'),
+(25, 'Tripura', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/tr.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:29:50'),
+(26, 'Uttar Pradesh', 'https://fcs.up.gov.in', '/statelogo/up.png', 'active', '2025-07-10 15:38:32', '2025-07-21 17:41:31'),
+(27, 'Uttarakhand', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/uk.png', 'active', '2025-07-10 15:38:32', '2025-12-03 14:17:54'),
+(28, 'West Bengal', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/wb.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:27:30'),
+(29, 'Andaman and Nicobar Islands', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/ani.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:41:04'),
+(30, 'Chandigarh', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/ch.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:43:31'),
+(31, 'Dadra and Nagar Haveli and Daman and Diu', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/dd.jpg', 'active', '2025-07-10 15:38:32', '2025-07-22 17:04:54'),
+(32, 'Delhi', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/dl.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:54:02'),
+(33, 'Jammu and Kashmir', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/jk.png', 'active', '2025-07-10 15:38:32', '2025-07-22 09:50:06'),
+(34, 'Ladakh', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/lk.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:35:06'),
+(35, 'Lakshadweep', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/ld.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:34:45'),
+(36, 'Puducherry', 'https://nfsa.gov.in/portal/ration_card_state_portals_aa', '/statelogo/pd.png', 'active', '2025-07-10 15:38:32', '2025-07-22 10:23:18');
 
 -- --------------------------------------------------------
 
@@ -68074,7 +69319,7 @@ INSERT INTO `sub_religion` (`id`, `religion_id`, `name`, `status`) VALUES
 (2, 1, 'Rajput', 'active'),
 (3, 1, 'Kayastha', 'active'),
 (4, 1, 'Vaishya', 'active'),
-(5, 1, 'Kshatriya', 'active'),
+(5, 1, 'Kshatriya', 'inactive'),
 (6, 1, 'Agarwal', 'active'),
 (7, 1, 'Baniya', 'active'),
 (8, 1, 'Gupta', 'active'),
@@ -69020,20 +70265,25 @@ INSERT INTO `table_list` (`id`, `table_name`, `table_id`) VALUES
 CREATE TABLE `terms_conditions` (
   `id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
-  `description` text NOT NULL,
+  `description` mediumtext NOT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` timestamp NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `terms_conditions`
 --
 
 INSERT INTO `terms_conditions` (`id`, `title`, `description`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Term Conditions', '<h2><strong>Terms &amp; Conditions</strong></h2>\n\n<p><strong>Last Updated: November 5, 2025</strong></p>\n\n<p>Welcome to <strong>Satphere</strong>, a platform owned and operated by <strong>FounderCode Technology Private Limited</strong> (&ldquo;Company,&rdquo; &ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;). By accessing or using our mobile application and website (collectively referred to as the &ldquo;Platform&rdquo;), you agree to comply with and be bound by these Terms and Conditions (&ldquo;Terms&rdquo;). If you do not agree, please do not use our Platform.</p>\n\n<hr />\n<h3><strong>1. Introduction</strong></h3>\n\n<p><strong>Satphere</strong> provides a digital platform designed to offer online entertainment, gaming, and interactive services. These Terms govern your use of our Platform, including all games, transactions, communications, and related features.</p>\n\n<hr />\n<h3><strong>2. Eligibility</strong></h3>\n\n<ul>\n	<li>\n	<p>You must be at least 18 years old to use our services.</p>\n	</li>\n	<li>\n	<p>By using our Platform, you represent that you are legally capable of entering into binding contracts.</p>\n	</li>\n	<li>\n	<p>If you are using our services on behalf of an organization or group, you represent that you have the authority to bind that entity.</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>3. Account Registration</strong></h3>\n\n<p>To access certain features of the Platform, you may be required to create an account by providing accurate and up-to-date information such as:</p>\n\n<ul>\n	<li>\n	<p>Full Name</p>\n	</li>\n	<li>\n	<p>Mobile Number</p>\n	</li>\n	<li>\n	<p>Email Address</p>\n	</li>\n</ul>\n\n<p>You are responsible for maintaining the confidentiality of your account credentials and all activities that occur under your account. Notify us immediately of any unauthorized access. We reserve the right to suspend or terminate any account found to be involved in fraudulent, abusive, or illegal activities.</p>\n\n<hr />\n<h3><strong>4. Services We Provide</strong></h3>\n\n<p>Satphere enables users to:</p>\n\n<ul>\n	<li>\n	<p>Participate in online gaming and entertainment activities.</p>\n	</li>\n	<li>\n	<p>View game results, offers, and promotional content.</p>\n	</li>\n	<li>\n	<p>Manage wallet balances, deposits, and withdrawals.</p>\n	</li>\n	<li>\n	<p>Receive real-time notifications and updates.</p>\n	</li>\n</ul>\n\n<p>We act solely as a facilitator for gameplay and digital interactions. All transactions and game outcomes are governed by respective in-app rules and policies.</p>\n\n<hr />\n<h3><strong>5. Wallet, Payments &amp; Refund Policy</strong></h3>\n\n<ul>\n	<li>\n	<p>Wallet balance or in-app currency can be used only for in-app services or games.</p>\n	</li>\n	<li>\n	<p>All payments are processed securely through trusted third-party payment gateways.</p>\n	</li>\n	<li>\n	<p>Once a payment is successfully processed, it cannot be reversed or refunded except under special cases as approved by the Company.</p>\n	</li>\n	<li>\n	<p>The Company reserves the right to modify or suspend wallet services at any time without prior notice.</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>6. User Responsibilities</strong></h3>\n\n<p>By using Satphere, you agree to:</p>\n\n<ul>\n	<li>\n	<p>Provide accurate, complete, and truthful information.</p>\n	</li>\n	<li>\n	<p>Not use the Platform for any unlawful, abusive, or fraudulent activity.</p>\n	</li>\n	<li>\n	<p>Not post or share offensive, defamatory, or harmful content.</p>\n	</li>\n	<li>\n	<p>Not attempt to hack, manipulate, or disrupt the Platform or its security systems.</p>\n	</li>\n</ul>\n\n<p>Violation of these terms may result in permanent account suspension, legal action, or both.</p>\n\n<hr />\n<h3><strong>7. Content &amp; Information Disclaimer</strong></h3>\n\n<p>All information &mdash; including game data, results, offers, and content &mdash; is provided on an &ldquo;as is&rdquo; basis. While Satphere strives to maintain accuracy, we make no guarantees regarding completeness, correctness, or reliability of the content.</p>\n\n<hr />\n<h3><strong>8. Limitation of Liability</strong></h3>\n\n<p>To the maximum extent permitted by law, <strong>FounderCode Technology Private Limited</strong> and its affiliates shall not be liable for any:</p>\n\n<ul>\n	<li>\n	<p>Losses, damages, or injuries resulting from gameplay, transactions, or user interactions.</p>\n	</li>\n	<li>\n	<p>Direct, indirect, incidental, or consequential damages arising from your use or inability to use the Platform.</p>\n	</li>\n</ul>\n\n<p>Our role is limited to providing a secure digital space for users to engage and interact.</p>\n\n<hr />\n<h3><strong>9. Intellectual Property Rights</strong></h3>\n\n<p>All materials available on <strong>Satphere</strong> &mdash; including but not limited to logos, designs, graphics, text, icons, code, and other intellectual content &mdash; are the property of <strong>FounderCode Technology Private Limited</strong>.<br />\nYou may not copy, reproduce, distribute, or use our intellectual property without prior written consent.</p>\n\n<hr />\n<h3><strong>10. Privacy Policy</strong></h3>\n\n<p>Your use of Satphere is also governed by our <strong>Privacy Policy</strong>, which outlines how we collect, use, and protect your personal data.</p>\n\n<hr />\n<h3><strong>11. Suspension or Termination</strong></h3>\n\n<p>We may suspend or terminate your account without prior notice if:</p>\n\n<ul>\n	<li>\n	<p>You violate these Terms or applicable laws.</p>\n	</li>\n	<li>\n	<p>You engage in fraudulent, abusive, or suspicious activity.</p>\n	</li>\n	<li>\n	<p>It is required by regulatory or legal authorities.</p>\n	</li>\n</ul>\n\n<p>Upon termination, any pending wallet balance or activity may be reviewed as per company policy.</p>\n\n<hr />\n<h3><strong>12. Third-Party Services</strong></h3>\n\n<p>Our Platform may include links or integrations with third-party payment processors, advertisers, or service providers. We are not responsible for their content, policies, or actions.<br />\nUsers are encouraged to review their respective terms and privacy policies before engaging.</p>\n\n<hr />\n<h3><strong>13. Indemnification</strong></h3>\n\n<p>You agree to indemnify, defend, and hold harmless <strong>FounderCode Technology Private Limited</strong>, its affiliates, employees, and directors from any claims, damages, or liabilities arising out of:</p>\n\n<ul>\n	<li>\n	<p>Your violation of these Terms.</p>\n	</li>\n	<li>\n	<p>Misuse of the Platform.</p>\n	</li>\n	<li>\n	<p>Infringement of third-party rights.</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>14. Governing Law &amp; Jurisdiction</strong></h3>\n\n<p>These Terms shall be governed by and interpreted in accordance with the laws of <strong>India</strong>.<br />\nAny disputes arising hereunder shall be subject to the exclusive jurisdiction of the <strong>courts in Lucknow, Uttar Pradesh, India</strong>.</p>\n\n<hr />\n<h3><strong>15. Updates to These Terms</strong></h3>\n\n<p>We may update or modify these Terms from time to time. The latest version will always be available on the Satphere app or website with an updated &ldquo;Last Updated&rdquo; date.<br />\nContinued use of the Platform constitutes your acceptance of the revised Terms.</p>\n\n<hr />\n<h3><strong>16. Contact Us</strong></h3>\n\n<p><strong>FounderCode Technology Private Limited</strong><br />\n<strong>Address:</strong> Lucknow, Uttar Pradesh, India<br />\n<strong>Phone:</strong> +91 7705015444<br />\n<strong>Email:</strong> support@satphere.com</p>\n', 'active', '2025-08-26 10:52:15', '2025-11-11 06:17:38'),
-(2, 'Privacy Policy', '<h1><strong>Privacy Policy for Satphere</strong></h1>\n\n<p><strong>Last Updated:</strong> November 5, 2025</p>\n\n<p>Welcome to <strong>Satphere</strong>, owned and operated by <strong>FounderCode Technology Private Limited</strong> (&ldquo;we,&rdquo; &ldquo;our,&rdquo; or &ldquo;us&rdquo;).<br />\nThis Privacy Policy describes how we collect, use, disclose, and protect your personal information when you use our mobile application and website (collectively referred to as the &ldquo;Platform&rdquo;).</p>\n\n<p>By using Satphere, you agree to the collection and use of your information as described in this policy.</p>\n\n<hr />\n<h3><strong>1. Information We Collect</strong></h3>\n\n<p>To help you find the most compatible match and ensure a secure experience, we collect the following types of data:</p>\n\n<p>a. Personal Information</p>\n\n<ul>\n	<li>\n	<p>Full Name</p>\n	</li>\n	<li>\n	<p>Gender</p>\n	</li>\n	<li>\n	<p>Date of Birth</p>\n	</li>\n	<li>\n	<p>Email Address</p>\n	</li>\n	<li>\n	<p>Mobile Number</p>\n	</li>\n	<li>\n	<p>Religion, Caste, Sub-caste (if applicable)</p>\n	</li>\n	<li>\n	<p>Marital Status</p>\n	</li>\n	<li>\n	<p>Education and Profession Details</p>\n	</li>\n	<li>\n	<p>Location (City, State, Country)</p>\n	</li>\n	<li>\n	<p>Profile Photo and Other Uploaded Media</p>\n	</li>\n	<li>\n	<p>Government ID or Address Proof (if required for verification)</p>\n	</li>\n</ul>\n\n<p>b. Device &amp; Technical Information</p>\n\n<ul>\n	<li>\n	<p>Device type, operating system, and browser info</p>\n	</li>\n	<li>\n	<p>IP address</p>\n	</li>\n	<li>\n	<p>App version and usage analytics</p>\n	</li>\n	<li>\n	<p>Crash logs and session duration</p>\n	</li>\n</ul>\n\n<p>c. Communication Data</p>\n\n<ul>\n	<li>\n	<p>Messages, chat history, and connection requests exchanged within the Platform</p>\n	</li>\n	<li>\n	<p>User feedback and support requests</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>2. How We Use Your Information</strong></h3>\n\n<p>We collect and use your personal data to:</p>\n\n<ul>\n	<li>\n	<p>Create and manage your user profile</p>\n	</li>\n	<li>\n	<p>Match you with compatible profiles</p>\n	</li>\n	<li>\n	<p>Enable messaging and communication features</p>\n	</li>\n	<li>\n	<p>Verify authenticity and prevent fraudulent activities</p>\n	</li>\n	<li>\n	<p>Send updates, notifications, and offers (optional)</p>\n	</li>\n	<li>\n	<p>Improve our services and user experience</p>\n	</li>\n	<li>\n	<p>Comply with legal requirements and protect user safety</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>3. Sharing of Information</strong></h3>\n\n<p>We respect your privacy and <strong>never sell or rent</strong> your data.<br />\nYour information is only shared in the following cases:</p>\n\n<ul>\n	<li>\n	<p>With <strong>other registered users</strong>, as part of your public matrimonial profile (you control what details are visible).</p>\n	</li>\n	<li>\n	<p>With <strong>payment gateways</strong> for premium service purchases.</p>\n	</li>\n	<li>\n	<p>With <strong>third-party service providers</strong> (for hosting, analytics, and SMS/email notifications).</p>\n	</li>\n	<li>\n	<p>With <strong>government or legal authorities</strong> if required by law.</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>4. Data Retention</strong></h3>\n\n<p>Your data remains with us as long as your account is active.<br />\nIf you delete your profile or request removal, we permanently delete or anonymize your personal data within a reasonable period, except as required by law.</p>\n\n<hr />\n<h3><strong>5. Security Measures</strong></h3>\n\n<p>We use industry-standard measures like <strong>SSL encryption</strong>, <strong>secure servers</strong>, and <strong>regular audits</strong> to protect your information.<br />\nHowever, no online system can be fully secure, and users are advised to exercise discretion while sharing personal details.</p>\n\n<hr />\n<h3><strong>6. Your Rights and Choices</strong></h3>\n\n<p>You have full control over your personal data:</p>\n\n<ul>\n	<li>\n	<p>View and edit your profile information</p>\n	</li>\n	<li>\n	<p>Delete your account anytime</p>\n	</li>\n	<li>\n	<p>Restrict visibility of sensitive details</p>\n	</li>\n	<li>\n	<p>Withdraw consent for promotional messages or emails</p>\n	</li>\n	<li>\n	<p>Contact us for any privacy or data concerns</p>\n	</li>\n</ul>\n\n<hr />\n<h3><strong>7. Cookies and Tracking Technologies</strong></h3>\n\n<p>We use cookies and analytics tools to understand user behavior, improve app performance, and personalize experiences.<br />\nYou can disable cookies through your browser or device settings.</p>\n\n<hr />\n<h3><strong>8. Third-Party Links</strong></h3>\n\n<p>Our Platform may contain links to external websites or services.<br />\nWe are not responsible for their content, privacy practices, or security policies.</p>\n\n<hr />\n<h3><strong>9. Children&rsquo;s Privacy</strong></h3>\n\n<p>Satphere is <strong>strictly for individuals aged 18 years and above</strong>.<br />\nIf we discover that a minor has registered or shared personal information, we will delete such data immediately.</p>\n\n<hr />\n<h3><strong>10. Policy Updates</strong></h3>\n\n<p>We may revise this Privacy Policy periodically to reflect changes in legal requirements or our practices.<br />\nYour continued use of the Platform after any update signifies your acceptance of the revised terms.</p>\n\n<hr />\n<h3><strong>11. Contact Us</strong></h3>\n\n<p>If you have questions, concerns, or complaints about this Privacy Policy, please contact us at:</p>\n\n<p><strong>FounderCode Technology Private Limited</strong><br />\n<strong>Phone:</strong> +91 7705015444<br />\n<strong>Email:</strong> support@satphere.com<br />\n<strong>Address:</strong> Ground Floor, 1/798, Sector-H, Jankipuram, Lucknow, Uttar Pradesh, India &ndash; 226021<br />\n<strong>Website:</strong> <a href=\"https://satphere.com\" target=\"_new\">https://satphere.com</a></p>\n', 'active', '2025-08-26 10:52:15', '2025-11-11 06:21:17'),
-(3, 'Refund', '<h3><strong>1. No Refund on Services</strong></h3>\n\n<p>Once a premium membership or any paid service is purchased, <strong>no refund</strong> will be issued under any circumstances &mdash; including non-usage or dissatisfaction with the service.</p>\n\n<hr />\n<h3><strong>2. Non-Transferable</strong></h3>\n\n<p>All purchased memberships are <strong>non-transferable</strong> and cannot be assigned, exchanged, or shared with another user or profile.</p>\n\n<hr />\n<h3><strong>3. Cancellation</strong></h3>\n\n<p>You may cancel your membership at any time.<br />\nHowever, <strong>cancellation does not entitle you to a refund</strong> of any kind for the remaining membership period.</p>\n\n<hr />\n<h3><strong>4. Technical Issues</strong></h3>\n\n<p>If you encounter technical problems that prevent you from accessing services, please contact our <strong>support team</strong> immediately.<br />\nWe will make every effort to resolve the issue promptly. However, refunds will <strong>not</strong> be provided for such technical issues.</p>\n\n<hr />\n<h3><strong>5. Payment Gateway Charges</strong></h3>\n\n<p>All <strong>payment gateway fees, transaction charges, or taxes</strong> associated with the payment are non-refundable.</p>\n\n<hr />\n<h3><strong>6. Duplicate Payments</strong></h3>\n\n<p>In the event of a <strong>duplicate payment</strong> due to a system or network error, an eligible refund will be processed <strong>after verification</strong> within <strong>5&ndash;7 business days</strong>.</p>\n\n<hr />\n<h3><strong>7. Discretion</strong></h3>\n\n<p>All refund decisions are made <strong>solely at the discretion of the Satphere management team</strong>.<br />\nWe reserve the right to approve or reject any refund claim as deemed appropriate.</p>\n\n<hr />\n<h3><strong>8. Refund Timeline</strong></h3>\n\n<p>If a refund is approved, the amount will be <strong>credited to your original payment method within 5&ndash;7 business working days</strong> after confirmation.</p>\n\n<hr />\n<h3><strong>9. Contact Us</strong></h3>\n\n<p>For any refund-related complaints, issues, or queries, please contact:</p>\n\n<p><strong>FounderCode Technology Private Limited</strong><br />\n<strong>Phone:</strong> +91 7705015444<br />\n<strong>Email:</strong> support@satphere.com<br />\n<strong>Address:</strong> Ground Floor, 1/798, Sector-H, Jankipuram, Lucknow, Uttar Pradesh, India &ndash; 226021<br />\n<strong>Website:</strong> <a href=\"https://satphere.com\" target=\"_new\">https://satphere.com</a></p>\n', 'active', '2025-08-26 10:52:15', '2025-11-11 06:25:33');
+(1, 'Term Conditions', '<h1><strong>📄Terms &amp; Conditions &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>Welcome to <strong>Satphere</strong>, owned and operated by <strong>Foundercode Technology Pvt. Ltd.</strong>, located at <strong>1/798, Sector H, Jankipuram, Lucknow</strong>.</p>\n\n<p>By downloading, installing, or using Satphere, you agree to these Terms &amp; Conditions.<br />\nIf you do not agree, please do not use the app.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>1. Eligibility</strong></h1>\n\n<ul>\n	<li>You must be <strong>18 years or older</strong> to use Satphere.<br />\n	&nbsp;</li>\n	<li>By creating an account, you confirm that all information you provide is true and accurate.<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>2. Account Registration</strong></h1>\n\n<p>By creating an account, you agree to:</p>\n\n<ul>\n	<li>Provide accurate profile details.<br />\n	&nbsp;</li>\n	<li>Not use false identities or impersonate someone.<br />\n	&nbsp;</li>\n	<li>Keep your login information secure and not share your account with others.<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere reserves the right to suspend or delete accounts that violate these terms.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>3. Services Provided</strong></h1>\n\n<p>Satphere offers:</p>\n\n<ul>\n	<li>Matrimonial profile creation<br />\n	&nbsp;</li>\n	<li>Profile matching<br />\n	&nbsp;</li>\n	<li>In-app chat<br />\n	&nbsp;</li>\n	<li>Video calling (via Agora)<br />\n	&nbsp;</li>\n	<li>Subscription-based premium features<br />\n	&nbsp;</li>\n</ul>\n\n<p>Features may be updated or changed at any time.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>4. User Responsibilities</strong></h1>\n\n<p>While using Satphere, you agree NOT to:</p>\n\n<ul>\n	<li>Post or share abusive, obscene, or harmful content<br />\n	&nbsp;</li>\n	<li>Harass, threaten, or intimidate other users<br />\n	&nbsp;</li>\n	<li>Use the app for illegal activities<br />\n	&nbsp;</li>\n	<li>Attempt to hack, modify, or disrupt app operations<br />\n	&nbsp;</li>\n	<li>Create multiple fake accounts<br />\n	&nbsp;</li>\n	<li>Upload copyrighted or stolen content<br />\n	&nbsp;</li>\n</ul>\n\n<p>Violation may result in immediate account suspension.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>5. Subscriptions &amp; Payments</strong></h1>\n\n<ul>\n	<li>Some features require a paid subscription.<br />\n	&nbsp;</li>\n	<li>Payment processing is handled securely by third-party gateways (Razorpay, Paytm, PhonePe).<br />\n	&nbsp;</li>\n	<li>Satphere does <strong>not</strong> store your card or bank information.<br />\n	&nbsp;</li>\n	<li>All payments are <strong>non-refundable</strong>, except in cases of failed transactions (which gateways automatically refund or credit).<br />\n	&nbsp;</li>\n</ul>\n\n<p>By purchasing any plan, you agree to the pricing and terms shown in the app.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>6. Chat &amp; Video Call Usage</strong></h1>\n\n<ul>\n	<li>Satphere enables chat via Firebase and video calls via Agora.<br />\n	&nbsp;</li>\n	<li>These features are meant only for respectful communication.<br />\n	&nbsp;</li>\n	<li>Users are responsible for their behavior during chats and calls.<br />\n	&nbsp;</li>\n	<li>Recording or sharing another user&rsquo;s content without permission is strictly prohibited.<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>7. Content Ownership</strong></h1>\n\n<ul>\n	<li>You retain ownership of photos and content you upload.<br />\n	&nbsp;</li>\n	<li>By posting on Satphere, you grant us a limited license to display your content within the app.<br />\n	&nbsp;</li>\n	<li>We do not sell or use your content outside Satphere.<br />\n	&nbsp;</li>\n</ul>\n\n<p>We may remove any content that violates our guidelines.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>8. Account Deletion</strong></h1>\n\n<p>Users may request account deletion by contacting support.<br />\n<strong>Deletion is done manually by the admin</strong> after verification.<br />\nOnce deleted, the data <strong>cannot be recovered</strong>.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>9. Termination by Satphere</strong></h1>\n\n<p>We may suspend or terminate any account that:</p>\n\n<ul>\n	<li>Violates these Terms<br />\n	&nbsp;</li>\n	<li>Harms the platform or its users<br />\n	&nbsp;</li>\n	<li>Engages in illegal or fraudulent activity<br />\n	&nbsp;</li>\n</ul>\n\n<p>We are not obligated to provide prior notice.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>10. Disclaimer of Warranties</strong></h1>\n\n<p>Satphere is provided on an <strong>&ldquo;as is&rdquo;</strong> and <strong>&ldquo;as available&rdquo;</strong> basis.<br />\nWe do not guarantee:</p>\n\n<ul>\n	<li>Finding a partner<br />\n	&nbsp;</li>\n	<li>Match accuracy<br />\n	&nbsp;</li>\n	<li>Continuous availability of services<br />\n	&nbsp;</li>\n	<li>Error-free operation<br />\n	&nbsp;</li>\n</ul>\n\n<p>Users agree to use the app at their own risk.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>11. Limitation of Liability</strong></h1>\n\n<p>Foundercode Technology Pvt. Ltd. is <strong>not liable</strong> for:</p>\n\n<ul>\n	<li>User-to-user interactions<br />\n	&nbsp;</li>\n	<li>Any emotional, financial, or personal losses<br />\n	&nbsp;</li>\n	<li>Misuse of the platform by any user<br />\n	&nbsp;</li>\n	<li>Technical issues, delays, or server downtime<br />\n	&nbsp;</li>\n</ul>\n\n<p>Your use of the app signifies acceptance of these limitations.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>12. Privacy Policy</strong></h1>\n\n<p>Your use of Satphere is also governed by our <strong>Privacy Policy</strong>.<br />\nPlease review it to understand how your data is handled.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>13. Changes to Terms</strong></h1>\n\n<p>We may modify these Terms &amp; Conditions at any time.<br />\nUpdated versions will be posted within the app.<br />\nContinued use means you accept the updated terms.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>14. Governing Law</strong></h1>\n\n<p>These Terms are governed by the laws of <strong>India</strong>.<br />\nAny disputes shall be handled in courts located in <strong>Lucknow, Uttar Pradesh</strong>.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>15. Contact Information</strong></h1>\n\n<p>For questions, support, or account deletion requests:</p>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞 <a href=\"tel:7705015444\">7705015444</a><br />\n📧<a href=\"mailto:info@foundercodes.com\"><strong>info@foundercodes.com</strong></a></p>\n\n<p>&nbsp;</p>\n', 'active', '2025-08-26 10:52:15', '2025-12-05 09:32:01'),
+(2, 'Privacy Policy', '<h1><strong>📄Privacy Policy &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>Satphere (&quot;App&quot;), operated by <strong>Foundercode Technology Pvt. Ltd.</strong>, located at <strong>1/798, Sector H, Jankipuram, Lucknow</strong>, respects your privacy. This Privacy Policy explains how we handle your information when you use our matrimonial, chat, subscription, and video call services.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>1. Information We Collect</strong></h2>\n\n<h3><strong>1.1 Information Provided Directly by You</strong></h3>\n\n<p>We collect only the information you personally enter into the app:</p>\n\n<ul>\n	<li>Name<br />\n	&nbsp;</li>\n	<li>Phone number<br />\n	&nbsp;</li>\n	<li>Profile details (age, gender, interests, etc.)<br />\n	&nbsp;</li>\n	<li>Photos uploaded voluntarily<br />\n	&nbsp;</li>\n	<li>Messages and chat content<br />\n	&nbsp;</li>\n	<li>Subscription plan details<br />\n	&nbsp;</li>\n</ul>\n\n<h3><strong>1.2 No Automatic Data Collection</strong></h3>\n\n<p>Satphere <strong>does NOT automatically collect</strong>:</p>\n\n<ul>\n	<li>Device details<br />\n	&nbsp;</li>\n	<li>IP address<br />\n	&nbsp;</li>\n	<li>App analytics<br />\n	&nbsp;</li>\n	<li>Crash logs<br />\n	&nbsp;</li>\n	<li>Performance data<br />\n	&nbsp;</li>\n</ul>\n\n<p>We collect <strong>only what you provide</strong>.</p>\n\n<h3><strong>1.3 No Document Collection</strong></h3>\n\n<p>We do <strong>not</strong> collect Aadhaar, PAN, or any other government ID or address proof.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>2. Third-Party Services We Use</strong></h2>\n\n<p>We use trusted third-party services <strong>only to run core features</strong> of Satphere:</p>\n\n<h3><strong>2.1 Firebase &mdash; Notifications &amp; Chat</strong></h3>\n\n<p>Firebase is used <strong>only for</strong>:</p>\n\n<ul>\n	<li>Push notifications<br />\n	&nbsp;</li>\n	<li>Real-time chat messaging<br />\n	&nbsp;</li>\n</ul>\n\n<p>Firebase analytics is <strong>disabled</strong> for Satphere; we do not collect analytics through Firebase.</p>\n\n<h3><strong>2.2 Agora &mdash; Video Calls</strong></h3>\n\n<p>Agora is used strictly for:</p>\n\n<ul>\n	<li>1-to-1 video calling features<br />\n	Agora handles audio/video streaming during calls.<br />\n	&nbsp;</li>\n</ul>\n\n<h3><strong>2.3 Payment Gateways &mdash; Subscription Purchases</strong></h3>\n\n<p>For subscription payments, we may use:</p>\n\n<ul>\n	<li>Razorpay<br />\n	&nbsp;</li>\n	<li>Paytm<br />\n	&nbsp;</li>\n	<li>PhonePe<br />\n	&nbsp;</li>\n</ul>\n\n<p>Payment gateways collect payment information as required by law. Satphere does <strong>not</strong> store card or bank details.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>3. How We Use Your Information</strong></h2>\n\n<p>We use your information to:</p>\n\n<ul>\n	<li>Create and manage your profile<br />\n	&nbsp;</li>\n	<li>Enable matchmaking, chat, and video calls<br />\n	&nbsp;</li>\n	<li>Process subscription purchases<br />\n	&nbsp;</li>\n	<li>Provide customer support<br />\n	&nbsp;</li>\n	<li>Maintain platform safety and prevent fraud<br />\n	&nbsp;</li>\n</ul>\n\n<p>We do <strong>not</strong> use your data for advertising or behavioral profiling.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>4. Data Protection</strong></h2>\n\n<p>We protect your information using:</p>\n\n<ul>\n	<li>Encrypted communication channels<br />\n	&nbsp;</li>\n	<li>Secure database storage<br />\n	&nbsp;</li>\n	<li>Restricted internal access controls<br />\n	&nbsp;</li>\n</ul>\n\n<p>While we take strong precautions, no system is 100% secure. You should protect your login credentials.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>5. Data Sharing &amp; Disclosure</strong></h2>\n\n<p>We do <strong>not</strong> sell or rent your personal information.</p>\n\n<p>We may share data only when necessary:</p>\n\n<ul>\n	<li>With Firebase (for chat &amp; notifications)<br />\n	&nbsp;</li>\n	<li>With Agora (for video call functionality)<br />\n	&nbsp;</li>\n	<li>With payment gateways (for subscription processing)<br />\n	&nbsp;</li>\n	<li>With law enforcement or authorities when required by law<br />\n	&nbsp;</li>\n	<li>To prevent fraud or protect the safety of our users<br />\n	&nbsp;</li>\n</ul>\n\n<p>Third-party services operate under their own privacy policies.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>6. Account Deletion Policy</strong></h2>\n\n<h3><strong>Deletion Method</strong></h3>\n\n<p>Users may request account deletion at any time. <strong>Deletion is performed manually by the admin</strong> after verifying the request.</p>\n\n<h3><strong>After Deletion</strong></h3>\n\n<p>When an account is deleted, the following are permanently removed:</p>\n\n<ul>\n	<li>Profile information<br />\n	&nbsp;</li>\n	<li>Photos<br />\n	&nbsp;</li>\n	<li>Chat history<br />\n	&nbsp;</li>\n	<li>Subscription records<br />\n	&nbsp;</li>\n</ul>\n\n<p>Some records may be retained only as required by law and will be minimized where possible.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>7. Children&rsquo;s Privacy</strong></h2>\n\n<p>Satphere is intended strictly for users <strong>18 years and older</strong>. We do not knowingly permit minors to register.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>8. Cookies &amp; Tracking</strong></h2>\n\n<p>Satphere does <strong>not</strong> use cookies, analytics tracking, or background device monitoring.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>9. International Data Transfer</strong></h2>\n\n<p>Your data may be processed or stored on servers located outside India by our third-party providers (e.g., Firebase, Agora, payment gateways) according to their terms.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>10. Changes to This Privacy Policy</strong></h2>\n\n<p>We may update this Privacy Policy from time to time. Any changes will be posted in the app with an updated &ldquo;Last Updated&rdquo; date.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h2><strong>11. Contact Us</strong></h2>\n\n<p>For any questions, support, or account deletion requests, contact us at:</p>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞 <a href=\"tel:7705015444\">7705015444</a><br />\n📧 <a href=\"mailto:info@foundercodes.com\"><strong>info@foundercodes.com</strong></a></p>\n\n<h1>&nbsp;</h1>\n\n<p>&nbsp;</p>\n', 'active', '2025-08-26 10:52:15', '2025-12-05 09:32:11'),
+(3, 'Refund & Cancellation', '<h1><strong>📄Refund &amp; Cancellation Policy &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>This Refund &amp; Cancellation Policy applies to all purchases made through <strong>Satphere</strong>, owned and operated by <strong>Foundercode Technology Pvt. Ltd.</strong>, located at <strong>1/798, Sector H, Jankipuram, Lucknow</strong>.</p>\n\n<p>By purchasing any subscription on Satphere, you agree to the following terms.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>1. No Refund Policy</strong></h1>\n\n<p>All subscription payments made on Satphere are <strong>non-refundable</strong>.</p>\n\n<p>This includes:</p>\n\n<ul>\n	<li>Subscription plans<br />\n	&nbsp;</li>\n	<li>Premium features<br />\n	&nbsp;</li>\n	<li>Boosts or additional paid services<br />\n	&nbsp;</li>\n</ul>\n\n<p>Once a payment is successfully completed, <strong>no cancellation or refund</strong> will be provided, regardless of usage.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>2. Refund for Failed Transactions</strong></h1>\n\n<p>If a transaction fails but the amount is deducted from your bank/account, then:</p>\n\n<ul>\n	<li>The payment gateway (Razorpay/Paytm/PhonePe) will automatically <strong>reverse the amount</strong><br />\n	&nbsp;</li>\n	<li>Refund time is usually <strong>3&ndash;7 working days</strong> depending on your bank<br />\n	&nbsp;</li>\n	<li>Satphere does <strong>not</strong> receive the money in failed transactions<br />\n	&nbsp;</li>\n</ul>\n\n<p>If your refund is delayed, you may contact your bank or the payment gateway with the transaction ID.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>3. Duplicate Payment Refunds</strong></h1>\n\n<p>If a user is mistakenly charged twice:</p>\n\n<ul>\n	<li>Provide proof of duplicate payment<br />\n	&nbsp;</li>\n	<li>After verification, Satphere will authorize a refund for the extra amount<br />\n	&nbsp;</li>\n</ul>\n\n<p>Refund will be processed within <strong>7&ndash;10 business days</strong> after approval.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>4. Subscription Cancellation</strong></h1>\n\n<p>Users may cancel their subscription renewal, but:</p>\n\n<ul>\n	<li>Cancellation stops future renewals<br />\n	&nbsp;</li>\n	<li><strong>Current active subscription will continue until expiry</strong><br />\n	&nbsp;</li>\n	<li>No refund will be issued for the unused days<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>5. Account Deletion &amp; Refunds</strong></h1>\n\n<p>If you delete your account or your account is terminated due to violation of Terms &amp; Conditions:</p>\n\n<ul>\n	<li>No refund will be provided<br />\n	&nbsp;</li>\n	<li>Remaining subscription time is not compensated<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>6. Situations Not Eligible for Refund</strong></h1>\n\n<p>Refunds will <strong>not</strong> be issued for:</p>\n\n<ul>\n	<li>&ldquo;Changed my mind&rdquo;<br />\n	&nbsp;</li>\n	<li>&ldquo;I did not like the service&rdquo;<br />\n	&nbsp;</li>\n	<li>&ldquo;I didn&rsquo;t get matches&rdquo;<br />\n	&nbsp;</li>\n	<li>&ldquo;I stopped using the app&rdquo;<br />\n	&nbsp;</li>\n	<li>Network issues on the user&rsquo;s device<br />\n	&nbsp;</li>\n	<li>Misuse or violation of Terms by the user<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>7. Payment Issues</strong></h1>\n\n<p>If you face any payment-related issue:</p>\n\n<p>Please contact:</p>\n\n<ul>\n	<li>Your bank<br />\n	&nbsp;</li>\n	<li>Payment gateway support<br />\n	&nbsp;</li>\n	<li>Or Satphere support (details below)<br />\n	&nbsp;</li>\n</ul>\n\n<p>We will assist you in verifying the payment status.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>8. Contact for Refund Queries</strong></h1>\n\n<p>For any refund-related questions, contact us at:</p>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞 <a href=\"tel:7705015444\">7705015444</a><br />\n📧 <a href=\"mailto:info@foundercodes.com\"><strong>info@foundercodes.com</strong></a></p>\n\n<p>Please include:</p>\n\n<ul>\n	<li>Your registered mobile number<br />\n	&nbsp;</li>\n	<li>Transaction ID<br />\n	&nbsp;</li>\n	<li>Date and time of payment<br />\n	&nbsp;</li>\n	<li>Screenshot of the issue (if any)<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>9. Policy Updates</strong></h1>\n\n<p>Satphere may update this Refund &amp; Cancellation Policy at any time.<br />\nChanges will be reflected inside the app. Continued use implies acceptance of the updated policy.</p>\n\n<p>&nbsp;</p>\n', 'active', '2025-08-26 10:52:15', '2025-12-05 09:32:22'),
+(4, 'About Us', '<h1><strong>📄 About Us &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>Welcome to <strong>Satphere</strong>, a modern matrimonial platform designed to help individuals find genuine life partners in a safe, respectful, and meaningful way. Built with advanced technology, secure communication tools, and a people-first approach, Satphere brings together authenticity, trust, and simplicity in one place.</p>\n\n<p>At Satphere, we believe that finding a partner should be a beautiful experience, not a complicated one. Our platform allows users to create authentic profiles, discover compatible matches, chat freely, and connect through secure video calls &mdash; all within a safe environment monitored for user protection.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>Who We Are</strong></h1>\n\n<p>Satphere is developed and operated by <strong>Foundercode Technology Pvt. Ltd.</strong>, headquartered in <strong>Lucknow, Uttar Pradesh</strong>.<br />\nOur mission is to provide a reliable, transparent, and comfortable digital space for individuals looking for long-term relationships and marriage.</p>\n\n<p>With strong technical expertise, strict safety policies, and user-first service, we aim to transform matrimonial matchmaking into a smooth and trusted journey.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>What We Offer</strong></h1>\n\n<h3><strong>✔ Verified &amp; Genuine Profiles</strong></h3>\n\n<p>We promote authenticity and encourage users to create honest, meaningful profiles.</p>\n\n<h3><strong>✔ Smart Matchmaking</strong></h3>\n\n<p>Discover compatible matches based on preferences, lifestyle, and personal choices.</p>\n\n<h3><strong>✔ Secure Chat</strong></h3>\n\n<p>Message your matches through our private, encrypted chat system powered by Firebase.</p>\n\n<h3><strong>✔ Safe Video Calls</strong></h3>\n\n<p>Connect face-to-face with potential partners using our secure, high-quality video call system powered by Agora.</p>\n\n<h3><strong>✔ Subscription Plans</strong></h3>\n\n<p>Unlock premium features, enhanced visibility, and better matchmaking options with affordable subscription packages.</p>\n\n<h3><strong>✔ Safe &amp; Protected Environment</strong></h3>\n\n<p>With strict community guidelines and monitoring, we ensure that users enjoy a respectful and harassment-free platform.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>Our Commitment</strong></h1>\n\n<p>We are committed to:</p>\n\n<ul>\n	<li>Maintaining user privacy<br />\n	&nbsp;</li>\n	<li>Ensuring security in all interactions<br />\n	&nbsp;</li>\n	<li>Taking fast action against misuse<br />\n	&nbsp;</li>\n	<li>Providing reliable support<br />\n	&nbsp;</li>\n	<li>Making matchmaking simple, safe, and successful<br />\n	&nbsp;</li>\n</ul>\n\n<p>Your journey to finding the right partner matters &mdash; and we are here to support you at every step.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>Our Vision</strong></h1>\n\n<p>To become India&rsquo;s most trusted matrimonial platform by bringing technology and human values together, helping people build meaningful and lasting relationships.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>Contact Us</strong></h1>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞 <a href=\"tel:7705015444\">7705015444</a><br />\n📧 <a href=\"mailto:info@foundercodes.com\">info@foundercodes.com</a></p>\n', 'active', '2025-12-05 08:58:54', '2025-12-05 11:20:34'),
+(5, 'Contact Us', '<h1><strong>📄 Contact Us &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>We&rsquo;re here to help you!<br />\nIf you have any questions, need support, or want to report an issue related to the Satphere app, you can contact us anytime using the details below.</p>\n\n<p>Our support team will respond as soon as possible.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>📬 Customer Support</strong></h1>\n\n<p>For account issues, technical problems, subscription queries, or general help:</p>\n\n<p>📧 <strong>Email:</strong>&nbsp;<a href=\"mailto:info@foundercodes.com\">info@foundercodes.com</a><br />\n📞 <strong>Phone:</strong>&nbsp;<a href=\"tel:7705015444\">7705015444</a></p>\n\n<hr />\n<h1><strong>🏢 Company Details</strong></h1>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow, Uttar Pradesh, India</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>🕒 Support Hours</strong></h1>\n\n<p><strong>Monday &ndash; Saturday:</strong> 10:00 AM &ndash; 6:00 PM<br />\n<strong>Sunday:</strong> Closed</p>\n\n<p>(You can adjust the hours anytime.)</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>💬 Feedback &amp; Suggestions</strong></h1>\n\n<p>We love hearing from you!<br />\nIf you have ideas or suggestions to help us improve Satphere, feel free to share them:</p>\n\n<p>📧 <strong>Email:</strong>&nbsp;<a href=\"mailto:info@foundercodes.com\">info@foundercodes.com</a></p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>📢 Report a Problem</strong></h1>\n\n<p>If you face:</p>\n\n<ul>\n	<li>Fake profiles<br />\n	&nbsp;</li>\n	<li>Harassment or abuse<br />\n	&nbsp;</li>\n	<li>Technical bugs<br />\n	&nbsp;</li>\n	<li>Payment issues<br />\n	&nbsp;</li>\n</ul>\n\n<p>Just email or call us &mdash; we take all reports seriously and act quickly.</p>\n\n<p>&nbsp;</p>\n', 'active', '2025-12-05 08:58:54', '2025-12-05 11:39:32'),
+(6, 'User Safety Policy', '<h1><strong>📄 User Safety Policy &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>Satphere is committed to creating a safe, respectful, and trustworthy environment for users seeking matrimonial connections. This User Safety Policy explains how users can protect themselves, what behaviors are prohibited, and what safety measures Satphere provides.</p>\n\n<p>Your safety is our priority.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>1. General Safety Guidelines</strong></h1>\n\n<p>Users should always take precautions when interacting with others online or offline.</p>\n\n<h3><strong>✔ Do:</strong></h3>\n\n<ul>\n	<li>Communicate respectfully<br />\n	&nbsp;</li>\n	<li>Verify information before trusting someone<br />\n	&nbsp;</li>\n	<li>Take time to know someone before meeting<br />\n	&nbsp;</li>\n	<li>Meet only in public places<br />\n	&nbsp;</li>\n	<li>Inform family/friends before meeting anyone<br />\n	&nbsp;</li>\n	<li>End communication if you feel uncomfortable<br />\n	&nbsp;</li>\n</ul>\n\n<h3><strong>✘ Do NOT:</strong></h3>\n\n<ul>\n	<li>Rush into sharing personal details<br />\n	&nbsp;</li>\n	<li>Share address, financial info, or passwords<br />\n	&nbsp;</li>\n	<li>Trust someone claiming urgency or emotional pressure<br />\n	&nbsp;</li>\n</ul>\n\n<p>Your safety depends on careful judgement.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>2. Profile Safety</strong></h1>\n\n<p>We encourage users to:</p>\n\n<ul>\n	<li>Use real photos and details<br />\n	&nbsp;</li>\n	<li>Avoid uploading sensitive or offensive content<br />\n	&nbsp;</li>\n	<li>Immediately report fake or suspicious profiles<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere may remove content that violates guidelines.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>3. Chat Safety</strong></h1>\n\n<p>While using chat:</p>\n\n<ul>\n	<li>Stay respectful and polite<br />\n	&nbsp;</li>\n	<li>Block and report abusive users<br />\n	&nbsp;</li>\n	<li>Avoid sending personal or sensitive information<br />\n	&nbsp;</li>\n</ul>\n\n<p><strong>Never agree to send money or personal documents</strong> to anyone.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>4. Video Call Safety</strong></h1>\n\n<p>When using video calls:</p>\n\n<ul>\n	<li>Ensure you are in a safe environment<br />\n	&nbsp;</li>\n	<li>Do not show sensitive surroundings (home address, valuables, etc.)<br />\n	&nbsp;</li>\n	<li>Do not participate in explicit video calls<br />\n	&nbsp;</li>\n	<li>Do not record or screenshot others without permission<br />\n	&nbsp;</li>\n</ul>\n\n<p>Violations may result in permanent ban.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>5. Financial Safety</strong></h1>\n\n<p>Satphere will <strong>never</strong> ask for:</p>\n\n<ul>\n	<li>OTP<br />\n	&nbsp;</li>\n	<li>Passwords<br />\n	&nbsp;</li>\n	<li>UPI PIN<br />\n	&nbsp;</li>\n	<li>Banking details<br />\n	&nbsp;</li>\n	<li>Money or gifts<br />\n	&nbsp;</li>\n</ul>\n\n<p>If any user asks you for money, report them immediately.</p>\n\n<p>Do not share:</p>\n\n<ul>\n	<li>Bank account details<br />\n	&nbsp;</li>\n	<li>PAN or Aadhaar number<br />\n	&nbsp;</li>\n	<li>Payment card details<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>6. Red Flags (Warning Signs)</strong></h1>\n\n<p>Be careful if someone:</p>\n\n<ul>\n	<li>Asks for money or financial help<br />\n	&nbsp;</li>\n	<li>Avoids video calls consistently<br />\n	&nbsp;</li>\n	<li>Pressures you for quick decisions about marriage<br />\n	&nbsp;</li>\n	<li>Shares emotional stories demanding immediate help<br />\n	&nbsp;</li>\n	<li>Tries to move conversation to external apps quickly<br />\n	&nbsp;</li>\n	<li>Appears too perfect or unrealistic<br />\n	&nbsp;</li>\n</ul>\n\n<p>Trust your instincts.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>7. Offline Meeting Safety</strong></h1>\n\n<p>Before meeting someone:</p>\n\n<ul>\n	<li>Meet in a public place<br />\n	&nbsp;</li>\n	<li>Inform a friend or family member<br />\n	&nbsp;</li>\n	<li>Do not hand over personal belongings<br />\n	&nbsp;</li>\n	<li>Keep your phone charged and location services on<br />\n	&nbsp;</li>\n	<li>Avoid meeting alone at home or isolated places<br />\n	&nbsp;</li>\n</ul>\n\n<p>Safety comes first.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>8. Reporting &amp; Blocking</strong></h1>\n\n<p>If you encounter:</p>\n\n<ul>\n	<li>Harassment<br />\n	&nbsp;</li>\n	<li>Abuse<br />\n	&nbsp;</li>\n	<li>Fake profiles<br />\n	&nbsp;</li>\n	<li>Fraud attempts<br />\n	&nbsp;</li>\n	<li>Inappropriate content<br />\n	&nbsp;</li>\n</ul>\n\n<p>Use the <strong>Report</strong> or <strong>Block</strong> options immediately.</p>\n\n<p>Satphere takes reports seriously and may:</p>\n\n<ul>\n	<li>Warn the user<br />\n	&nbsp;</li>\n	<li>Temporarily suspend the user<br />\n	&nbsp;</li>\n	<li>Permanently ban the user<br />\n	&nbsp;</li>\n	<li>Take legal action if required<br />\n	&nbsp;</li>\n</ul>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>9. Satphere&rsquo;s Responsibilities</strong></h1>\n\n<p>Satphere ensures:</p>\n\n<ul>\n	<li>Secure chat and video call environment<br />\n	&nbsp;</li>\n	<li>Manual review of reported content<br />\n	&nbsp;</li>\n	<li>Quick action against violators<br />\n	&nbsp;</li>\n	<li>Data protection as per Privacy Policy<br />\n	&nbsp;</li>\n	<li>Grievance handling via appointed officer<br />\n	&nbsp;</li>\n</ul>\n\n<p>We work to maintain a safe community but rely on user cooperation.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>10. User Responsibilities</strong></h1>\n\n<p>Users are responsible for:</p>\n\n<ul>\n	<li>Their own interactions<br />\n	&nbsp;</li>\n	<li>Protecting their personal information<br />\n	&nbsp;</li>\n	<li>Following all app policies (Terms, Privacy, Community Guidelines)<br />\n	&nbsp;</li>\n	<li>Reporting misuse or suspicious activity<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere is not responsible for user-to-user interactions.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>11. Zero Tolerance Policy</strong></h1>\n\n<p>Satphere has zero tolerance for:</p>\n\n<ul>\n	<li>Sexual content or harassment<br />\n	&nbsp;</li>\n	<li>Fraud or financial scams<br />\n	&nbsp;</li>\n	<li>Threats, bullying, or abusive behavior<br />\n	&nbsp;</li>\n	<li>Impersonation or fake identities<br />\n	&nbsp;</li>\n	<li>Recording or sharing private content without permission<br />\n	&nbsp;</li>\n</ul>\n\n<p>Violators will be removed permanently and may be reported to authorities.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>12. Emergency Situations</strong></h1>\n\n<p>If you feel unsafe or threatened:</p>\n\n<ul>\n	<li>Stop communication immediately<br />\n	&nbsp;</li>\n	<li>Block the user<br />\n	&nbsp;</li>\n	<li>Report the user in the app<br />\n	&nbsp;</li>\n	<li>Contact local authorities if required<br />\n	&nbsp;</li>\n</ul>\n\n<p>Your safety matters above everything else.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>13. Contact &amp; Support</strong></h1>\n\n<p>For safety issues, complaints, or concerns:</p>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞&nbsp;<a href=\"tel:7705015444\">7705015444</a><br />\n📧 <a href=\"mailto:info@foundercodes.com\">info@foundercodes.com</a><br />\n📧 Grievance Officer:&nbsp;<a href=\"mailto:grievance@foundercodes.com\">grievance@foundercodes.com</a></p>\n', 'active', '2025-12-05 09:00:03', '2025-12-05 09:18:31'),
+(7, 'Community Guidelines', '<h1><strong>📄 Community Guidelines &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>Satphere is a safe and respectful platform designed to help adults connect for matrimonial purposes.<br />\nTo maintain a positive user experience, all members must follow these Community Guidelines.</p>\n\n<p>Failure to follow these rules may result in <strong>warning, suspension, or permanent account ban</strong>.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>1. Respectful Behavior</strong></h1>\n\n<p>Users must interact politely and respectfully.</p>\n\n<p><strong>Not allowed:</strong></p>\n\n<ul>\n	<li>Abusive, rude, threatening, or disrespectful language<br />\n	&nbsp;</li>\n	<li>Harassment or bullying<br />\n	&nbsp;</li>\n	<li>Insulting comments based on religion, caste, gender, appearance, etc.<br />\n	&nbsp;</li>\n	<li>Posting or sending inappropriate or offensive content<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere promotes respectful communication.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>2. No Fake Profiles</strong></h1>\n\n<p>You must provide accurate and truthful profile information.</p>\n\n<p><strong>Not allowed:</strong></p>\n\n<ul>\n	<li>Fake names or identities<br />\n	&nbsp;</li>\n	<li>Misleading photos<br />\n	&nbsp;</li>\n	<li>Impersonation of another person<br />\n	&nbsp;</li>\n	<li>Multiple accounts by the same person<br />\n	&nbsp;</li>\n</ul>\n\n<p>Fake profiles will be permanently removed.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>3. No Sexual or Adult Content</strong></h1>\n\n<p>Satphere is a matrimonial platform and not a dating or adult app.</p>\n\n<p>Strictly <strong>not allowed</strong>:</p>\n\n<ul>\n	<li>Sexual chats or video calls<br />\n	&nbsp;</li>\n	<li>Nudity, pornography, or sexual images<br />\n	&nbsp;</li>\n	<li>Asking for explicit photos<br />\n	&nbsp;</li>\n	<li>Sexual harassment of any kind<br />\n	&nbsp;</li>\n</ul>\n\n<p>Violation will result in immediate ban.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>4. No Fraud or Financial Exploitation</strong></h1>\n\n<p>Users are strictly prohibited from:</p>\n\n<ul>\n	<li>Asking for money, gifts, or financial help<br />\n	&nbsp;</li>\n	<li>Sharing payment details for personal gain<br />\n	&nbsp;</li>\n	<li>Promising marriage in exchange for money<br />\n	&nbsp;</li>\n	<li>Any kind of scam or fraud<br />\n	&nbsp;</li>\n</ul>\n\n<p>Any such behavior will be reported to legal authorities.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>5. Privacy &amp; Safety Rules</strong></h1>\n\n<p>Respect the privacy of others.</p>\n\n<p><strong>Do NOT:</strong></p>\n\n<ul>\n	<li>Share someone&rsquo;s chat, photos, or videos without permission<br />\n	&nbsp;</li>\n	<li>Record or screenshot video calls<br />\n	&nbsp;</li>\n	<li>Demand personal information like address or bank details<br />\n	&nbsp;</li>\n	<li>Stalk or threaten any user<br />\n	&nbsp;</li>\n</ul>\n\n<p>Everyone deserves a safe experience.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>6. Appropriate Chat &amp; Video Call Behavior</strong></h1>\n\n<p>When using chat or video call:</p>\n\n<ul>\n	<li>Stay polite and decent<br />\n	&nbsp;</li>\n	<li>Do not use abusive or sexual language<br />\n	&nbsp;</li>\n	<li>Do not show inappropriate gestures or nudity<br />\n	&nbsp;</li>\n	<li>Do not involve minors in any way<br />\n	&nbsp;</li>\n</ul>\n\n<p>Violation leads to permanent removal.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>7. Prohibited Content</strong></h1>\n\n<p>You may not post or transmit:</p>\n\n<ul>\n	<li>Hate speech<br />\n	&nbsp;</li>\n	<li>Violent content<br />\n	&nbsp;</li>\n	<li>Illegal or copyrighted material<br />\n	&nbsp;</li>\n	<li>Extremist or political propaganda<br />\n	&nbsp;</li>\n	<li>False information<br />\n	&nbsp;</li>\n</ul>\n\n<p>This is a community of trust &mdash; harmful content is not permitted.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>8. Report Suspicious Activity</strong></h1>\n\n<p>If you experience:</p>\n\n<ul>\n	<li>Harassment<br />\n	&nbsp;</li>\n	<li>Fake profiles<br />\n	&nbsp;</li>\n	<li>Fraud attempts<br />\n	&nbsp;</li>\n	<li>Inappropriate content<br />\n	&nbsp;</li>\n</ul>\n\n<p>Use the in-app <strong>Report</strong> option or contact support immediately.</p>\n\n<p>We act quickly to keep Satphere safe.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>9. No Misuse of Satphere</strong></h1>\n\n<p>Do not use Satphere for:</p>\n\n<ul>\n	<li>Advertisements<br />\n	&nbsp;</li>\n	<li>Business promotions<br />\n	&nbsp;</li>\n	<li>Selling products or services<br />\n	&nbsp;</li>\n	<li>Timepass / entertainment only<br />\n	&nbsp;</li>\n	<li>Spreading rumors or misinformation<br />\n	&nbsp;</li>\n</ul>\n\n<p>This platform is meant <strong>only for genuine matrimonial connections</strong>.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>10. Consequences for Violations</strong></h1>\n\n<p>Depending on the severity, actions may include:</p>\n\n<ul>\n	<li>Warning<br />\n	&nbsp;</li>\n	<li>Temporary ban<br />\n	&nbsp;</li>\n	<li>Permanent account suspension<br />\n	&nbsp;</li>\n	<li>Reporting to authorities (in case of fraud, harassment, or illegal activity)<br />\n	&nbsp;</li>\n</ul>\n\n<p>We maintain a zero-tolerance policy for serious violations.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>11. Responsibility of Users</strong></h1>\n\n<p>Users are fully responsible for:</p>\n\n<ul>\n	<li>Their behavior on the platform<br />\n	&nbsp;</li>\n	<li>Their communication with others<br />\n	&nbsp;</li>\n	<li>Information they choose to share<br />\n	&nbsp;</li>\n	<li>Following all Terms, Privacy Policy, and Community Guidelines<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere is not liable for user-to-user behavior.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>12. Updates to Guidelines</strong></h1>\n\n<p>We may modify these guidelines anytime to ensure safety and compliance.<br />\nContinued use of the app means acceptance of updated rules.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>13. Contact &amp; Support</strong></h1>\n\n<p>For any complaints, misuse reports, or guideline-related queries:</p>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞 <a href=\"tel:7705015444\">7705015444</a><br />\n📧&nbsp;<a href=\"mailto:info@foundercodes.com\">info@foundercodes.com</a></p>\n\n<p>&nbsp;</p>\n', 'active', '2025-12-05 09:00:03', '2025-12-05 09:21:34'),
+(8, 'Disclaimer', '<h1><strong>📄 Disclaimer &ndash; Satphere</strong></h1>\n\n<p><strong>Last Updated: 05 December 2025</strong></p>\n\n<p>Satphere (&quot;App&quot;), owned and operated by <strong>Foundercode Technology Pvt. Ltd.</strong>, provides a platform for adults to connect for matrimonial purposes. By using this app, you agree to the terms of this Disclaimer.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>1. No Guarantee of Match or Marriage</strong></h1>\n\n<p>Satphere does <strong>not</strong> guarantee:</p>\n\n<ul>\n	<li>That you will receive matches<br />\n	&nbsp;</li>\n	<li>That any match will lead to marriage<br />\n	&nbsp;</li>\n	<li>The accuracy or authenticity of user profiles<br />\n	&nbsp;</li>\n	<li>Success or outcome of interactions with other users<br />\n	&nbsp;</li>\n</ul>\n\n<p>Users must use their own judgment while interacting on the platform.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>2. User-Generated Content</strong></h1>\n\n<p>All information, photos, descriptions, and messages are <strong>posted by users</strong>.<br />\nSatphere does <strong>not</strong> verify:</p>\n\n<ul>\n	<li>Identity of users<br />\n	&nbsp;</li>\n	<li>Background or character<br />\n	&nbsp;</li>\n	<li>Intentions or behavior<br />\n	&nbsp;</li>\n</ul>\n\n<p>Users are responsible for the content they share.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>3. Responsibility for Communication</strong></h1>\n\n<p>Communication (chat or video call) between users happens voluntarily.</p>\n\n<p>Satphere is <strong>not responsible</strong> for:</p>\n\n<ul>\n	<li>Offensive or inappropriate behavior<br />\n	&nbsp;</li>\n	<li>Misuse of shared information<br />\n	&nbsp;</li>\n	<li>Harassment, fraudulent behavior, or misconduct<br />\n	&nbsp;</li>\n</ul>\n\n<p>Users should report suspicious activity immediately.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>4. Safety and Precautions</strong></h1>\n\n<p>Users are advised to:</p>\n\n<ul>\n	<li>Avoid sharing personal or financial details<br />\n	&nbsp;</li>\n	<li>Meet strangers only in safe, public places<br />\n	&nbsp;</li>\n	<li>Report abusive or harmful behavior<br />\n	&nbsp;</li>\n	<li>Block users who violate community guidelines<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere is not liable for risks taken by users during online or offline interactions.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>5. No Professional Advice</strong></h1>\n\n<p>Satphere does not provide:</p>\n\n<ul>\n	<li>Legal advice<br />\n	&nbsp;</li>\n	<li>Relationship/marriage advice<br />\n	&nbsp;</li>\n	<li>Psychological or counseling services<br />\n	&nbsp;</li>\n</ul>\n\n<p>Any actions taken based on app interactions are at the user&rsquo;s own risk.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>6. Third-Party Services</strong></h1>\n\n<p>The app uses:</p>\n\n<ul>\n	<li><strong>Firebase</strong> (chat &amp; notifications)<br />\n	&nbsp;</li>\n	<li><strong>Agora</strong> (video calls)<br />\n	&nbsp;</li>\n	<li><strong>Payment gateways</strong> (Razorpay / Paytm / PhonePe)<br />\n	&nbsp;</li>\n</ul>\n\n<p>Satphere is <strong>not responsible</strong> for:</p>\n\n<ul>\n	<li>Third-party service failures<br />\n	&nbsp;</li>\n	<li>Server downtime<br />\n	&nbsp;</li>\n	<li>Technical issues outside our control<br />\n	&nbsp;</li>\n</ul>\n\n<p>These services operate under their own policies.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>7. Technical Limitations</strong></h1>\n\n<p>Satphere does not guarantee:</p>\n\n<ul>\n	<li>Uninterrupted service<br />\n	&nbsp;</li>\n	<li>Real-time chat or video call consistency<br />\n	&nbsp;</li>\n	<li>Error-free operation<br />\n	&nbsp;</li>\n	<li>Permanent data storage<br />\n	&nbsp;</li>\n</ul>\n\n<p>Users agree that technical issues may occur.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>8. No Liability</strong></h1>\n\n<p>Foundercode Technology Pvt. Ltd. is <strong>not liable</strong> for:</p>\n\n<ul>\n	<li>Losses or damages resulting from app usage<br />\n	&nbsp;</li>\n	<li>Financial loss due to misuse by other users<br />\n	&nbsp;</li>\n	<li>Emotional or psychological impact<br />\n	&nbsp;</li>\n	<li>Actions or behavior of any user<br />\n	&nbsp;</li>\n	<li>External fraud pretending to be Satphere<br />\n	&nbsp;</li>\n</ul>\n\n<p>Users assume full responsibility for their interactions.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>9. Legal Compliance</strong></h1>\n\n<p>Users must comply with:</p>\n\n<ul>\n	<li>Indian laws<br />\n	&nbsp;</li>\n	<li>Cybersecurity guidelines<br />\n	&nbsp;</li>\n	<li>Terms &amp; Conditions<br />\n	&nbsp;</li>\n	<li>Privacy Policy<br />\n	&nbsp;</li>\n</ul>\n\n<p>Any illegal interaction or content will lead to account suspension and may be reported to authorities.</p>\n\n<p>&nbsp;</p>\n\n<hr />\n<h1><strong>10. Contact Information</strong></h1>\n\n<p>For issues, complaints, or clarifications:</p>\n\n<p><strong>Foundercode Technology Pvt. Ltd.</strong><br />\n📍 1/798, Sector H, Jankipuram, Lucknow<br />\n📞&nbsp;<a href=\"tel: 7705015444\">7705015444</a><br />\n📧&nbsp;<a href=\"mailto:info@foundercodes.com\">info@foundercodes.com</a></p>\n', 'active', '2025-12-05 09:00:12', '2025-12-05 09:24:07');
 
 -- --------------------------------------------------------
 
@@ -69043,6 +70293,7 @@ INSERT INTO `terms_conditions` (`id`, `title`, `description`, `status`, `created
 
 CREATE TABLE `text_slider` (
   `id` int(11) NOT NULL,
+  `faq` varchar(200) DEFAULT NULL,
   `message` text NOT NULL,
   `status` enum('active','inactive') DEFAULT 'active',
   `created_at` datetime DEFAULT current_timestamp(),
@@ -69053,9 +70304,10 @@ CREATE TABLE `text_slider` (
 -- Dumping data for table `text_slider`
 --
 
-INSERT INTO `text_slider` (`id`, `message`, `status`, `created_at`, `updated_at`) VALUES
-(1, '50', 'inactive', '2025-07-17 15:43:14', '2025-10-25 07:19:46'),
-(2, '50', 'inactive', '2025-07-17 15:43:50', '2025-10-24 09:26:14');
+INSERT INTO `text_slider` (`id`, `faq`, `message`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'What are some of the benefits of Premium plans?', 'As a Premium member, you can chat unlimited with your Matches, view their contact numbers and view hidden photos. You also get Premium Assistance on priority. These benefits will help you to accelerate your partner search.', 'inactive', '2025-07-17 15:43:14', '2025-11-13 14:41:19'),
+(2, 'What offers and discounts can I avail?', 'You can avail seasonal discounts and promotional offers available during festivals, weekends or special occasions. Keep an eye on banners and notifications!', 'inactive', '2025-07-17 15:43:50', '2025-11-13 14:43:09'),
+(3, 'What payment options do you offer?', 'We accept Credit/Debit cards, UPI, Net Banking, Wallets and International payment methods including PayPal.', 'inactive', '2025-07-17 15:43:50', '2025-11-13 14:44:14');
 
 -- --------------------------------------------------------
 
@@ -70149,7 +71401,7 @@ INSERT INTO `university` (`id`, `name`, `status`) VALUES
 (1071, 'Sri Balaji Vidyapeeth, Mahatma Gandhi Medical College Campus, Pondy-Cuddalore Main Road, Pillaiyarkuppam, Puducherry – 607402 (Deemed University)', 'active'),
 (1072, 'Central Institute of Buddhist Studies, Choglamsar, Leh (Ladakh), Jammu & Kashmir. (Deemed University)', 'active'),
 (1073, 'Sindhu Central University, Melongthang, Leh-Ladakh, Near FRL – 194101. (Central University)', 'active'),
-(1074, 'University of Ladakh, Silk Route Rest House, TRC, Leh, Union Territory of Ladakh (State University)', 'active');
+(1074, 'University of Ladakh, Silk Route Rest House, TRC, Leh, Union Territory of Ladakh (State University).', 'active');
 
 -- --------------------------------------------------------
 
@@ -70161,7 +71413,7 @@ CREATE TABLE `users` (
   `id` int(11) NOT NULL,
   `mobile_no` varchar(15) NOT NULL,
   `email` varchar(100) DEFAULT NULL,
-  `password` varchar(255) NOT NULL,
+  `password` varchar(255) DEFAULT NULL,
   `first_name` varchar(100) DEFAULT NULL,
   `last_name` varchar(100) DEFAULT NULL,
   `gender` enum('male','female','other') DEFAULT NULL,
@@ -70209,23 +71461,45 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `mobile_no`, `email`, `password`, `first_name`, `last_name`, `gender`, `dob`, `state`, `city`, `address`, `pincode`, `img`, `religion`, `sub_religion`, `profession`, `status`, `token`, `caste`, `blood_group`, `residency_year`, `family_income`, `mother_name`, `father_name`, `any_disability`, `mangalik`, `about`, `hobbies`, `horoscopes`, `diet`, `height`, `skin_tone`, `brother_count`, `sister_count`, `marital_status`, `child`, `highest_education`, `organization`, `course`, `work_type`, `company_name`, `income`, `created_at`, `updated_at`) VALUES
-(1, '6388449711', 'admin@gmail.com', 'Admin@123', 'Anupam', 'Sharma', 'female', '1995-08-15', '0', '0', '123, Gomti Nagar, Lucknow', '226010', '/images/faces-clipart/profile.png', NULL, NULL, NULL, 'active', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-03 06:33:40', '2025-11-06 11:34:02'),
-(2, '9876543210', 'test@gmail.com', 'Admin@123', 'Anupam', 'Sharma', 'female', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_2.png', 'Hindu', 'Brahmin', 'Businessman', 'active', 'iioii', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'no', 'I love traveling and photography.', 'Reading, Coding, Music', 'Aries', 'Vegetarian', '5.9', 'Fair', 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-03 06:36:49', '2025-11-10 04:38:03'),
-(3, '6388449710', 'test@example.com', 'Test@123', 'Anupam', 'Sharma', 'female', '1995-08-15', '0', '0', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_profile_1762162463141.png', NULL, NULL, NULL, 'active', 'jewghofhwa;ekfhatoken', 'Brahmin', 'A+', '2015', '800000', 'Poonam Sharma', 'Rakesh Sharma', 'No', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-03 09:34:22', '2025-11-06 11:29:13'),
-(4, '8888888888', 'test1@example.com', 'Test@123', 'Anupam', 'Sharma', 'male', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_profile_1762174263848.png', 'hindu', 'Narayan', 'softeware Engineer', 'active', 'iioii', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-03 12:51:03', '2025-11-10 09:52:29'),
+(1, '9876543210', 'admin@gmail.com', 'Admin@123', 'Anupam', 'Sharma', 'female', '1995-08-12', 'Arunachal Pradesh', 'Changlang', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_1.png', 'Hindu', 'Brahmin', 'Engineer', 'active', 'dMAy7hKpR06FzSR6Apc72M:APA91bG0Crmtm09RJKXGjjLCqDeiJhgu3UNUQ2px7OYoJqeSFkxspBhWqE-j7-nEPDWHVTpMPG_p8fQW0Cf87nh0mo-yY4FdT3M2ifVOSXRFWbShFZqAiHU', 'Tiwari', 'B+', '2001', '65', 'Sunitra', 'Dhanutiya', 'Speech Disability', 'no', 'i am very  loyalty', 'palaying ccricket', 'aries', 'veg', '5feet 10in', 'Fair', 0, 0, 'Never married', '0', 'B Tech', 'FC Tech team', 'Cs', 'Jr Engineer', 'Fc tecch', '5 lack', '2025-11-03 06:33:40', '2025-11-25 05:54:57'),
+(2, '9876543219', 'test@gmail.com', 'Admin@123', 'Anupam', 'Sharma', 'female', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_2.png', 'Hindu', 'Brahmin', 'Businessman', 'active', 'dMAy7hKpR06FzSR6Apc72M:APA91bG0Crmtm09RJKXGjjLCqDeiJhgu3UNUQ2px7OYoJqeSFkxspBhWqE-j7-nEPDWHVTpMPG_p8fQW0Cf87nh0mo-yY4FdT3M2ifVOSXRFWbShFZqAiHU', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'no', 'I love traveling and photography.', 'Reading, Coding, Music', 'Aries', 'Vegetarian', '5.9', 'Fair', 1, 2, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-03 06:36:49', '2025-11-24 04:23:15'),
+(3, '6388449710', 'test@example.com', 'Test@123', 'Anu', 'Sharma', 'female', '1995-08-14', 'Maharashtra', 'Gondia', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_3.png', NULL, NULL, 'software engineer', 'active', 'fyF-_t0bQs2t5gaEARdIil:APA91bFi4E-7veKTm83N-Rcig4kaMk8yN4xR_02nJ49mMRkAiVGX9z5VPxJqOlc3vi4bhfMnsjG3ecX8Q_qqZmE8rL0ISGpZUPTgTXMlSFuVLgVVlXRJ06Q', 'Brahmin', 'A+', '2015', 'rs 800000 Lac - 67 lak', 'Poonam Sharma', 'Rakesh Sharma', 'No', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-03 09:34:22', '2025-12-02 10:09:55'),
+(4, '8888888888', 'test1@example.com', 'Test@123', 'Anupam', 'Sharma', 'male', '1995-08-12', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_4.png', 'hindu', 'Narayan', 'softeware Engineer', 'active', 'iioii', '', '', '2000', '', '', '', '', '', '', '', '', '', '', '', 0, 0, '', '', '', '', 'cs', '', 'FC Tech', '1 lack', '2025-11-03 12:51:03', '2025-11-18 10:56:14'),
 (5, '6388449713', 'test13@example.com', 'Test@123', 'Anupam', 'Sharma', 'male', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_profile_1762237356940.png', 'hindu', 'Narayan', 'softeware Engineer', 'active', 'xchjklkhgfddfghjkl,m', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-04 06:22:36', '2025-11-04 06:22:36'),
-(6, '8840958016', 'raunitn@gmail.com', 'Raunit@1344457', 'raunit', 'Katele', 'male', '2000-11-06', 'Hindu', 'Rajput', 'vvvvgggh', 'gggggggggg', '/images/faces-clipart/profile.png', '', '', 'rtttttt', 'active', 'iioii', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-06 11:03:22', '2025-11-10 08:21:52'),
-(7, '9793168164', 'harsh@gmail.com', '12345678fffc', 'harsh', 'Singh', 'female', '1999-04-11', 'Hindu', 'Rajput', 'xkxkkdkd', '231312', '/images/faces-clipart/profile.png', '', '', 'kuch nahi karte', 'active', 'nefinn3fin3in3irn3in', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'yes', 'bdbsbdhhxbxn', 'gagshahhsh', 'Taurus', 'Vegetarian', '5 feet 0 i', 'Wheatish', 5, 5, 'Never Married', NULL, 'Uneducated', NULL, NULL, 'Business / Self Employed', 'ffffgssf', NULL, '2025-11-07 09:10:44', '2025-11-07 11:24:43'),
-(8, '8924874595', 'raunisdrtn@gmail.com', '', 'Riya', 'Singh', 'female', '2001-11-07', 'Hindu', 'Kayastha', 'fggh', 'fftgy', '/images/faces-clipart/profile.png', '', '', 'xcfvggg', 'active', 'iioii', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-07 11:22:34', '2025-11-10 08:21:38');
-INSERT INTO `users` (`id`, `mobile_no`, `email`, `password`, `first_name`, `last_name`, `gender`, `dob`, `state`, `city`, `address`, `pincode`, `img`, `religion`, `sub_religion`, `profession`, `status`, `token`, `caste`, `blood_group`, `residency_year`, `family_income`, `mother_name`, `father_name`, `any_disability`, `mangalik`, `about`, `hobbies`, `horoscopes`, `diet`, `height`, `skin_tone`, `brother_count`, `sister_count`, `marital_status`, `child`, `highest_education`, `organization`, `course`, `work_type`, `company_name`, `income`, `created_at`, `updated_at`) VALUES
-(9, '9876543211', 'admin3@gmail.com', '', 'Harsh', 'Gupta', 'female', '2025-10-31', 'zdfghj', 'sdfghj', '', '', 'data:image/jpeg;base64,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/wC//gfD/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8Au44oIzu9T+qLVBCv8N+f/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP3/ABS2xDd9T++OonuX/N8/v/8A/wD/AP8A/wD/AP8A/wD/AP8A/v0ArUsD3U/9O+MME/PffPfv/wD/AP8A/wD/AP8A/wD/AP8A/wB2BJEGN51P/wA3HMb3/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9/8A/wD9F1/wDADKDCDCDCCDBADDBDBBDBDDADCCDBANz434yy7595/6597z006/w297y/8Acee+ds+Puv8APr0M8ccsMMMcM88cMMccsM88cMcc8cs8MILz/k//ANsE1v8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9A8Nz/oAFIRP/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP4wGJFBO81P+xJABtv31457x/8A/wD/AP8A/wD/AP8A/wD/AP6wKwQJMc3P7rWTp+/+9/8APvv/AP8A/wD/AP8A/wD/AP8A/wD/ALod0oYBHU/pPD2m5/vvfvPv/wD/AP8A/wD/AP8A/wD/AP8A/b+++usVPY//APSDbP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9/8A/wDzKS3y78slrpCMABMOssKCAMKCphtOCPqoEjmJ97w3x3y32ZvIFgBtvqkCHqrBkpIHNMmG5tn6+/09nj26osshhEAumquLthKkkJJIh+ut6x33/wDM/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AO9//wD/AP8A/wD/APPXf/8AB1P/AP8A/wD/AFf/AP8A/wD8kH//AP8A/wDf/f8A/wD/APcf/wDv/wD/AOv7/wD/AP8A/W3/AP8A/wD+03//AP8A/wAU3/8A/wD/AN+t/wD/AP8A8bHLX/8A/wC/+9//APvvPP8A3/8A/wDvv/8A/wA+/wDfvf8A/wD3TrHP/wD++89//wD/AH3373//AP8APvf/APz/AM/88/8A88888888888888888888888888888888888888888888888888888888888888888888888888888880088888888s4888888884c888888888888888M888888888s88888888848888888888888888888888888888888888888888888/8QARBEAAgEDAQUDCQYEAwcFAAAAAQIDAAQREgUhMUFRBhATFCAiMkBScXKBI0JhobHBMDVQkTNgcxUkJTRicINTY4KSov/aAAgBAgEBPwD/ACwTinukUAgMR14frXjY4xuPpSsGGR7FJIkSM7thQMk09xdTHcTEnJRvc/HpWmVd4uJgfmBqC9cOsc+N5wsg3AnoRyP8OUO0ThDhipwathfyXKwl39FvSyeApo3ELsRwTXhd5PDdv64rZ21J32m3iiULNuROIWpLm8W8hCqcEZVeTBvYr5tc8MXJVMhHwOBRfSQc1LcIo3gj6UVEgKHg26rKVpbWJ29bGG+I/hTeL4MnhHD6Tp+NWl+07GTwzoIVThfv88/gKg2lcYtg0YUkjxWxuKneuKj2j6zRwRoTMmsltxDjjUO0yBMGRS0TlVLHGctgAVaXHlNukunTq5ew7TV1mjkU41RlPqDqp52kjXGoMrbyoqwDND9pHq9I72osiMxJ3LvPwFWCMlpEGGGI1H4tv/h3UssMLmMAFSeVXe1b+OV0V1CZynojhyqz2nfTTxxfZlSQX9AcBVsWeNfFRCSRyHPeaAAGAAB7DPAk8RRvoRxB6iiJ7ZjrUj/3EXKn4jlUtyJTjxgx6AEmreyeZw8yaUHI8W+PQfxJY85OMgjeKksIZEZSgcD1f+moLCGBGURqmSN4qKPGCRjHAf0JkRiCVBpURTkKAfZ47+yllMUdzGz+6G/gRX9lNIY47mNn90N55IFRX9lNIY4rmNnHIN55IAyahv7KeQxxXMbsOQb+FtDbFlYD7R8vyRd5raW3r2+yufDi9xT+ppFcsNAJbljjWze091b4juQZU6/fFWd9a3keuCUMOY5j4jzNo7ZsrAYkfU/JF41tLbt7f5Unw4vcU/rQypBBII4GtmdqLmDEd0DKnvfeFWl7bXkeuCQMOY5j4+ZtHbVlYAh21SckXjW0tuX1/lS2iP3F/eo1kLjww2obxjjWze1NxBiO7Uyp733hVpeW13H4kEgYc+o+PmbR23ZWAIdtcnJF41tLbd7fkqzaI/cXh9aUsrBlJBHAitmdqZ4cR3amRPfHrCrW8truMSQSBx+Y8zaW3LKwBVm1yckX9+/tLtCeztolhbS0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', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-11 10:32:06', '2025-11-11 10:32:06');
-INSERT INTO `users` (`id`, `mobile_no`, `email`, `password`, `first_name`, `last_name`, `gender`, `dob`, `state`, `city`, `address`, `pincode`, `img`, `religion`, `sub_religion`, `profession`, `status`, `token`, `caste`, `blood_group`, `residency_year`, `family_income`, `mother_name`, `father_name`, `any_disability`, `mangalik`, `about`, `hobbies`, `horoscopes`, `diet`, `height`, `skin_tone`, `brother_count`, `sister_count`, `marital_status`, `child`, `highest_education`, `organization`, `course`, `work_type`, `company_name`, `income`, `created_at`, `updated_at`) VALUES
-(10, '9876543212', 'mbmr@gmail.com', '', 'sdgh', 'ghhj', 'female', NULL, 'zdfghj', 'sdfghj', 'zxghj', '', 'data:image/jpeg;base64,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/wC//gfD/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8Au44oIzu9T+qLVBCv8N+f/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP3/ABS2xDd9T++OonuX/N8/v/8A/wD/AP8A/wD/AP8A/wD/AP8A/v0ArUsD3U/9O+MME/PffPfv/wD/AP8A/wD/AP8A/wD/AP8A/wB2BJEGN51P/wA3HMb3/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9/8A/wD9F1/wDADKDCDCDCCDBADDBDBBDBDDADCCDBANz434yy7595/6597z006/w297y/8Acee+ds+Puv8APr0M8ccsMMMcM88cMMccsM88cMcc8cs8MILz/k//ANsE1v8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9A8Nz/oAFIRP/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP4wGJFBO81P+xJABtv31457x/8A/wD/AP8A/wD/AP8A/wD/AP6wKwQJMc3P7rWTp+/+9/8APvv/AP8A/wD/AP8A/wD/AP8A/wD/ALod0oYBHU/pPD2m5/vvfvPv/wD/AP8A/wD/AP8A/wD/AP8A/b+++usVPY//APSDbP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9/8A/wDzKS3y78slrpCMABMOssKCAMKCphtOCPqoEjmJ97w3x3y32ZvIFgBtvqkCHqrBkpIHNMmG5tn6+/09nj26osshhEAumquLthKkkJJIh+ut6x33/wDM/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AO9//wD/AP8A/wD/APPXf/8AB1P/AP8A/wD/AFf/AP8A/wD8kH//AP8A/wDf/f8A/wD/APcf/wDv/wD/AOv7/wD/AP8A/W3/AP8A/wD+03//AP8A/wAU3/8A/wD/AN+t/wD/AP8A8bHLX/8A/wC/+9//APvvPP8A3/8A/wDvv/8A/wA+/wDfvf8A/wD3TrHP/wD++89//wD/AH3373//AP8APvf/APz/AM/88/8A88888888888888888888888888888888888888888888888888888888888888888888888888888880088888888s4888888884c888888888888888M888888888s88888888848888888888888888888888888888888888888888888/8QARBEAAgEDAQUDCQYEAwcFAAAAAQIDAAQREgUhMUFRBhATFCAiMkBScXKBI0JhobHBMDVQkTNgcxUkJTRicINTY4KSov/aAAgBAgEBPwD/ACwTinukUAgMR14frXjY4xuPpSsGGR7FJIkSM7thQMk09xdTHcTEnJRvc/HpWmVd4uJgfmBqC9cOsc+N5wsg3AnoRyP8OUO0ThDhipwathfyXKwl39FvSyeApo3ELsRwTXhd5PDdv64rZ21J32m3iiULNuROIWpLm8W8hCqcEZVeTBvYr5tc8MXJVMhHwOBRfSQc1LcIo3gj6UVEgKHg26rKVpbWJ29bGG+I/hTeL4MnhHD6Tp+NWl+07GTwzoIVThfv88/gKg2lcYtg0YUkjxWxuKneuKj2j6zRwRoTMmsltxDjjUO0yBMGRS0TlVLHGctgAVaXHlNukunTq5ew7TV1mjkU41RlPqDqp52kjXGoMrbyoqwDND9pHq9I72osiMxJ3LvPwFWCMlpEGGGI1H4tv/h3UssMLmMAFSeVXe1b+OV0V1CZynojhyqz2nfTTxxfZlSQX9AcBVsWeNfFRCSRyHPeaAAGAAB7DPAk8RRvoRxB6iiJ7ZjrUj/3EXKn4jlUtyJTjxgx6AEmreyeZw8yaUHI8W+PQfxJY85OMgjeKksIZEZSgcD1f+moLCGBGURqmSN4qKPGCRjHAf0JkRiCVBpURTkKAfZ47+yllMUdzGz+6G/gRX9lNIY47mNn90N55IFRX9lNIY4rmNnHIN55IAyahv7KeQxxXMbsOQb+FtDbFlYD7R8vyRd5raW3r2+yufDi9xT+ppFcsNAJbljjWze091b4juQZU6/fFWd9a3keuCUMOY5j4jzNo7ZsrAYkfU/JF41tLbt7f5Unw4vcU/rQypBBII4GtmdqLmDEd0DKnvfeFWl7bXkeuCQMOY5j4+ZtHbVlYAh21SckXjW0tuX1/lS2iP3F/eo1kLjww2obxjjWze1NxBiO7Uyp733hVpeW13H4kEgYc+o+PmbR23ZWAIdtcnJF41tLbd7fkqzaI/cXh9aUsrBlJBHAitmdqZ4cR3amRPfHrCrW8truMSQSBx+Y8zaW3LKwBVm1yckX9+/tLtCeztolhbS0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', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-11 10:43:38', '2025-11-11 10:43:38');
-INSERT INTO `users` (`id`, `mobile_no`, `email`, `password`, `first_name`, `last_name`, `gender`, `dob`, `state`, `city`, `address`, `pincode`, `img`, `religion`, `sub_religion`, `profession`, `status`, `token`, `caste`, `blood_group`, `residency_year`, `family_income`, `mother_name`, `father_name`, `any_disability`, `mangalik`, `about`, `hobbies`, `horoscopes`, `diet`, `height`, `skin_tone`, `brother_count`, `sister_count`, `marital_status`, `child`, `highest_education`, `organization`, `course`, `work_type`, `company_name`, `income`, `created_at`, `updated_at`) VALUES
-(11, '6565456788', 'admin6@gmail.com', '', 'Priya', 'sdfg', 'female', '2025-11-01', '', '', '', '', 'data:image/jpeg;base64,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/wC//gfD/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8Au44oIzu9T+qLVBCv8N+f/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP3/ABS2xDd9T++OonuX/N8/v/8A/wD/AP8A/wD/AP8A/wD/AP8A/v0ArUsD3U/9O+MME/PffPfv/wD/AP8A/wD/AP8A/wD/AP8A/wB2BJEGN51P/wA3HMb3/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9/8A/wD9F1/wDADKDCDCDCCDBADDBDBBDBDDADCCDBANz434yy7595/6597z006/w297y/8Acee+ds+Puv8APr0M8ccsMMMcM88cMMccsM88cMcc8cs8MILz/k//ANsE1v8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9A8Nz/oAFIRP/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP4wGJFBO81P+xJABtv31457x/8A/wD/AP8A/wD/AP8A/wD/AP6wKwQJMc3P7rWTp+/+9/8APvv/AP8A/wD/AP8A/wD/AP8A/wD/ALod0oYBHU/pPD2m5/vvfvPv/wD/AP8A/wD/AP8A/wD/AP8A/b+++usVPY//APSDbP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A9/8A/wDzKS3y78slrpCMABMOssKCAMKCphtOCPqoEjmJ97w3x3y32ZvIFgBtvqkCHqrBkpIHNMmG5tn6+/09nj26osshhEAumquLthKkkJJIh+ut6x33/wDM/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AP8A/wD/AO9//wD/AP8A/wD/APPXf/8AB1P/AP8A/wD/AFf/AP8A/wD8kH//AP8A/wDf/f8A/wD/APcf/wDv/wD/AOv7/wD/AP8A/W3/AP8A/wD+03//AP8A/wAU3/8A/wD/AN+t/wD/AP8A8bHLX/8A/wC/+9//APvvPP8A3/8A/wDvv/8A/wA+/wDfvf8A/wD3TrHP/wD++89//wD/AH3373//AP8APvf/APz/AM/88/8A88888888888888888888888888888888888888888888888888888888888888888888888888888880088888888s4888888884c888888888888888M888888888s88888888848888888888888888888888888888888888888888888/8QARBEAAgEDAQUDCQYEAwcFAAAAAQIDAAQREgUhMUFRBhATFCAiMkBScXKBI0JhobHBMDVQkTNgcxUkJTRicINTY4KSov/aAAgBAgEBPwD/ACwTinukUAgMR14frXjY4xuPpSsGGR7FJIkSM7thQMk09xdTHcTEnJRvc/HpWmVd4uJgfmBqC9cOsc+N5wsg3AnoRyP8OUO0ThDhipwathfyXKwl39FvSyeApo3ELsRwTXhd5PDdv64rZ21J32m3iiULNuROIWpLm8W8hCqcEZVeTBvYr5tc8MXJVMhHwOBRfSQc1LcIo3gj6UVEgKHg26rKVpbWJ29bGG+I/hTeL4MnhHD6Tp+NWl+07GTwzoIVThfv88/gKg2lcYtg0YUkjxWxuKneuKj2j6zRwRoTMmsltxDjjUO0yBMGRS0TlVLHGctgAVaXHlNukunTq5ew7TV1mjkU41RlPqDqp52kjXGoMrbyoqwDND9pHq9I72osiMxJ3LvPwFWCMlpEGGGI1H4tv/h3UssMLmMAFSeVXe1b+OV0V1CZynojhyqz2nfTTxxfZlSQX9AcBVsWeNfFRCSRyHPeaAAGAAB7DPAk8RRvoRxB6iiJ7ZjrUj/3EXKn4jlUtyJTjxgx6AEmreyeZw8yaUHI8W+PQfxJY85OMgjeKksIZEZSgcD1f+moLCGBGURqmSN4qKPGCRjHAf0JkRiCVBpURTkKAfZ47+yllMUdzGz+6G/gRX9lNIY47mNn90N55IFRX9lNIY4rmNnHIN55IAyahv7KeQxxXMbsOQb+FtDbFlYD7R8vyRd5raW3r2+yufDi9xT+ppFcsNAJbljjWze091b4juQZU6/fFWd9a3keuCUMOY5j4jzNo7ZsrAYkfU/JF41tLbt7f5Unw4vcU/rQypBBII4GtmdqLmDEd0DKnvfeFWl7bXkeuCQMOY5j4+ZtHbVlYAh21SckXjW0tuX1/lS2iP3F/eo1kLjww2obxjjWze1NxBiO7Uyp733hVpeW13H4kEgYc+o+PmbR23ZWAIdtcnJF41tLbd7fkqzaI/cXh9aUsrBlJBHAitmdqZ4cR3amRPfHrCrW8truMSQSBx+Y8zaW3LKwBVm1yckX9+/tLtCeztolhbS0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', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-11 10:49:38', '2025-11-12 06:07:13');
-INSERT INTO `users` (`id`, `mobile_no`, `email`, `password`, `first_name`, `last_name`, `gender`, `dob`, `state`, `city`, `address`, `pincode`, `img`, `religion`, `sub_religion`, `profession`, `status`, `token`, `caste`, `blood_group`, `residency_year`, `family_income`, `mother_name`, `father_name`, `any_disability`, `mangalik`, `about`, `hobbies`, `horoscopes`, `diet`, `height`, `skin_tone`, `brother_count`, `sister_count`, `marital_status`, `child`, `highest_education`, `organization`, `course`, `work_type`, `company_name`, `income`, `created_at`, `updated_at`) VALUES
-(12, '6388449715', 'admin4@gmail.com', '', 'Pramod', 'Gupta', 'male', '2025-11-30', '', '', '', '', '/images/faces-clipart/profile.png', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-12 04:14:25', '2025-11-12 06:06:59'),
-(13, '9876543217', 'admin7@gmail.com', '', 'test', 'af', 'male', '2002-06-15', '', '', '', '', '/images/faces-clipart/profile.png', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-12 10:50:35', '2025-11-12 11:02:14');
+(6, '8840958016', 'raunitn1@gmail.com', 'Raunit@1344457', 'Abhishek', 'Sharma', 'male', '2000-10-30', 'Assam', 'Biswanath', 'Mumbai', '245548', '/images/users/user_6.png', '', '', 'rtttttt', 'active', 'cVMjx3pSRRWKg3t4Zkhnyk:APA91bEtWJKYG2DtHw4kqaBmUoXSvw6-71iBWiCf6V7XxFHgH8LnmHA7Sc0AIDeH2X1yueRUcV3st-JkjQ_FJCfMUJSh9DC0l7xxfhR52DkqLhMUd5cg5N4', 'Thakur', 'AB+', '1978', '₹4 Lakh - ₹7 Lakh', 'Kiran', 'Ram', 'None', 'yes', 'i love playing cirkete', 'cirketer', 'Gemini', 'Vegetarian', '4 feet 9 i', 'Fair', 5, 5, 'Never Married', NULL, 'Graduate', NULL, 'Bharatiya Engineering Science and Technology Innovation University', 'Doctor', 'Apex', 'Above ₹50 Lakh', '2025-11-06 11:03:22', '2025-11-28 08:49:31'),
+(7, '9793168164', 'harsh@gmail.com', '12345678fffc', 'harsh', 'Singh', 'female', '1999-04-11', 'Hindu', 'Rajput', 'xkxkkdkd', '231312', '/images/faces-clipart/profile.png', '', '', 'kuch nahi karte', 'active', 'chk55PPuTKWSRobU1T_6gi:APA91bHmAsihVLAoJ97B9AZsH3I2SUqvTjmatDQ6z58yNs8Gf_4fOnMB3DxsXJUxIgQUxlFVmL4TS6zl_WpHvcnaypuxf_uCZcLfyEyL1zWHNeTQWpUO9b4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'yes', 'bdbsbdhhxbxn', 'gagshahhsh', 'Taurus', 'Vegetarian', '5 feet 0 i', 'Wheatish', 5, 5, 'Never Married', NULL, 'Uneducated', NULL, NULL, 'Business / Self Employed', 'ffffgssf', NULL, '2025-11-07 09:10:44', '2025-11-26 04:27:36'),
+(8, '8924874595', 'raunisdrtn@gmail.com', '', 'Riya', 'Singh', 'female', '2001-11-07', 'Hindu', 'Kayastha', 'fggh', 'fftgy', '/images/faces-clipart/profile.png', '', '', 'xcfvggg', 'active', 'dNs-SDMeRdmYDj7rg5cYcc:APA91bHNKhX66DxEtLmsHtfW92UdsY9NOCZO9icC0YFjr6dzF3e4My7v4Pq4n8-yYwjSAtmXjwuNlH9ZCMaB40NxsbaE7jZLKMY-XQwtRnu5-PLjK-mn29Q', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-07 11:22:34', '2025-11-27 08:59:00'),
+(9, '9876543211', 'admin3@gmail.com', '', 'Harsh', 'Gupta', 'female', '2025-10-31', 'zdfghj', 'sdfghj', '', '', '/images/faces-clipart/profile.png', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-11 10:32:06', '2025-11-24 17:19:48'),
+(10, '9876543212', 'mbmr@gmail.com', '', 'sdgh', 'ghhj', 'female', NULL, 'zdfghj', 'sdfghj', 'zxghj', '', '/images/faces-clipart/profile.png', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-11 10:43:38', '2025-11-24 17:19:56'),
+(11, '6565456788', 'admin6@gmail.com', '', 'Priya', 'sdfg', 'female', '2025-11-01', '', '', '', '', '/images/faces-clipart/profile.png', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-11 10:49:38', '2025-11-24 17:19:53'),
+(12, '6388449715', 'admin4@gmail.com', '', 'Pramod', 'Gupta', 'male', '2025-11-30', '', '', '', '', '/images/faces-clipart/profile.png', '', '', '', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, 'Single', 'No', 'MBA', 'IIM Ahmedabad', 'Marketing', 'Full Time', 'Infosys Ltd', '85000', '2025-11-12 04:14:25', '2025-11-24 06:50:10'),
+(13, '9876543217', 'admin7@gmail.com', '', 'test', 'af', 'male', '2002-06-08', 'Uttar Pradesh', 'Ghazipur', '', '233301', '/images/users/user_13.png', 'hindu', '', '', 'active', 'iioii', '', '', '2000', '', '', '', '', '', '', '', '', '', '', '', 0, 0, 'yes', '', '', '', '', '', '', '1 lack', '2025-11-12 10:50:35', '2025-11-18 11:14:09'),
+(14, '8418062701', 'raunit34@gmail.com', '', 'Raunit', 'Narayana', 'male', '2004-11-18', 'Andhra Pradesh', 'Aganampudi', 'f3f3f3f3f3f3', '233323', '/images/faces-clipart/profile.png', '', '', 'Engineerer', 'active', 'dLL0am_WTOmDqI35ODrFDN:APA91bFrrdCcX46XIdzgx4Nd1K4lVT9bE9hnpGhgddeOkw76smO60Bjz89EQHNbG7FpnHXMe3s5Yvu8cU1oH6j4Le8Ln41ZzwmgbjtQYZQatuZKfCs6Q4eI', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-18 14:24:05', '2025-11-18 17:50:45'),
+(15, '7499116314', 'prachi@gmail.com', '', 'Prachi', 'Kadam', 'female', '2004-10-12', 'Maharashtra', 'Bhusawal', 'Andheri', '232333', '/images/faces-clipart/profile.png', '', '', 'Influencer', 'active', 'e56YXeDOTmOrsQ72ePoTUj:APA91bE3k3UDvgEqOjYxurXNn9pHlBjJKOH_1SHnBcUABCX7G2sC8hM9p9GzC4H4qOabSHCu1kwmjjUPO9UHwxIm1FhOl6UkVNaYWGVx1eEJvQhgpp1MQd4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-18 17:04:18', '2025-11-24 17:18:50'),
+(16, '6380049910', 'te34@example.com', 'Test3@123', 'Anupam', 'Sharma', 'male', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_profile_1763490377404.png', 'hindu', 'Narayan', 'softeware Engineer', 'active', 'xchjklkhgfddfghjkl,m', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-18 17:04:18', '2025-11-18 17:04:18'),
+(17, '7499364556', 'mizo@gmail.com', '', 'Mizo', 'Gaming', 'female', '2004-11-18', 'Bihar', 'Ara', 'Aara Natasha jila', '646649', '/images/faces-clipart/profile.png', '', '', 'Influenceser', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-19 18:34:44', '2025-11-19 18:34:44'),
+(18, '8840958010', 'prachi344@gmail.com', '', 'Prachi', 'Agarwal', 'female', '2004-11-03', 'Andhra Pradesh', 'Adoni', 'Rai pur', '200888', '/images/faces-clipart/profile.png', '', '', 'Doctor', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-19 18:34:44', '2025-11-19 18:34:44'),
+(19, '8299098296', 'aman@foundercodes.net', '', 'Aman', 'Singh', 'male', '2004-11-20', 'Uttar Pradesh', 'Mirzapur', 'Pathra', '552552', '/images/faces-clipart/profile.png', '', '', 'Engineer', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-20 03:47:59', '2025-11-20 03:47:59'),
+(20, '6388449711', 'test12@example.com', '@123', 'Anupam', 'Singh', 'male', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_profile_1764004321269.png', 'hindu', 'Narayan', 'softeware Engineer', 'active', 'xchjklkhgfddfghjkl,m', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-24 16:58:48', '2025-11-24 16:58:48'),
+(21, '7499163555', 'prachi5566@gmail.com', '', 'Prachi', 'Singh', 'female', '2004-11-16', 'Arunachal Pradesh', 'East Kameng', 'Bangalore', '255255', '/images/users/user_21.png', '', '', 'Doctor', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, 'no', 'influenceser in', 'Influenceser', 'Cancer', 'Non-Vegetarian', '5 feet 0 i', 'Wheatish', 5, 5, 'Never Married', NULL, 'Graduate', NULL, 'Adikavi Nannaya University', 'Not Working', NULL, NULL, '2025-11-24 17:28:12', '2025-11-24 17:52:59'),
+(22, '6388449712', 'test14@example.com', NULL, 'Anupam', 'Singh', 'male', '1995-08-15', 'Uttar Pradesh', 'Lucknow', '123, Gomti Nagar, Lucknow', '226010', '/images/users/user_profile_1764006320188.png', 'hindu', 'Narayan', 'softeware Engineer', 'active', 'xchjklkhgfddfghjkl,m', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-24 17:40:08', '2025-11-24 17:40:08'),
+(23, '8855856588', 'gaming@gmail.com', '', 'Mizo', 'Gaming', 'female', '2004-11-17', 'Andhra Pradesh', 'Anantapur', 'Bangalore', '555255', '/images/users/user_profile_1764009664688.png', '', '', 'Influenceser', 'active', '', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-24 18:40:38', '2025-11-24 18:40:38'),
+(24, '8299098496', 'harshfoundercode@gmail.com', '', 'harsh', 'singh', 'male', '2004-11-26', 'Uttar Pradesh', 'Mirzapur', 'patehara', '226021', '/images/users/user_profile_1764131834223.png', '', '', 'berojgar', 'active', 'chk55PPuTKWSRobU1T_6gi:APA91bHmAsihVLAoJ97B9AZsH3I2SUqvTjmatDQ6z58yNs8Gf_4fOnMB3DxsXJUxIgQUxlFVmL4TS6zl_WpHvcnaypuxf_uCZcLfyEyL1zWHNeTQWpUO9b4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 04:26:55', '2025-11-26 04:26:55'),
+(25, '8840958017', 'tiwari@gmail.com', '', 'Prany', 'Tiwari', 'male', '2004-11-18', 'Bihar', 'Arwal', 'Bangalore', '553856', '/images/users/user_profile_1764147862153.png', '', '', 'Photographer', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 08:42:49'),
+(26, '8840958019', 'tiwa1ri@gmail.com', '', 'Suraj', 'Tiwari', 'male', '2004-11-17', 'Andhra Pradesh', 'Anakapalli', 'Bangalore', '553856', '/images/users/user_26.png', '', '', 'Photographer', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 09:06:57'),
+(27, '8840958020', 'tiwa31ri@gmail.com', '', 'Dev', 'Tiwari', 'male', '2004-11-18', 'Assam', 'Barpeta', 'Bangalore', '553856', '/images/users/user_profile_1764148339797.png', '', '', 'Photographer', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 08:42:49'),
+(28, '8840958021', 'virat@gmail.com', '', 'Virat', 'Tiwari', 'male', '2004-11-10', 'Assam', 'Barpeta', 'Kolkata', '255555', '/images/users/user_profile_1764148875849.png', '', '', 'Chef', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 08:42:49'),
+(29, '8840958022', 'avneet@gmail.com', '', 'Avneet', 'Pada', 'female', '2004-11-16', 'Assam', 'Biswanath', 'Bangalore', '552555', '/images/users/user_profile_1764149129289.png', '', '', 'Actor', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 08:42:49'),
+(30, '8840958023', 'devidi@gmail.com', '', 'Mehak', 'Divedi', 'female', '2004-11-09', 'Arunachal Pradesh', 'East Kameng', 'Ram Nagar', '255255', '/images/users/user_profile_1764149280315.png', '', '', 'Engineer', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 08:42:49'),
+(31, '8840958024', 'ketaki@gmail.con', '', 'Ketaki', 'Kulkarni', 'female', '2004-11-17', 'Bihar', 'Banka', 'Bangalore', '535535', '/images/users/user_profile_1764150039201.png', '', '', 'Influenceser', 'active', 'c7u3pi42TN2kn0GQYtoSC-:APA91bFXOKs8kOGVz_3kKIPa7I95aK9wFW9d85CBl458OdILhjLy8X895-yAgjz6SnLq5yllfd4Y35NCpplRBMJBK37HdYBdditUOLZ2VgIQb9r3E8T1uD4', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 08:42:49', '2025-11-26 08:42:49'),
+(32, '8840958025', 'shiv@gmail.com', '', 'Shiv', 'Pandit', 'female', '1999-11-26', 'Assam', 'Biswanath', 'Delhi', '646646', '/images/users/user_profile_1764178678119.png', '', '', 'software Engineer', 'active', 'e35benQsTk6JW87bdeRq6o:APA91bG2Y5b9VFXRZ8jyX5H4sPYI2uXc3uGMg49sa1gzYbfS3eLRtREgciw5GoOPpHm4AZVbxSjx7dBZaqFRgpHiNU9c9XUpzvGoXSBeh_0q1tC4vowsR0Y', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-26 17:20:34'),
+(33, '8840958026', 'rupa@gmail.com', '', 'Rupali', 'Singh', 'female', '2001-11-26', 'Assam', 'Barpeta', 'Delhi', '646646', '/images/users/user_profile_1764178792789.png', '', '', 'Designer', 'active', 'e35benQsTk6JW87bdeRq6o:APA91bG2Y5b9VFXRZ8jyX5H4sPYI2uXc3uGMg49sa1gzYbfS3eLRtREgciw5GoOPpHm4AZVbxSjx7dBZaqFRgpHiNU9c9XUpzvGoXSBeh_0q1tC4vowsR0Y', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-26 17:20:34'),
+(34, '8840958027', 'adi@gmail.com', '', 'Aditi', 'Sindhe', 'female', '2000-11-11', 'Andhra Pradesh', 'Alluri Sitharama Raju', 'Shiv Tower', '949499', '/images/users/user_profile_1764178928726.png', '', '', 'Developer', 'active', 'e35benQsTk6JW87bdeRq6o:APA91bG2Y5b9VFXRZ8jyX5H4sPYI2uXc3uGMg49sa1gzYbfS3eLRtREgciw5GoOPpHm4AZVbxSjx7dBZaqFRgpHiNU9c9XUpzvGoXSBeh_0q1tC4vowsR0Y', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-26 17:20:34'),
+(35, '8840958029', 'ishi@gmail.com', '', 'Ishika', 'Dubey', 'female', '2004-11-11', 'Andhra Pradesh', 'Anakapalli', 'Antelia', '979776', '/images/users/user_profile_1764179084229.png', '', '', 'Model', 'active', 'e35benQsTk6JW87bdeRq6o:APA91bG2Y5b9VFXRZ8jyX5H4sPYI2uXc3uGMg49sa1gzYbfS3eLRtREgciw5GoOPpHm4AZVbxSjx7dBZaqFRgpHiNU9c9XUpzvGoXSBeh_0q1tC4vowsR0Y', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-26 17:20:34'),
+(36, '8840958030', 'murat@gmail.com', '', 'Murat', 'Hayat', 'female', '2004-11-10', 'Andhra Pradesh', 'Anakapalli', 'Eldco Tower', '949494', '/images/users/user_profile_1764179205516.png', '', '', 'Terrorist', 'active', 'e35benQsTk6JW87bdeRq6o:APA91bG2Y5b9VFXRZ8jyX5H4sPYI2uXc3uGMg49sa1gzYbfS3eLRtREgciw5GoOPpHm4AZVbxSjx7dBZaqFRgpHiNU9c9XUpzvGoXSBeh_0q1tC4vowsR0Y', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-26 17:20:34'),
+(37, '8840958031', 'shipl@gmail.com', '', 'Tripti', 'Dirvedi', 'female', '2004-11-10', 'Andhra Pradesh', 'Anakapalli', 'Lodha Tower', '979794', '/images/users/user_profile_1764179351436.png', '', '', 'Actor', 'active', 'e35benQsTk6JW87bdeRq6o:APA91bG2Y5b9VFXRZ8jyX5H4sPYI2uXc3uGMg49sa1gzYbfS3eLRtREgciw5GoOPpHm4AZVbxSjx7dBZaqFRgpHiNU9c9XUpzvGoXSBeh_0q1tC4vowsR0Y', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-26 17:20:34'),
+(38, '8840958032', 'riya@gmail.com', '', 'Riya', 'Soni', 'female', '2004-11-10', 'Assam', 'Cachar', 'Kingfisher Tower', '676766', '/images/users/user_profile_1764179597438.png', '', '', 'Software engineer', 'active', 'dNs-SDMeRdmYDj7rg5cYcc:APA91bHNKhX66DxEtLmsHtfW92UdsY9NOCZO9icC0YFjr6dzF3e4My7v4Pq4n8-yYwjSAtmXjwuNlH9ZCMaB40NxsbaE7jZLKMY-XQwtRnu5-PLjK-mn29Q', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-26 17:20:34', '2025-11-27 09:07:48'),
+(39, '7271023722', 'shubham@gmail.com', '', 'shubham', 'patwa', 'male', '2004-11-27', 'Uttar Pradesh', 'Azamgarh', 'karaha', '276402', '/images/users/user_profile_1764216549045.png', '', '', 'flutter intern', 'active', 'esoFiRN6QYGM2veBFH4fp5:APA91bFIlHOA2-k9P59TwhyMB9bL_iaEn9NmTYeg7FijZdt20PQe_xSdnJRM3d4NEvuy81hF5GnmTA-D5v1QqDSJmGVAJBrghR_UMvMFlB3vx0ueBoBZVaE', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, 0, 0, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, '2025-11-27 03:39:19', '2025-11-27 03:39:19');
 
 -- --------------------------------------------------------
 
@@ -70324,20 +71598,34 @@ CREATE TABLE `user_images` (
 
 INSERT INTO `user_images` (`id`, `user_id`, `image`, `created_at`, `status`) VALUES
 (61, 1, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760166936/my_app_images/user1_image_1760166932725.png', '2025-10-11 07:15:36', 'ACTIVE'),
-(62, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760339533/my_app_images/user6_image_1760339531365.jpg', '2025-10-13 07:12:13', 'ACTIVE'),
-(63, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760339585/my_app_images/user6_image_1760339584606.jpg', '2025-10-13 07:13:06', 'ACTIVE'),
-(64, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760339704/my_app_images/user6_image_1760339702906.jpg', '2025-10-13 07:15:05', 'ACTIVE'),
-(65, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760339980/my_app_images/user6_image_1760339977821.jpg', '2025-10-13 07:19:40', 'ACTIVE'),
-(66, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760340157/my_app_images/user6_image_1760340154750.jpg', '2025-10-13 07:22:37', 'ACTIVE'),
-(67, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760355005/my_app_images/user6_image_1760355003951.jpg', '2025-10-13 11:30:06', 'ACTIVE'),
-(68, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760355054/my_app_images/user6_image_1760355052825.jpg', '2025-10-13 11:30:55', 'ACTIVE'),
-(69, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760355075/my_app_images/user6_image_1760355073858.jpg', '2025-10-13 11:31:16', 'ACTIVE'),
-(70, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760355142/my_app_images/user6_image_1760355140390.jpg', '2025-10-13 11:32:23', 'ACTIVE'),
-(71, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760355310/my_app_images/user6_image_1760355307286.jpg', '2025-10-13 11:35:11', 'ACTIVE'),
-(72, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760355362/my_app_images/user6_image_1760355360760.jpg', '2025-10-13 11:36:03', 'ACTIVE'),
-(73, 2, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760430149/my_app_images/user2_image_1760430144680.jpg', '2025-10-14 08:22:29', 'ACTIVE'),
-(74, 6, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760548638/my_app_images/user6_image_1760548631498.jpg', '2025-10-15 17:17:18', 'ACTIVE'),
-(75, 19, 'https://res.cloudinary.com/dmgvpl0y7/image/upload/v1760695152/my_app_images/user19_image_1760695150425.jpg', '2025-10-17 09:59:13', 'ACTIVE');
+(76, 1, '/userimage/user_unknown_1763545573245.png', '2025-11-19 09:46:13', 'ACTIVE'),
+(77, 1, '/userimage/user_unknown_1763545861320.jpg', '2025-11-19 09:51:01', 'ACTIVE'),
+(83, 18, '/userimage/user_unknown_1763579897451.jpg', '2025-11-19 19:18:17', 'ACTIVE'),
+(84, 18, '/userimage/user_unknown_1763579910272.jpg', '2025-11-19 19:18:30', 'ACTIVE'),
+(85, 18, '/userimage/user_unknown_1763579972949.jpg', '2025-11-19 19:19:32', 'ACTIVE'),
+(86, 18, '/userimage/user_unknown_1763580125481.jpg', '2025-11-19 19:22:05', 'ACTIVE'),
+(87, 18, '/userimage/user_unknown_1763580132758.jpg', '2025-11-19 19:22:12', 'ACTIVE'),
+(88, 18, '/userimage/user_unknown_1763580133214.jpg', '2025-11-19 19:22:13', 'ACTIVE'),
+(89, 19, '/userimage/user_unknown_1763612042700.jpg', '2025-11-20 04:14:02', 'ACTIVE'),
+(90, 19, '/userimage/user_unknown_1763612043395.jpg', '2025-11-20 04:14:03', 'ACTIVE'),
+(91, 21, '/userimage/user_unknown_1764006837941.jpg', '2025-11-24 17:53:57', 'ACTIVE'),
+(92, 21, '/userimage/user_unknown_1764006838405.jpg', '2025-11-24 17:53:58', 'ACTIVE'),
+(93, 23, '/userimage/user_unknown_1764009685880.jpg', '2025-11-24 18:41:25', 'ACTIVE'),
+(94, 23, '/userimage/user_unknown_1764009686317.jpg', '2025-11-24 18:41:26', 'ACTIVE'),
+(95, 23, '/userimage/user_unknown_1764009702952.jpg', '2025-11-24 18:41:42', 'ACTIVE'),
+(96, 23, '/userimage/user_unknown_1764009703378.jpg', '2025-11-24 18:41:43', 'ACTIVE'),
+(100, 6, '/userimage/user_unknown_1764140616201.jpg', '2025-11-26 07:03:36', 'ACTIVE'),
+(101, 6, '/userimage/user_unknown_1764140616673.jpg', '2025-11-26 07:03:36', 'ACTIVE'),
+(102, 6, '/userimage/user_unknown_1764140629520.jpg', '2025-11-26 07:03:49', 'ACTIVE'),
+(103, 6, '/userimage/user_unknown_1764140630024.jpg', '2025-11-26 07:03:50', 'ACTIVE'),
+(104, 6, '/userimage/user_unknown_1764141115355.jpg', '2025-11-26 07:11:55', 'ACTIVE'),
+(105, 6, '/userimage/user_unknown_1764141115875.jpg', '2025-11-26 07:11:55', 'ACTIVE'),
+(106, 6, '/userimage/user_unknown_1764159725196.jpg', '2025-11-26 12:22:05', 'ACTIVE'),
+(107, 6, '/userimage/user_unknown_1764159725658.jpg', '2025-11-26 12:22:05', 'ACTIVE'),
+(108, 6, '/userimage/user_unknown_1764159737757.jpg', '2025-11-26 12:22:17', 'ACTIVE'),
+(127, 1, '/userimage/user_unknown_1764179842115.jpeg', '2025-11-26 17:57:22', 'ACTIVE'),
+(139, 1, '/userimage/user_unknown_1764180843407.jpeg', '2025-11-26 18:14:03', 'ACTIVE'),
+(140, 1, '/userimage/user_unknown_1764180843413.jpeg', '2025-11-26 18:14:03', 'ACTIVE');
 
 -- --------------------------------------------------------
 
@@ -70397,121 +71685,122 @@ INSERT INTO `wallet` (`id`, `user_id`, `balance`, `coins`, `status`, `created_at
 CREATE TABLE `work_type` (
   `id` int(11) NOT NULL,
   `work_id` int(11) DEFAULT NULL,
-  `name` varchar(255) NOT NULL
+  `name` varchar(255) NOT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `work_type`
 --
 
-INSERT INTO `work_type` (`id`, `work_id`, `name`) VALUES
-(1, NULL, 'Private Sector'),
-(2, NULL, 'Government / Public Sector'),
-(3, NULL, 'Defence / Civil Services'),
-(4, NULL, 'Business / Self Employed'),
-(5, NULL, 'Not Working'),
-(6, NULL, 'Doctor'),
-(7, NULL, 'Surgeon'),
-(8, NULL, 'Dentist'),
-(9, NULL, 'Veterinarian'),
-(10, NULL, 'Physiotherapist'),
-(11, NULL, 'Nurse'),
-(12, NULL, 'Healthcare Professional'),
-(13, NULL, 'Pharmacist'),
-(14, NULL, 'Ayurvedic Doctor'),
-(15, NULL, 'Homeopathic Doctor'),
-(16, NULL, 'Psychologist'),
-(17, NULL, 'Teacher / Lecturer'),
-(18, NULL, 'Professor'),
-(19, NULL, 'Principal / Academic Head'),
-(20, NULL, 'Engineer'),
-(21, NULL, 'Software Engineer'),
-(22, NULL, 'Mechanical Engineer'),
-(23, NULL, 'Civil Engineer'),
-(24, NULL, 'Electrical Engineer'),
-(25, NULL, 'Electronics Engineer'),
-(26, NULL, 'Chemical Engineer'),
-(27, NULL, 'Architect'),
-(28, NULL, 'Interior Designer'),
-(29, NULL, 'Chartered Accountant'),
-(30, NULL, 'Accountant'),
-(31, NULL, 'Banker'),
-(32, NULL, 'Investment Banker'),
-(33, NULL, 'Financial Analyst'),
-(34, NULL, 'Stock Broker'),
-(35, NULL, 'Company Secretary'),
-(36, NULL, 'Lawyer'),
-(37, NULL, 'Advocate'),
-(38, NULL, 'Judge / Legal Professional'),
-(39, NULL, 'Police / IPS'),
-(40, NULL, 'IAS / Civil Services'),
-(41, NULL, 'IRS / IFS / Other Government Services'),
-(42, NULL, 'Defense Personnel'),
-(43, NULL, 'Army Officer'),
-(44, NULL, 'Navy Officer'),
-(45, NULL, 'Air Force Officer'),
-(46, NULL, 'Scientist'),
-(47, NULL, 'Researcher'),
-(48, NULL, 'Biotechnologist'),
-(49, NULL, 'Ph.D. Scholar'),
-(50, NULL, 'IT Professional'),
-(51, NULL, 'Web Developer'),
-(52, NULL, 'Mobile App Developer'),
-(53, NULL, 'UI/UX Designer'),
-(54, NULL, 'Software Tester'),
-(55, NULL, 'System Administrator'),
-(56, NULL, 'Network Engineer'),
-(57, NULL, 'Data Scientist'),
-(58, NULL, 'Machine Learning Engineer'),
-(59, NULL, 'AI Specialist'),
-(60, NULL, 'Blockchain Developer'),
-(61, NULL, 'Cybersecurity Expert'),
-(62, NULL, 'Journalist'),
-(63, NULL, 'News Anchor'),
-(64, NULL, 'Content Writer'),
-(65, NULL, 'Editor / Proofreader'),
-(66, NULL, 'Author / Writer'),
-(67, NULL, 'Digital Marketer'),
-(68, NULL, 'SEO Expert'),
-(69, NULL, 'Social Media Manager'),
-(70, NULL, 'Marketing Professional'),
-(71, NULL, 'Sales Professional'),
-(72, NULL, 'HR / Recruitment'),
-(73, NULL, 'Operations Manager'),
-(74, NULL, 'Admin Professional'),
-(75, NULL, 'Entrepreneur'),
-(76, NULL, 'Startup Founder'),
-(77, NULL, 'Businessman'),
-(78, NULL, 'Shop Owner'),
-(79, NULL, 'Retail Manager'),
-(80, NULL, 'Event Manager'),
-(81, NULL, 'Hotel / Hospitality Professional'),
-(82, NULL, 'Chef'),
-(83, NULL, 'Flight Attendant / Air Hostess'),
-(84, NULL, 'Pilot'),
-(85, NULL, 'Travel Agent'),
-(86, NULL, 'Tour Guide'),
-(87, NULL, 'Fashion Designer'),
-(88, NULL, 'Model'),
-(89, NULL, 'Actor / Actress'),
-(90, NULL, 'Singer / Musician'),
-(91, NULL, 'Dancer'),
-(92, NULL, 'Artist / Painter'),
-(93, NULL, 'Photographer'),
-(94, NULL, 'Videographer / Cinematographer'),
-(95, NULL, 'Sports Person'),
-(96, NULL, 'Fitness Trainer'),
-(97, NULL, 'Yoga Instructor'),
-(98, NULL, 'Clerical / Office Staff'),
-(99, NULL, 'Driver'),
-(100, NULL, 'Electrician'),
-(101, NULL, 'Plumber'),
-(102, NULL, 'Mechanic'),
-(103, NULL, 'Lab Technician'),
-(104, NULL, 'Librarian'),
-(105, NULL, 'NGO / Social Worker'),
-(106, NULL, 'Freelancer'),
-(107, NULL, 'Other');
+INSERT INTO `work_type` (`id`, `work_id`, `name`, `status`) VALUES
+(1, NULL, 'Private Sector', 'active'),
+(2, NULL, 'Government / Public Sector', 'active'),
+(3, NULL, 'Defence / Civil Services', 'active'),
+(4, NULL, 'Business / Self Employed', 'active'),
+(5, NULL, 'Not Working', 'active'),
+(6, NULL, 'Doctor', 'active'),
+(7, NULL, 'Surgeon', 'active'),
+(8, NULL, 'Dentist', 'active'),
+(9, NULL, 'Veterinarian', 'active'),
+(10, NULL, 'Physiotherapist', 'active'),
+(11, NULL, 'Nurse', 'active'),
+(12, NULL, 'Healthcare Professional', 'active'),
+(13, NULL, 'Pharmacist', 'active'),
+(14, NULL, 'Ayurvedic Doctor', 'active'),
+(15, NULL, 'Homeopathic Doctor', 'active'),
+(16, NULL, 'Psychologist', 'active'),
+(17, NULL, 'Teacher / Lecturer', 'active'),
+(18, NULL, 'Professor', 'active'),
+(19, NULL, 'Principal / Academic Head', 'active'),
+(20, NULL, 'Engineer', 'active'),
+(21, NULL, 'Software Engineer', 'active'),
+(22, NULL, 'Mechanical Engineer', 'active'),
+(23, NULL, 'Civil Engineer', 'active'),
+(24, NULL, 'Electrical Engineer', 'active'),
+(25, NULL, 'Electronics Engineer', 'active'),
+(26, NULL, 'Chemical Engineer', 'active'),
+(27, NULL, 'Architect', 'active'),
+(28, NULL, 'Interior Designer', 'active'),
+(29, NULL, 'Chartered Accountant', 'active'),
+(30, NULL, 'Accountant', 'active'),
+(31, NULL, 'Banker', 'active'),
+(32, NULL, 'Investment Banker', 'active'),
+(33, NULL, 'Financial Analyst', 'active'),
+(34, NULL, 'Stock Broker', 'active'),
+(35, NULL, 'Company Secretary', 'active'),
+(36, NULL, 'Lawyer', 'active'),
+(37, NULL, 'Advocate', 'active'),
+(38, NULL, 'Judge / Legal Professional', 'active'),
+(39, NULL, 'Police / IPS', 'active'),
+(40, NULL, 'IAS / Civil Services', 'active'),
+(41, NULL, 'IRS / IFS / Other Government Services', 'active'),
+(42, NULL, 'Defense Personnel', 'active'),
+(43, NULL, 'Army Officer', 'active'),
+(44, NULL, 'Navy Officer', 'active'),
+(45, NULL, 'Air Force Officer', 'active'),
+(46, NULL, 'Scientist', 'active'),
+(47, NULL, 'Researcher', 'active'),
+(48, NULL, 'Biotechnologist', 'active'),
+(49, NULL, 'Ph.D. Scholar', 'active'),
+(50, NULL, 'IT Professional', 'active'),
+(51, NULL, 'Web Developer', 'active'),
+(52, NULL, 'Mobile App Developer', 'active'),
+(53, NULL, 'UI/UX Designer', 'active'),
+(54, NULL, 'Software Tester', 'active'),
+(55, NULL, 'System Administrator', 'active'),
+(56, NULL, 'Network Engineer', 'active'),
+(57, NULL, 'Data Scientist', 'active'),
+(58, NULL, 'Machine Learning Engineer', 'active'),
+(59, NULL, 'AI Specialist', 'active'),
+(60, NULL, 'Blockchain Developer', 'active'),
+(61, NULL, 'Cybersecurity Expert', 'active'),
+(62, NULL, 'Journalist', 'active'),
+(63, NULL, 'News Anchor', 'active'),
+(64, NULL, 'Content Writer', 'active'),
+(65, NULL, 'Editor / Proofreader', 'active'),
+(66, NULL, 'Author / Writer', 'active'),
+(67, NULL, 'Digital Marketer', 'active'),
+(68, NULL, 'SEO Expert', 'active'),
+(69, NULL, 'Social Media Manager', 'active'),
+(70, NULL, 'Marketing Professional', 'active'),
+(71, NULL, 'Sales Professional', 'active'),
+(72, NULL, 'HR / Recruitment', 'active'),
+(73, NULL, 'Operations Manager', 'active'),
+(74, NULL, 'Admin Professional', 'active'),
+(75, NULL, 'Entrepreneur', 'active'),
+(76, NULL, 'Startup Founder', 'active'),
+(77, NULL, 'Businessman', 'active'),
+(78, NULL, 'Shop Owner', 'active'),
+(79, NULL, 'Retail Manager', 'active'),
+(80, NULL, 'Event Manager', 'active'),
+(81, NULL, 'Hotel / Hospitality Professional', 'active'),
+(82, NULL, 'Chef', 'active'),
+(83, NULL, 'Flight Attendant / Air Hostess', 'active'),
+(84, NULL, 'Pilot', 'active'),
+(85, NULL, 'Travel Agent', 'active'),
+(86, NULL, 'Tour Guide', 'active'),
+(87, NULL, 'Fashion Designer', 'active'),
+(88, NULL, 'Model', 'active'),
+(89, NULL, 'Actor / Actress', 'active'),
+(90, NULL, 'Singer / Musician', 'active'),
+(91, NULL, 'Dancer', 'active'),
+(92, NULL, 'Artist / Painter', 'active'),
+(93, NULL, 'Photographer', 'active'),
+(94, NULL, 'Videographer / Cinematographer', 'active'),
+(95, NULL, 'Sports Person', 'active'),
+(96, NULL, 'Fitness Trainer', 'active'),
+(97, NULL, 'Yoga Instructor', 'active'),
+(98, NULL, 'Clerical / Office Staff', 'active'),
+(99, NULL, 'Driver', 'active'),
+(100, NULL, 'Electrician', 'active'),
+(101, NULL, 'Plumber', 'active'),
+(102, NULL, 'Mechanic', 'active'),
+(103, NULL, 'Lab Technician', 'active'),
+(104, NULL, 'Librarian', 'active'),
+(105, NULL, 'NGO / Social Worker', 'active'),
+(106, NULL, 'Freelancer', 'active'),
+(107, 0, 'Other', 'active');
 
 -- --------------------------------------------------------
 
@@ -70521,66 +71810,67 @@ INSERT INTO `work_type` (`id`, `work_id`, `name`) VALUES
 
 CREATE TABLE `years` (
   `id` int(11) NOT NULL,
-  `year` varchar(10) DEFAULT NULL
+  `year` varchar(10) DEFAULT NULL,
+  `status` enum('active','inactive') NOT NULL DEFAULT 'active'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
 -- Dumping data for table `years`
 --
 
-INSERT INTO `years` (`id`, `year`) VALUES
-(1, '1975'),
-(2, '1976'),
-(3, '1977'),
-(4, '1978'),
-(5, '1979'),
-(6, '1980'),
-(7, '1981'),
-(8, '1982'),
-(9, '1983'),
-(10, '1984'),
-(11, '1985'),
-(12, '1986'),
-(13, '1987'),
-(14, '1988'),
-(15, '1989'),
-(16, '1990'),
-(17, '1991'),
-(18, '1992'),
-(19, '1993'),
-(20, '1994'),
-(21, '1995'),
-(22, '1996'),
-(23, '1997'),
-(24, '1998'),
-(25, '1999'),
-(26, '2000'),
-(27, '2001'),
-(28, '2002'),
-(29, '2003'),
-(30, '2004'),
-(31, '2005'),
-(32, '2006'),
-(33, '2007'),
-(34, '2008'),
-(35, '2009'),
-(36, '2010'),
-(37, '2011'),
-(38, '2012'),
-(39, '2013'),
-(40, '2014'),
-(41, '2015'),
-(42, '2016'),
-(43, '2017'),
-(44, '2018'),
-(45, '2019'),
-(46, '2020'),
-(47, '2021'),
-(48, '2022'),
-(49, '2023'),
-(50, '2024'),
-(51, '2025'),
-(52, 'By Birth');
+INSERT INTO `years` (`id`, `year`, `status`) VALUES
+(1, '1975', 'active'),
+(2, '1976', 'active'),
+(3, '1977', 'active'),
+(4, '1978', 'active'),
+(5, '1979', 'active'),
+(6, '1980', 'active'),
+(7, '1981', 'active'),
+(8, '1982', 'active'),
+(9, '1983', 'active'),
+(10, '1984', 'active'),
+(11, '1985', 'active'),
+(12, '1986', 'active'),
+(13, '1987', 'active'),
+(14, '1988', 'active'),
+(15, '1989', 'active'),
+(16, '1990', 'active'),
+(17, '1991', 'active'),
+(18, '1992', 'active'),
+(19, '1993', 'active'),
+(20, '1994', 'active'),
+(21, '1995', 'active'),
+(22, '1996', 'active'),
+(23, '1997', 'active'),
+(24, '1998', 'active'),
+(25, '1999', 'active'),
+(26, '2000', 'active'),
+(27, '2001', 'active'),
+(28, '2002', 'active'),
+(29, '2003', 'active'),
+(30, '2004', 'active'),
+(31, '2005', 'active'),
+(32, '2006', 'active'),
+(33, '2007', 'active'),
+(34, '2008', 'active'),
+(35, '2009', 'active'),
+(36, '2010', 'active'),
+(37, '2011', 'active'),
+(38, '2012', 'active'),
+(39, '2013', 'active'),
+(40, '2014', 'active'),
+(41, '2015', 'active'),
+(42, '2016', 'active'),
+(43, '2017', 'active'),
+(44, '2018', 'active'),
+(45, '2019', 'active'),
+(46, '2020', 'active'),
+(47, '2021', 'active'),
+(48, '2022', 'active'),
+(49, '2023', 'active'),
+(50, '2024', 'active'),
+(51, '2025', 'active'),
+(52, 'By Birth', 'active');
 
 --
 -- Indexes for dumped tables
@@ -70641,6 +71931,12 @@ ALTER TABLE `Course`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `demo_table`
+--
+ALTER TABLE `demo_table`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `diet`
 --
 ALTER TABLE `diet`
@@ -70651,6 +71947,13 @@ ALTER TABLE `diet`
 --
 ALTER TABLE `disability_types`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `district`
+--
+ALTER TABLE `district`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `state_id` (`state_id`);
 
 --
 -- Indexes for table `email_verifications`
@@ -70737,12 +72040,6 @@ ALTER TABLE `plans`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `qualification`
---
-ALTER TABLE `qualification`
-  ADD PRIMARY KEY (`id`);
-
---
 -- Indexes for table `qualification_list`
 --
 ALTER TABLE `qualification_list`
@@ -70779,6 +72076,12 @@ ALTER TABLE `skin_tones`
 -- Indexes for table `social_links`
 --
 ALTER TABLE `social_links`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `state`
+--
+ALTER TABLE `state`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -70927,6 +72230,12 @@ ALTER TABLE `Course`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=200;
 
 --
+-- AUTO_INCREMENT for table `demo_table`
+--
+ALTER TABLE `demo_table`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT for table `diet`
 --
 ALTER TABLE `diet`
@@ -70939,6 +72248,12 @@ ALTER TABLE `disability_types`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
+-- AUTO_INCREMENT for table `district`
+--
+ALTER TABLE `district`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=787;
+
+--
 -- AUTO_INCREMENT for table `filters`
 --
 ALTER TABLE `filters`
@@ -70948,7 +72263,7 @@ ALTER TABLE `filters`
 -- AUTO_INCREMENT for table `friends`
 --
 ALTER TABLE `friends`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=53;
 
 --
 -- AUTO_INCREMENT for table `height`
@@ -70984,19 +72299,19 @@ ALTER TABLE `matches`
 -- AUTO_INCREMENT for table `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=381;
 
 --
 -- AUTO_INCREMENT for table `notification_read`
 --
 ALTER TABLE `notification_read`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `payments`
 --
 ALTER TABLE `payments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT for table `payment_gateways`
@@ -71008,13 +72323,7 @@ ALTER TABLE `payment_gateways`
 -- AUTO_INCREMENT for table `plans`
 --
 ALTER TABLE `plans`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
---
--- AUTO_INCREMENT for table `qualification`
---
-ALTER TABLE `qualification`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `qualification_list`
@@ -71026,13 +72335,13 @@ ALTER TABLE `qualification_list`
 -- AUTO_INCREMENT for table `regions`
 --
 ALTER TABLE `regions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT for table `religion`
 --
 ALTER TABLE `religion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT for table `reports`
@@ -71050,7 +72359,13 @@ ALTER TABLE `skin_tones`
 -- AUTO_INCREMENT for table `social_links`
 --
 ALTER TABLE `social_links`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `state`
+--
+ALTER TABLE `state`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT for table `states`
@@ -71068,19 +72383,19 @@ ALTER TABLE `subscriptions`
 -- AUTO_INCREMENT for table `sub_religion`
 --
 ALTER TABLE `sub_religion`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=921;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=923;
 
 --
 -- AUTO_INCREMENT for table `terms_conditions`
 --
 ALTER TABLE `terms_conditions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `text_slider`
 --
 ALTER TABLE `text_slider`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `university`
@@ -71092,7 +72407,7 @@ ALTER TABLE `university`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT for table `userss`
@@ -71104,7 +72419,7 @@ ALTER TABLE `userss`
 -- AUTO_INCREMENT for table `user_images`
 --
 ALTER TABLE `user_images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=151;
 
 --
 -- AUTO_INCREMENT for table `wallet`
@@ -71116,7 +72431,7 @@ ALTER TABLE `wallet`
 -- AUTO_INCREMENT for table `work_type`
 --
 ALTER TABLE `work_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=108;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=109;
 
 --
 -- AUTO_INCREMENT for table `years`

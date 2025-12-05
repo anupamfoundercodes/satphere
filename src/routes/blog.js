@@ -2206,7 +2206,7 @@ router.post("/add-record", requireAdmin, async (req, res) => {
 
     // use prepared statement for value
     await pool.query(
-      `INSERT INTO \`${table}\` (${column}, status, created_at, updated_at) VALUES (?, 'active', NOW(), NOW())`,
+      `INSERT INTO \`${table}\` (${column}, status) VALUES (?, 'active')`,
       [String(fieldValue).trim()]
     );
 
@@ -2217,35 +2217,52 @@ router.post("/add-record", requireAdmin, async (req, res) => {
   }
 });
 
-// UPDATE RECORD - inline edit
+// UPDATE RECORD - inline edit (multi-column support)
 router.post("/update-record", requireAdmin, async (req, res) => {
   try {
-    const { table, id, field, value } = req.body;
+    const { table, id, data } = req.body;
+
     const meta = findTableMeta(table);
-    if (!meta) return res.json({ success: false, message: "Invalid table" });
+    if (!meta)
+      return res.json({ success: false, message: "Invalid table" });
 
-    // basic validations
-    if (!id || !/^\d+$/.test(String(id))) return res.json({ success: false, message: "Invalid id" });
-    if (!field || typeof field !== "string") return res.json({ success: false, message: "Invalid field" });
+    if (!id || !/^\d+$/.test(String(id)))
+      return res.json({ success: false, message: "Invalid ID" });
 
-    // disallow changing id field
-    if (field === "id") return res.json({ success: false, message: "Cannot update id" });
+    if (!data || typeof data !== "object")
+      return res.json({ success: false, message: "Invalid data" });
 
-    // allow only safe column names (letters, numbers, underscore)
-    if (!/^[a-zA-Z0-9_]+$/.test(field)) return res.json({ success: false, message: "Invalid field name" });
+    const fields = Object.keys(data);
+    if (fields.length === 0)
+      return res.json({ success: false, message: "No fields to update" });
 
-    // We trust `table` as it's validated earlier; we cannot parametrize column names so we embed them after validation
+    // FIELD VALIDATION (multi)
+    for (let f of fields) {
+      if (f === "id")
+        return res.json({ success: false, message: "Cannot update id" });
+
+      if (!/^[a-zA-Z0-9_]+$/.test(f))
+        return res.json({ success: false, message: "Invalid field name: " + f });
+    }
+
+    // BUILD QUERY
+    const setQuery = fields.map(f => `\`${f}\` = ?`).join(", ");
+    const values = fields.map(f => data[f]);
+    values.push(id);
+
     await pool.query(
-      `UPDATE \`${table}\` SET \`${field}\` = ?, updated_at = NOW() WHERE id = ?`,
-      [value, id]
+      `UPDATE \`${table}\` SET ${setQuery} WHERE id = ?`,
+      values
     );
 
-    res.json({ success: true });
+    res.json({ success: true, message: "Row updated successfully" });
+
   } catch (err) {
     console.error(err);
-    res.json({ success: false, message: "DB error" });
+    res.json({ success: false, message: err.message });
   }
 });
+
 
 // DELETE RECORD
 router.post("/delete-record", requireAdmin, async (req, res) => {

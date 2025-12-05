@@ -30,9 +30,9 @@ html, body {
       <%- include('../partials/_sidebar') %>
       <div class="main-panel">
         <div class="content-wrapper">
-          <div class="page-header">
+          <div class="page-header" style="margin: 0px 0 -0.5rem 0;">
             <nav aria-label="breadcrumb">
-           <h3 id="termTitle"><%= selectedTerm?.title || '' %></h3>
+           <h3 id="termTitle" class="text-danger"><%= selectedTerm?.title || '' %></h3>
 
               <ol class="breadcrumb">
                 <li class="breadcrumb-item_"><a href="#"></a></li>
@@ -42,10 +42,10 @@ html, body {
           </div>
 
           <div class="card">
-            <div class="card-body">
+            <div class="card-body" style="padding: 1.5rem 2.5rem;">
             <h3 class="page-title"></h3>
-              <div class="form-group mt-3">
-  <label>Select Term & Condition</label>
+              <div class="form-group mt-1">
+  <label >Select Term & Condition</label>
   <select id="termSelect" class="form-control">
 <% terms.forEach(term => { %>
   <option value="<%= term.id %>" <%= term.id === selectedTerm.id ? 'selected' : '' %>>
@@ -58,17 +58,17 @@ html, body {
 <form id="termForm" method="POST" action="/termsave">
   <input type="hidden" name="id" id="termId" value="<%= selectedTerm?.id || '' %>" />
 
-  <div class="form-group mt-3">
+  <div class="form-group ">
     <label>Title</label>
     <input type="text" name="title" id="title" class="form-control" value="<%= selectedTerm?.title || '' %>" required />
   </div>
 
-  <div class="form-group mt-3">
+  <div class="form-group mt-0">
     <label>Description</label>
     <textarea id="description" name="description" class="form-control" rows="10"><%= selectedTerm?.description || '' %></textarea>
   </div>
 
-  <div class="form-group mt-3">
+  <div class="form-group mt-1">
     <label>Status</label>
     <select name="status" id="status" class="form-control" required>
       <option value="active" <%= selectedTerm?.status === 'active' ? 'selected' : '' %>>Active</option>
