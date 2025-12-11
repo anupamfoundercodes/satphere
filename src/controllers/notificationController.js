@@ -1,7 +1,7 @@
 import { pool } from "../config/db.js";
 import moment from "moment-timezone";
 
-const created_at = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+//const created_at = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
   // ✅ Use APP_URL from .env
 const BASE_URL = process.env.APP_URL; 
 export const getNotifications = async (req, res) => {
@@ -64,10 +64,14 @@ export const getNotifications = async (req, res) => {
     );
 
     const unreadCount = countResult[0]?.unread_count || 0;
-    const dataWithFullURL = rows.map((row) => ({
+const dataWithFullURL = rows.map((row) => ({
   ...row,
-  img: row.img ? `${BASE_URL}/${row.img}` : null
+  img: row.img ? `${BASE_URL}/${row.img}` : `${BASE_URL}/images/profile.jpg`,
+  created_at: moment(row.created_at)
+    .tz("Asia/Kolkata")
+    .format("YYYY-MM-DD HH:mm:ss")
 }));
+;
 
     res.json({  
       message: "Notification Get Successfully",
@@ -90,6 +94,8 @@ export const userSendNotification = async (req, res) => {
   }
 
   try {
+  const created_at = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
+
     const [result] = await pool.query(
       `INSERT INTO notifications (user_id, title, message, senderid,created_at) VALUES (?, ?, ?, ?,?)`,
       [user_id, title, message, senderid,created_at]

@@ -33,25 +33,24 @@ async function insertNotification(user_id, title, message, senderid,type) {
   if (!user_id || !title || !message) {
     throw new Error("Missing required fields (user_id, title, message,type)");
   }
-
+const created = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
   const query = `
     INSERT INTO notifications (user_id, title, message, is_read, senderid,type,created_at) 
     VALUES (?, ?, ?, 0, ?,?,?)
   `;
-console.log(  created_at);
   const [result] = await pool.query(query, [
     user_id,
     title,
     message,
     senderid || null,
     type ||null,
-    created_at,
+    created,
   ]);
 
   console.log("✅ Notification inserted, ID:", result.insertId);
   return result;
 }
-
+//callingNotifications
 router.post("/callingNotifications", async (req, res) => {
   const { token, title, message, data, user_id, sender_id, type, channel } = req.body;
   console.log("calling notification", req.body);

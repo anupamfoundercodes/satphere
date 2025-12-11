@@ -592,26 +592,45 @@ router.post("/sendnotificationtouser",requireAdmin,  async (req, res) => {
   }
 });
 
-router.get('/transactions',requireAdmin,  async (req, res) => {
+router.get('/transactions', requireAdmin, async (req, res) => {
   try {
-    const [results] = await pool.query(`
-		SELECT 
-		  p.*, 
-		  u.first_name AS name, 
-		  u.mobile_no AS phone,
-		  pl.name AS plan_name
-		FROM payments p
-		LEFT JOIN users u ON p.user_id = u.id
-		LEFT JOIN plans pl ON p.plan_id = pl.id
-		ORDER BY p.created_at DESC;
+    const page = parseInt(req.query.page) || 1;   // current page
+    const limit = 10;                              // per page
+    const offset = (page - 1) * limit;
+
+    // Get total count
+    const [[{ total }]] = await pool.query(`
+      SELECT COUNT(*) AS total FROM payments
     `);
 
-    res.render('transaction', { payments: results });
+    // Fetch paginated records
+    const [results] = await pool.query(`
+      SELECT 
+        p.*, 
+        u.first_name AS name, 
+        u.mobile_no AS phone,
+        pl.name AS plan_name
+      FROM payments p
+      LEFT JOIN users u ON p.user_id = u.id
+      LEFT JOIN plans pl ON p.plan_id = pl.id
+      ORDER BY p.created_at DESC
+      LIMIT ? OFFSET ?
+    `, [limit, offset]);
+
+    const totalPages = Math.ceil(total / limit);
+
+    res.render("transaction", {
+      payments: results,
+      currentPage: page,
+      totalPages
+    });
+
   } catch (err) {
     console.error("Error fetching transactions:", err.message);
-    res.render('transaction', { payments: [] });
+    res.render('transaction', { payments: [], currentPage: 1, totalPages: 1 });
   }
 });
+
 
 
 // PATCH update transaction status
@@ -1037,7 +1056,7 @@ router.delete("/matches/:id",requireAdmin,  async (req, res) => {
 router.get("/friends", requireAdmin, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
-    const limit = 1;
+    const limit = 10;
     const offset = (page - 1) * limit;
 
     const search = req.query.search ? req.query.search.trim() : "";

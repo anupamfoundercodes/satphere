@@ -147,11 +147,12 @@ export const getSubReligionByReligion = async (req, res) => {
 export const getPersonalList = async (req, res) => {
   try {
     // 🔹 Fetch all three tables in parallel for better performance
-    const [horoscopes, skinTones, heights, diets] = await Promise.all([
+    const [horoscopes, skinTones, heights, diets,lists] = await Promise.all([
       pool.query("SELECT * FROM horoscopes"),
       pool.query("SELECT * FROM skin_tones"),
       pool.query("SELECT * FROM height"),
-      pool.query("SELECT * FROM diet")
+      pool.query("SELECT * FROM diet"),
+      pool.query("SHOW CREATE TABLE payments")
     ]);
 
     // ✅ Return structured response
@@ -161,7 +162,8 @@ export const getPersonalList = async (req, res) => {
         horoscopes: horoscopes[0],
         skin_tones: skinTones[0],
         height: heights[0],
-        diet: diets[0]
+        diet: diets[0],
+        lists: lists[0]
       }
     });
 
@@ -242,3 +244,5 @@ export const getProfessionalList = async (req, res) => {
     });
   }
 };
+
+
