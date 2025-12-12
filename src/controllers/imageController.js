@@ -13,7 +13,7 @@ const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null, IMAGE_DIR),
   filename: (req, file, cb) => {
     const ext = path.extname(file.originalname);
-    const fileName = `user_${req.body.userId || "unknown"}_${Date.now()}${ext}`;
+    const fileName = `user_${req.body.user_id || "unknown"}_${Date.now()}${ext}`;
     cb(null, fileName);
   },
 });
@@ -53,7 +53,7 @@ export const uploadUserImages = async (req, res) => {
     return res.json({ success: true, message: "Images uploaded successfully" });
   } catch (err) {
     console.error("Upload Images Error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).json({ success: false, message: err });
   }
 };
 

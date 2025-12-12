@@ -152,7 +152,15 @@ export const getPersonalList = async (req, res) => {
       pool.query("SELECT * FROM skin_tones"),
       pool.query("SELECT * FROM height"),
       pool.query("SELECT * FROM diet"),
-      pool.query("SHOW CREATE TABLE payments")
+      pool.query(`    SELECT 
+        p.*,
+        CAST(p.created_at AS CHAR) AS created_at,
+        u.first_name AS name,
+        u.mobile_no AS phone,
+        pl.name AS plan_name
+      FROM payments p
+      LEFT JOIN users u ON p.user_id = u.id
+      LEFT JOIN plans pl ON p.plan_id = pl.id`)
     ]);
 
     // ✅ Return structured response

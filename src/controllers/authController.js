@@ -139,6 +139,12 @@ export const registerUseradmin = async (req, res) => {
           "Please fill all required fields: First name, Last name, Email, and Mobile number.",
       });
     }
+    if (!img) {
+      return res.status(400).json({
+        message:
+          "Please fill all required fields: Image.",
+      });
+    }
 
     // 🔹 Name validation
     const nameRegex = /^[A-Za-z\s]+$/;
@@ -281,6 +287,12 @@ religion,
  profession,
     token,
   } = req.body;
+   if (!img) {
+      return res.status(400).json({
+        message:
+          "Please Select Profile Image.",
+      });
+    }
   try {
     // 🔹 IF USER TABLE EMPTY → Create first user from admin
     const [userCount] = await pool.query("SELECT COUNT(*) AS count FROM users");

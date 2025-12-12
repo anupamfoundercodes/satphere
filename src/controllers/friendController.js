@@ -192,8 +192,19 @@ export const friendlist = async (req, res) => {
 
     if (type == 0) {
       // Friend Requests (pending)
-      typeCondition = "AND f.type = 0 AND f.friend_id = ?";
-      params.push(user_id);
+	typeCondition = `
+	  AND f.type = 0 
+	  AND f.friend_id = ? 
+	  AND NOT EXISTS (
+		  SELECT 1 FROM friends f2
+		  WHERE 
+			((f2.user_id = f.user_id AND f2.friend_id = f.friend_id)
+			OR (f2.user_id = f.friend_id AND f2.friend_id = f.user_id))
+			AND f2.type = 1
+	  )
+	`;
+	params.push(user_id);
+
     } else if (type == 1) {
       // Accepted Friends
       typeCondition = "AND f.type = 1";
@@ -297,6 +308,28 @@ export const friendlist = async (req, res) => {
     });
   }
 };
+
+//users controoler logic show count in userget profile for request recived
+// ----------------------------
+// INTERNAL REUSABLE FUNCTION
+// ----------------------------
+export const friendListInternal = async (user_id, type) => {
+  const fakeReq = { body: { user_id, type } };
+
+  let output = null;
+
+  const fakeRes = {
+    status: () => fakeRes,
+    json: (data) => {
+      output = data; 
+      return data;
+    }
+  };
+
+  await friendlist(fakeReq, fakeRes);
+  return output;
+};
+
 
 export const recentlist = async (req, res) => {
   try {

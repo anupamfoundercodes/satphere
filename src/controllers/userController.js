@@ -4,6 +4,8 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import fs from "fs";
 import path from "path";
+import { friendListInternal } from "./friendController.js";
+
 
 dotenv.config();
 
@@ -533,11 +535,13 @@ export const getProfile = async (req, res) => {
        // 3️⃣ Calculate profile completion
     const profileCompletion = calculateProfileCompletion(user);
     user.profile = profileCompletion; // Add % to response
-
+     const friends = await friendListInternal(userId, 0);
+     const friendCount = friends?.data?.length || 0;
     //  Return response
     return res.status(200).json({
       message: "Profile fetched successfully",
       user: user,
+      friendCount:friendCount,
     });
 
   } catch (err) {

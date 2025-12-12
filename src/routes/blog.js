@@ -400,51 +400,7 @@ router.get('/pushnotification',requireAdmin, (req, res) => {
   res.render('pushnotification');
 });
 
-// Show Notifications Route with Pagination
-// router.get('/shownotification', requireAdmin, async (req, res) => {
-//   try {
-//     const page = parseInt(req.query.page) || 1;   // current page (default 1)
-//     const limit = 10;  // प्रति page कितनी notifications
-//     const offset = (page - 1) * limit;
 
-//     // total notifications count
-//     const countQuery = `SELECT COUNT(*) AS total FROM notifications`;
-//     const [countResult] = await pool.query(countQuery);
-//     const totalNotifications = countResult[0].total;
-//     const totalPages = Math.ceil(totalNotifications / limit);
-
-//     // paginated query
-//     const query = `
-//       SELECT 
-//         n.id,
-//         n.user_id,
-//         n.title,
-//         n.message,
-//         n.is_read,
-//         n.created_at,
-//         n.senderid,
-//         n.status,
-//         u.username AS user_name,
-//         su.username AS sender_name
-//       FROM notifications n
-//       LEFT JOIN users u ON n.user_id = u.id       -- receiver
-//       LEFT JOIN users su ON n.senderid = su.id    -- sender
-//       ORDER BY n.id DESC
-//       LIMIT ? OFFSET ?
-//     `;
-
-//     const [results] = await pool.query(query, [limit, offset]);
-
-//     res.render('shownotification', { 
-//       users: results, 
-//       currentPage: page, 
-//       totalPages 
-//     });
-//   } catch (err) {
-//     console.error('❌ Error fetching notifications:', err);
-//     res.status(500).send('Database error');
-//   }
-// });
 
 // Show Notifications Route with Pagination + Search
 router.get('/shownotification', requireAdmin, async (req, res) => {
@@ -594,44 +550,76 @@ router.post("/sendnotificationtouser",requireAdmin,  async (req, res) => {
 
 router.get('/transactions', requireAdmin, async (req, res) => {
   try {
-    const page = parseInt(req.query.page) || 1;   // current page
-    const limit = 10;                              // per page
+    const page = parseInt(req.query.page) || 1;
+    const limit = 10;
     const offset = (page - 1) * limit;
 
-    // Get total count
-    const [[{ total }]] = await pool.query(`
-      SELECT COUNT(*) AS total FROM payments
-    `);
+    const search = req.query.search;
 
-    // Fetch paginated records
+    let whereQuery = "";
+    let params = [];
+
+    // If searching
+    if (search && search.trim() !== "") {
+      whereQuery = `
+        WHERE (
+          u.first_name LIKE ? OR
+          u.mobile_no LIKE ? OR
+          pl.name LIKE ? OR
+          p.order_id LIKE ? OR
+          p.created_at LIKE ? OR
+          p.status LIKE ?
+        )
+      `;
+      const value = `%${search}%`;
+      params = [value, value, value, value, value, value];
+    }
+
+    // ---------- TOTAL COUNT ----------
+    const [[{ total }]] = await pool.query(`
+      SELECT COUNT(*) AS total
+      FROM payments p
+      LEFT JOIN users u ON p.user_id = u.id
+      LEFT JOIN plans pl ON p.plan_id = pl.id
+      ${whereQuery}
+    `, params);
+
+    // ---------- FETCH RECORDS ----------
     const [results] = await pool.query(`
       SELECT 
-        p.*, 
-        u.first_name AS name, 
+        p.*,
+        CAST(p.created_at AS CHAR) AS created_at,
+        CAST(p.expire_at AS CHAR) AS expire_at,
+        u.first_name AS name,
         u.mobile_no AS phone,
         pl.name AS plan_name
       FROM payments p
       LEFT JOIN users u ON p.user_id = u.id
       LEFT JOIN plans pl ON p.plan_id = pl.id
+      ${whereQuery}
       ORDER BY p.created_at DESC
       LIMIT ? OFFSET ?
-    `, [limit, offset]);
+    `, [...params, limit, offset]);
 
     const totalPages = Math.ceil(total / limit);
 
     res.render("transaction", {
       payments: results,
       currentPage: page,
-      totalPages
+      totalPages,
+      search: search || ""
     });
 
   } catch (err) {
     console.error("Error fetching transactions:", err.message);
-    res.render('transaction', { payments: [], currentPage: 1, totalPages: 1 });
+    res.render("transaction", {
+      payments: [],
+      currentPage: 1,
+      totalPages: 1,
+      search: ""
+    });
   }
 });
-
-
 
 // PATCH update transaction status
 router.patch('/transactions/:id/status', requireAdmin, async (req, res) => {

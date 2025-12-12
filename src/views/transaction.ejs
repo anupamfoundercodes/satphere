@@ -82,9 +82,22 @@ html, body {
           </div>
 
           <div class="row mb-3">
-            <div class="col-md-6">
+            <!--<div class="col-md-6">
               <input type="text" id="userSearch" class="form-control" placeholder="Search by User Name, Order Id, Plan Name">
-            </div>
+            </div>-->
+                    <div class="col-md-6">
+                      <form method="GET" action="/transactions" class="d-flex">
+                        <input
+                          type="text"
+                          name="search"
+                          value="<%= search %>"
+                          class="form-control me-2"
+                          placeholder="Search by User, Plan, Order ID, Created, Status.."
+                        />
+                        <button class="btn btn-outline-danger" type="submit">Search</button>
+                      </form>
+                    </div>
+
           </div>
 
           <div class="row">
@@ -99,6 +112,7 @@ html, body {
                           <th>#</th>
                           <th>User Name</th>
                           <th>Plan Name</th>
+							<th>Mobile No</th>
                           <th>Order ID</th>
                           <!--<th>Payment ID</th>-->
                           <th>Type</th>
@@ -124,6 +138,7 @@ html, body {
                               <td><%= index + 1 %></td>
                               <td><%= p.name %></td>
                               <td><%= p.plan_name %></td>
+                              <td><%= p.phone %></td>
                               <td><%= p.order_id %></td>
                              <!-- <td><%= p.payment_id || '-' %></td>-->
                               <td><%= p.type || '-' %></td>
@@ -190,8 +205,10 @@ html, body {
 
 
                               <!--<td><%= p.meta || '-' %></td>-->
-                              <td><%= new Date(p.created_at).toISOString().slice(0,19).replace('T', ' ') %></td>
-                              <td><%= p.expire_at ? new Date(p.expire_at).toISOString().slice(0,19).replace('T', ' ') : '-' %></td>
+                              
+                               <td><%= p.created_at || '-' %>
+                             
+                               <td><%= p.expire_at || '-' %>
                               <td>
                               <% if(p.status === 'pending') { %>
                                 <button class="btn btn-success btn-sm action-btn" data-id="<%= p.id %>" data-status="success"  data-plan-id="<%= p.plan_id %>">Success</button>
@@ -248,7 +265,8 @@ html, body {
         <!-- Prev -->
         <li class="page-item <%= currentPage === 1 ? 'disabled' : '' %>">
           <a class="page-link"
-             href="<%= currentPage === 1 ? '#' : createPageLink(currentPage - 1) %>"
+             href="/transactions?page=<%= currentPage - 1 %>&search=<%= search %>"
+
              style="border:1px solid #FFE8EC; border-radius:6px; transition:all 0.3s ease;">Prev</a>
         </li>
 
