@@ -480,7 +480,7 @@ export const friendlistChat = async (req, res) => {
     const query = `
       SELECT 
           u.id AS id,
-          u.frist_name,
+          u.first_name,
           u.last_name,
           u.gender,
           DATE(u.dob) AS dob,
@@ -535,6 +535,180 @@ export const friendlistChat = async (req, res) => {
     });
   }
 };
+
+export const chatlists = async (req, res) => {
+  try {
+    const { user_id } = req.body;
+
+    if (!user_id) {
+      return res.status(400).json({
+        message: "user_id is required",
+        data: [],
+      });
+    }
+
+    const query = `
+      SELECT 
+          f.id AS friend_record_id,
+          f.user_id,
+          f.friend_id,
+          f.type,
+          f.status,
+
+          -- 🔥 CURRENT USER KE HISAB SE CHAT FLAG
+          CASE
+            WHEN f.user_id = ? THEN f.chat
+            ELSE (
+              SELECT f2.chat
+              FROM friends f2
+              WHERE f2.user_id = ? AND f2.friend_id = f.user_id
+              LIMIT 1
+            )
+          END AS chat,
+
+          u.id AS profile_id,
+          u.first_name,
+          u.last_name,
+          u.gender,
+          DATE(u.dob) AS dob,
+          u.state,
+          u.city,
+          u.address,
+          u.pincode,
+          u.img,
+          u.profession,
+          u.sub_religion,
+          u.religion,
+          u.token
+      FROM friends f
+      JOIN users u
+        ON u.id = CASE
+          WHEN f.user_id = ? THEN f.friend_id
+          ELSE f.user_id
+        END
+      WHERE
+        (
+          (f.user_id = ? AND f.chat = 1)
+          OR
+          (f.friend_id = ? AND f.chat = 1)
+        )
+        AND u.status = 'active'
+      ORDER BY f.updated_at DESC
+    `;
+
+    const [rows] = await pool.query(query, [
+      user_id, // CASE f.user_id = ?
+      user_id, // subquery f2.user_id
+      user_id, // JOIN CASE
+      user_id, // WHERE f.user_id
+      user_id, // WHERE f.friend_id
+    ]);
+
+    if (!rows.length) {
+      return res.status(200).json({
+        message: "No chat list found",
+        data: [],
+      });
+    }
+
+    const data = rows.map((r) => {
+      const img =
+        r.img && r.img !== ""
+          ? `${BASE_URL}${r.img}`
+          : `${BASE_URL}/images/faces-clipart/profile.png`;
+
+      return {
+        friend_record_id: r.friend_record_id,
+        profile_id: r.profile_id,
+        first_name: r.first_name,
+        last_name: r.last_name,
+        gender: r.gender,
+        dob: r.dob ? new Date(r.dob).toISOString().split("T")[0] : null,
+        state: r.state,
+        city: r.city,
+        address: r.address,
+        pincode: r.pincode,
+        profession: r.profession,
+        religion: r.religion,
+        sub_religion: r.sub_religion,
+        img,
+        chat: r.chat, // 🔥 49 ko 1, 48 ko 0
+        type: r.type,
+      };
+    });
+
+    return res.status(200).json({
+      message: "Chat list fetched successfully",
+      count: data.length,
+      data,
+    });
+  } catch (err) {
+    console.error("❌ Chat List API Error:", err);
+    return res.status(500).json({
+      message: "Internal server error",
+      data: [],
+    });
+  }
+};
+
+export const startChat = async (req, res) => {
+  try {
+    const { user_id, friend_id } = req.body;
+
+    // ---------------- Validation ----------------
+    if (!user_id || !friend_id) {
+      return res.status(400).json({
+        message: "user_id and friend_id are required",
+      });
+    }
+
+    // ---------------- Check existing row ----------------
+    const checkQuery = `
+      SELECT id, chat 
+      FROM friends 
+      WHERE user_id = ? AND friend_id = ? AND status = 'active'
+      LIMIT 1
+    `;
+
+    const [existing] = await pool.query(checkQuery, [
+      user_id,
+      friend_id,
+    ]);
+
+    if (!existing.length) {
+      return res.status(404).json({
+        message: "Friend record not found",
+      });
+    }
+
+    // ---------------- Already started ----------------
+    if (existing[0].chat == 1) {
+      return res.status(200).json({
+        message: "Chat already started",
+      });
+    }
+
+    // ---------------- Update chat = 1 ----------------
+    const updateQuery = `
+      UPDATE friends
+      SET chat = 1, updated_at = NOW()
+      WHERE user_id = ? AND friend_id = ?
+    `;
+
+    await pool.query(updateQuery, [user_id, friend_id]);
+
+    return res.status(200).json({
+      message: "Chat started successfully",
+    });
+
+  } catch (err) {
+    console.error("❌ Start Chat Error:", err);
+    return res.status(500).json({
+      message: "Internal server error",
+    });
+  }
+};
+
 
 
 
