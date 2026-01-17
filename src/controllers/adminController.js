@@ -19,7 +19,7 @@ export const adminSignin = async (req, res) => {
       return res.json({ success: false, message: "Invalid Credential" });
     }
 
-    const token = jwt.sign({ id: admin.id }, process.env.JWT_SECRET || "default_secret", { expiresIn: "1h" });
+    const token = jwt.sign({ id: admin.id,login_time: admin.updated_at }, process.env.JWT_SECRET || "default_secret", { expiresIn: "1h" });
     res.cookie("token", token, { httpOnly: true });
 
     return res.json({ success: true, message: "Login successful" });

@@ -1,7 +1,12 @@
-
 import express from 'express';
+const router = express.Router(); // 🔥 VERY IMPORTANT FIRST
+
 import { pool } from "../config/db.js";
-import requireAdmin from '../middleware/requireAdmin.js';
+import setUser from "../middleware/setUser.js";
+import requireAdmin from "../middleware/requireAdmin.js";
+import adminSessionCheck from "../middleware/adminSessionCheck.js";
+import adminForceLogout from "../middleware/adminForceLogout.js";
+import noCache from "../middleware/noCache.js";
 import axios from 'axios';
 import multer from 'multer';
 import path from 'path';
@@ -9,11 +14,19 @@ import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
+// 🔥 ALWAYS FIRST MIDDLEWARE
+
+router.use(setUser);
+//router.use(requireAdmin);
+//router.use(adminSessionCheck);
+//router.use(adminForceLogout);
+
+
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const base_url = process.env.APP_URL;
-const router = express.Router();
+
 
 // 🗂️ Correct folder path (2 dots if public is outside src)
 const bannerFolder = path.join(__dirname, '../../public/banner');
@@ -36,15 +49,17 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 router.get('/login', (req, res) => {
-  if (res.locals.admin) {
+  if (req.cookies.token) {
     return res.redirect('/');
   }
   res.render('login');
 });
 router.get("/logout", (req, res) => {
-    res.clearCookie("token");
-    res.redirect("/login");
+  res.clearCookie("token");
+  res.setHeader("Cache-Control", "no-store");
+  res.redirect("/login");
 });
+
 
 router.get('/vediocall', (req, res) => {
   res.render('vediocall');
@@ -60,20 +75,7 @@ router.get('/charts', (req, res) => {
 });
 
 
-
-
-// router.get('/',requireAdmin,  async (req, res) => {
-//   try {
-//     const [rows] = await pool.query("SELECT COUNT(*) AS total FROM users");
-//     res.json(rows[0]);
-//   } catch (err) {
-//     console.error("DB Test Error:", err);
-//     res.status(500).send("Database test error");
-//   }
-// });
-
-// router.use(requireAdmin);//all routes are secure
-router.get('/',requireAdmin, async (req, res) => {
+router.get('/',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
  
         const countQuery = `
@@ -112,7 +114,9 @@ router.get('/',requireAdmin, async (req, res) => {
   }
 });
 
-router.get('/adminprofile',requireAdmin, async (req, res) => {
+
+
+router.get('/adminprofile',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
     const adminId = 1; // ya req.session.adminId
 
@@ -129,7 +133,7 @@ router.get('/adminprofile',requireAdmin, async (req, res) => {
   }
 });
 
-router.get('/deleteprofile/:id',requireAdmin,async (req, res) => {node
+router.get('/deleteprofile/:id',requireAdmin, adminForceLogout, noCache,  async (req, res) => {node
   try {
     const { id } = req.params;
     console.log("User ID to delete:", id);
@@ -147,7 +151,7 @@ router.get('/deleteprofile/:id',requireAdmin,async (req, res) => {node
   }
 });
 
-router.get("/users", async (req, res) => {
+router.get("/users",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -192,7 +196,7 @@ router.get("/users", async (req, res) => {
   }
 });
 
-router.patch("/users/:id/status",requireAdmin,  async (req, res) => {
+router.patch("/users/:id/status",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
 
@@ -214,11 +218,11 @@ router.patch("/users/:id/status",requireAdmin,  async (req, res) => {
 });
 
 
-router.get('/userregister',requireAdmin, (req,res)=>{
+router.get('/userregister',requireAdmin, adminForceLogout, noCache,(req,res)=>{
   res.render('userregister')
 })
 
-router.get("/viewprofile/:id", requireAdmin, async (req, res) => {
+router.get("/viewprofile/:id",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -251,7 +255,7 @@ router.get("/viewprofile/:id", requireAdmin, async (req, res) => {
 
 
 // GET edit profile page
-router.get("/editprofile/:id", requireAdmin, async (req, res) => {
+router.get("/editprofile/:id", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { id } = req.params;
 
@@ -278,7 +282,7 @@ router.get("/editprofile/:id", requireAdmin, async (req, res) => {
 
 
 // POST update profile
-router.post("/update-profile", requireAdmin, async (req, res) => {
+router.post("/update-profile", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const data = req.body;
     const { id, img } = data;
@@ -340,7 +344,7 @@ router.post("/update-profile", requireAdmin, async (req, res) => {
 
 
 
-router.get("/termcondition",requireAdmin,  async (req, res) => {
+router.get("/termcondition",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const [rows] = await pool.query("SELECT * FROM terms_conditions ORDER BY id ASC");
 
@@ -356,7 +360,7 @@ router.get("/termcondition",requireAdmin,  async (req, res) => {
 });
 
 
-router.get("/termcondition/:id",requireAdmin,  async (req, res) => {
+router.get("/termcondition/:id",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id } = req.params;
   try {
     const [rows] = await pool.query("SELECT * FROM terms_conditions WHERE id = ?", [id]);
@@ -369,7 +373,7 @@ router.get("/termcondition/:id",requireAdmin,  async (req, res) => {
 });
 
 // POST update
-router.post("/termsave",requireAdmin,  async (req, res) => {
+router.post("/termsave",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { title, description, status,id } = req.body;
  
 
@@ -386,7 +390,7 @@ router.post("/termsave",requireAdmin,  async (req, res) => {
   }
 });
 
-router.get('/sendnotificationto',requireAdmin,  async (req, res) => {
+router.get('/sendnotificationto',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
     const [users] = await pool.query('SELECT id AS token,mobile_no As phone, first_name AS name FROM users');
     res.render('sendnotificationto', { users });
@@ -396,14 +400,14 @@ router.get('/sendnotificationto',requireAdmin,  async (req, res) => {
   }
 });
 
-router.get('/pushnotification',requireAdmin, (req, res) => {
+router.get('/pushnotification',requireAdmin, adminForceLogout, noCache, (req, res) => {
   res.render('pushnotification');
 });
 
 
 
 // Show Notifications Route with Pagination + Search
-router.get('/shownotification', requireAdmin, async (req, res) => {
+router.get('/shownotification', requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -475,7 +479,7 @@ router.get('/shownotification', requireAdmin, async (req, res) => {
 
 
 
-router.post("/sendnotificationtouser",requireAdmin,  async (req, res) => {
+router.post("/sendnotificationtouser",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { user_ids, title, message, senderid } = req.body;
 
   if (!title || !message || (user_ids === undefined || user_ids === null || user_ids === '')) {
@@ -548,7 +552,7 @@ router.post("/sendnotificationtouser",requireAdmin,  async (req, res) => {
   }
 });
 
-router.get('/transactions', requireAdmin, async (req, res) => {
+router.get('/transactions', requireAdmin, adminForceLogout, noCache,async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -622,7 +626,7 @@ router.get('/transactions', requireAdmin, async (req, res) => {
 });
 
 // PATCH update transaction status
-router.patch('/transactions/:id/status', requireAdmin, async (req, res) => {
+router.patch('/transactions/:id/status', requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { status, plan_id } = req.body;
     const { id } = req.params;
@@ -702,7 +706,7 @@ router.patch('/transactions/:id/status', requireAdmin, async (req, res) => {
   }
 });
 
-router.post('/transactions/update', async (req, res) => {
+router.post('/transactions/update',requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { 
       id, 
@@ -768,7 +772,7 @@ router.post('/transactions/update', async (req, res) => {
 
 
 // GET plans page
-router.get('/plans1',requireAdmin,  async (req, res) => {
+router.get('/plans1',requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const [plans] = await pool.query('SELECT * FROM plans');
 
@@ -789,7 +793,7 @@ router.get('/plans1',requireAdmin,  async (req, res) => {
 });
 
 // GET plans page
-router.get('/plans', requireAdmin, async (req, res) => {
+router.get('/plans', requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const [plans] = await pool.query('SELECT * FROM plans');
 
@@ -820,7 +824,7 @@ router.get('/plans', requireAdmin, async (req, res) => {
 });
 
 // Inline field update
-router.post('/plans/update-field',requireAdmin,  async (req, res) => {
+router.post('/plans/update-field',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { id, field, value } = req.body;
   const allowedFields = ['name', 'billing_cycle', 'price','tax', 'days', 'perks', 'off','description'];
   if (!allowedFields.includes(field)) {
@@ -837,7 +841,7 @@ router.post('/plans/update-field',requireAdmin,  async (req, res) => {
 });
 
 // DELETE plan
-router.get('/plans/delete/:id',requireAdmin,  async (req, res) => {
+router.get('/plans/delete/:id',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { id } = req.params;
   try {
     await pool.query('DELETE FROM plans WHERE id = ?', [id]);
@@ -912,7 +916,7 @@ router.post('/plans/add', async (req, res) => {
 
 
 // Toggle plan status
-router.post('/plans/status-toggle',requireAdmin,  async (req, res) => {
+router.post('/plans/status-toggle',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { id, status } = req.body;
   if (!id || !['0','1'].includes(String(status))) {
     return res.status(200).json({ success: false, message: 'Invalid input' });
@@ -928,7 +932,7 @@ router.post('/plans/status-toggle',requireAdmin,  async (req, res) => {
 });
 
 // POST API: नया स्लाइडर जोड़ने या अपडेट करने के लिए
-router.post("/text-slider", async (req, res) => {
+router.post("/text-slider",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { id, message, status } = req.body;
 
@@ -954,7 +958,7 @@ router.post("/text-slider", async (req, res) => {
   }
 });
 
-router.get("/coins", requireAdmin, async (req, res) => {
+router.get("/coins", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     // Fetch both sliders in parallel
     const [userResults] = await pool.query(`SELECT * FROM text_slider WHERE id = 1`);
@@ -971,7 +975,7 @@ router.get("/coins", requireAdmin, async (req, res) => {
 });
 
 // GET all matches
-router.get("/matches",requireAdmin,  async (req, res) => {
+router.get("/matches",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
     const [results] = await pool.query(`
       SELECT m.*, 
@@ -990,7 +994,7 @@ router.get("/matches",requireAdmin,  async (req, res) => {
 });
 
 // PATCH status
-router.patch("/matches/:id/status",requireAdmin,  async (req, res) => {
+router.patch("/matches/:id/status",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { status } = req.body;
   const { id } = req.params;
   const validStatus = ["pending", "active", "ended"];
@@ -1010,7 +1014,7 @@ router.patch("/matches/:id/status",requireAdmin,  async (req, res) => {
 });
 
 // DELETE match
-router.delete("/matches/:id",requireAdmin,  async (req, res) => {
+router.delete("/matches/:id",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id } = req.params;
   try {
     const [result] = await pool.query("DELETE FROM matches WHERE id = ?", [id]);
@@ -1041,7 +1045,7 @@ router.delete("/matches/:id",requireAdmin,  async (req, res) => {
 //     res.render("friends", { friends: [] });
 //   }
 // });
-router.get("/friends", requireAdmin, async (req, res) => {
+router.get("/friends", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
@@ -1101,7 +1105,7 @@ router.get("/friends", requireAdmin, async (req, res) => {
 
 
 // PATCH status
-router.patch("/friends/:id/status",requireAdmin,  async (req, res) => {
+router.patch("/friends/:id/status",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { status } = req.body;
   const { id } = req.params;
   const validStatus = ["active", "inactive"];
@@ -1121,7 +1125,7 @@ router.patch("/friends/:id/status",requireAdmin,  async (req, res) => {
 });
 
 // DELETE friend
-router.delete("/friends/:id",requireAdmin,  async (req, res) => {
+router.delete("/friends/:id",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { id } = req.params;
   try {
     const [result] = await pool.query("DELETE FROM friends WHERE id = ?", [id]);
@@ -1134,7 +1138,7 @@ router.delete("/friends/:id",requireAdmin,  async (req, res) => {
 });
 
 // List social links
-router.get('/social-links',requireAdmin,  async (req, res) => {
+router.get('/social-links',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
     const [links] = await pool.query('SELECT * FROM social_links ');
     res.render('social_links', { links });
@@ -1145,7 +1149,7 @@ router.get('/social-links',requireAdmin,  async (req, res) => {
 });
 
 // Toggle status
-router.post('/social-links/status-toggle',requireAdmin,  async (req, res) => {
+router.post('/social-links/status-toggle',requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   const { id, status } = req.body;
 //   console.log("status:",status);
   if (!id || !['ACTIVE', 'INACTIVE'].includes(String(status))) {
@@ -1162,7 +1166,7 @@ router.post('/social-links/status-toggle',requireAdmin,  async (req, res) => {
 });
 
 // Inline field update
-router.post('/social-links/update-field',requireAdmin,  async (req, res) => {
+router.post('/social-links/update-field',requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id, field, value } = req.body;
   const allowedFields = ['name', 'link'];
   if (!allowedFields.includes(field)) {
@@ -1179,7 +1183,7 @@ router.post('/social-links/update-field',requireAdmin,  async (req, res) => {
 });
 
 // GET all regions
-router.get("/regions",requireAdmin,  async (req, res) => {
+router.get("/regions",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const [regions] = await pool.query("SELECT * FROM regions ORDER BY id DESC");
     res.render("regions", { regions });
@@ -1190,7 +1194,7 @@ router.get("/regions",requireAdmin,  async (req, res) => {
 });
 
 // Toggle region status
-router.post("/regions/status-toggle",requireAdmin,  async (req, res) => {
+router.post("/regions/status-toggle",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id, status } = req.body;
   if (!id || !["active", "inactive"].includes(status)) {
     return res.json({ success: false, message: "Invalid input" });
@@ -1206,7 +1210,7 @@ router.post("/regions/status-toggle",requireAdmin,  async (req, res) => {
 });
 
 // Inline field update
-router.post("/regions/update-field",requireAdmin,  async (req, res) => {
+router.post("/regions/update-field",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id, field, value } = req.body;
   const allowedFields = ["name", "title"];
   if (!allowedFields.includes(field)) {
@@ -1223,7 +1227,7 @@ router.post("/regions/update-field",requireAdmin,  async (req, res) => {
 });
 
 // DELETE region
-router.get("/regions/delete/:id",requireAdmin,  async (req, res) => {
+router.get("/regions/delete/:id",requireAdmin, adminForceLogout, noCache,  async (req, res) => {
   try {
     await pool.query("DELETE FROM regions WHERE id = ?", [req.params.id]);
     res.redirect("/regions?deleted=1");
@@ -1234,7 +1238,7 @@ router.get("/regions/delete/:id",requireAdmin,  async (req, res) => {
 });
 
 // ADD new region
-router.post("/regions/add",requireAdmin,  async (req, res) => {
+router.post("/regions/add",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { name, title } = req.body;
   if (!name || !title) {
     return res.json({ success: false, message: "Missing required fields" });
@@ -1254,7 +1258,7 @@ router.post("/regions/add",requireAdmin,  async (req, res) => {
 });
 
 // GET wallet list with pagination
-router.get("/wallet", requireAdmin, async (req, res) => {
+router.get("/wallet", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     let page = parseInt(req.query.page) || 1;
     let limit = 10;
@@ -1282,7 +1286,7 @@ router.get("/wallet", requireAdmin, async (req, res) => {
 });
 
 // PATCH toggle status
-router.patch("/wallet/:id/status", requireAdmin, async (req, res) => {
+router.patch("/wallet/:id/status", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { id } = req.params;
     const { status } = req.body;
@@ -1296,7 +1300,7 @@ router.patch("/wallet/:id/status", requireAdmin, async (req, res) => {
 });
 
 // POST add/subtract balance or coins
-router.post("/wallet/:id/adjust", requireAdmin, async (req, res) => {
+router.post("/wallet/:id/adjust",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { id } = req.params;
     const { amount = 0, coins = 0, action } = req.body; // action: add or subtract
@@ -1325,7 +1329,7 @@ router.post("/wallet/:id/adjust", requireAdmin, async (req, res) => {
 });
 
 // All referrals users page
-router.get("/referrals", async (req, res) => {
+router.get("/referrals",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const search = req.query.search ? `%${req.query.search}%` : "%%";
     const page = parseInt(req.query.page) || 1;
@@ -1403,7 +1407,7 @@ router.get("/referrals/:user_id/invites", async (req, res) => {
 
 
 // Get paginated + searchable videos
-router.get("/user_videos", requireAdmin, async (req, res) => {
+router.get("/user_videos", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const search = req.query.search ? `%${req.query.search}%` : "%%";
     const page = parseInt(req.query.page) || 1;
@@ -1449,7 +1453,7 @@ router.get("/user_videos", requireAdmin, async (req, res) => {
 });
 
 // Toggle status (ACTIVE/INACTIVE)
-router.patch("/user_videos/:id/status", requireAdmin, async (req, res) => {
+router.patch("/user_videos/:id/status", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id } = req.params;
   const { status } = req.body;
   try {
@@ -1470,7 +1474,7 @@ router.patch("/user_videos/:id/status", requireAdmin, async (req, res) => {
 });
 
 // Delete video
-router.get("/deletevideo/:id", requireAdmin, async (req, res) => {
+router.get("/deletevideo/:id", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const { id } = req.params;
     const [result] = await pool.query("DELETE FROM user_videos WHERE id = ?", [id]);
@@ -1524,7 +1528,7 @@ router.get("/deletevideo/:id", requireAdmin, async (req, res) => {
 //   }
 // });
 // 🖼 Get all user images with user name
-router.get("/user_images", async (req, res) => {
+router.get("/user_images",requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const search = req.query.search || '';
     const page = parseInt(req.query.page) || 1;
@@ -1594,7 +1598,7 @@ router.post("/user_images/delete/:id", async (req, res) => {
 
 
 // GET all games
-router.get("/games", requireAdmin, async (req, res) => {
+router.get("/games", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const [games] = await pool.query("SELECT * FROM games ORDER BY id DESC");
     res.render("games", { games });
@@ -1605,7 +1609,7 @@ router.get("/games", requireAdmin, async (req, res) => {
 });
 
 // Toggle game status
-router.post("/games/status-toggle", requireAdmin, async (req, res) => {
+router.post("/games/status-toggle", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   const { id, status } = req.body;
   if (!id || !["active", "inactive"].includes(status)) {
     return res.json({ success: false, message: "Invalid input" });
@@ -1827,7 +1831,7 @@ router.post('/delete-banner', requireAdmin, async (req, res) => {
 // =============================
 
 // Religion List Page
-router.get("/religionshow", requireAdmin, async (req, res) => {
+router.get("/religionshow", requireAdmin, adminForceLogout, noCache, async (req, res) => {
   try {
     const [religions] = await pool.query("SELECT * FROM religion ORDER BY id DESC");
     res.render("religions", { religions });

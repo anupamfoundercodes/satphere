@@ -549,51 +549,51 @@ export const chatlists = async (req, res) => {
 
     const query = `
       SELECT 
-          f.id AS friend_record_id,
-          f.user_id,
-          f.friend_id,
-          f.type,
-          f.status,
+    MIN(f.id) AS friend_record_id,
+    f.type,
 
-          -- 🔥 CURRENT USER KE HISAB SE CHAT FLAG
-          CASE
-            WHEN f.user_id = ? THEN f.chat
-            ELSE (
-              SELECT f2.chat
-              FROM friends f2
-              WHERE f2.user_id = ? AND f2.friend_id = f.user_id
-              LIMIT 1
-            )
-          END AS chat,
+    CASE
+      WHEN f.user_id = ? THEN f.chat
+      ELSE (
+        SELECT f2.chat
+        FROM friends f2
+        WHERE f2.user_id = ? AND f2.friend_id = f.user_id
+        LIMIT 1
+      )
+    END AS chat,
 
-          u.id AS profile_id,
-          u.first_name,
-          u.last_name,
-          u.gender,
-          DATE(u.dob) AS dob,
-          u.state,
-          u.city,
-          u.address,
-          u.pincode,
-          u.img,
-          u.profession,
-          u.sub_religion,
-          u.religion,
-          u.token
-      FROM friends f
-      JOIN users u
-        ON u.id = CASE
-          WHEN f.user_id = ? THEN f.friend_id
-          ELSE f.user_id
-        END
-      WHERE
-        (
-          (f.user_id = ? AND f.chat = 1)
-          OR
-          (f.friend_id = ? AND f.chat = 1)
-        )
-        AND u.status = 'active'
-      ORDER BY f.updated_at DESC
+    u.id AS profile_id,
+    u.first_name,
+    u.last_name,
+    u.gender,
+    DATE(u.dob) AS dob,
+    u.state,
+    u.city,
+    u.address,
+    u.pincode,
+    u.img,
+    u.profession,
+    u.sub_religion,
+    u.religion
+
+FROM friends f
+JOIN users u
+  ON u.id = CASE
+    WHEN f.user_id = ? THEN f.friend_id
+    ELSE f.user_id
+  END
+
+WHERE
+  (
+    (f.user_id = ? AND f.chat = 1)
+    OR
+    (f.friend_id = ? AND f.chat = 1)
+  )
+  AND u.status = 'active'
+
+GROUP BY u.id
+ORDER BY MAX(f.updated_at) DESC;
+
     `;
 
     const [rows] = await pool.query(query, [
