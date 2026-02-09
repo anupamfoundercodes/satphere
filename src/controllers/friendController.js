@@ -574,7 +574,8 @@ export const chatlists = async (req, res) => {
     u.img,
     u.profession,
     u.sub_religion,
-    u.religion
+    u.religion,
+    u.token
 
 FROM friends f
 JOIN users u
@@ -634,6 +635,7 @@ ORDER BY MAX(f.updated_at) DESC;
         img,
         chat: r.chat, // 🔥 49 ko 1, 48 ko 0
         type: r.type,
+        token: r.token,
       };
     });
 
