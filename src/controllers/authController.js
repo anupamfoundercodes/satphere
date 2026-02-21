@@ -4,6 +4,7 @@ import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import moment from "moment-timezone";
+import axios from "axios";
 import fs from "fs";
 
 const created_at = moment().tz("Asia/Kolkata").format("YYYY-MM-DD HH:mm:ss");
@@ -78,6 +79,7 @@ function generateReferralCode(userId) {
 }
 
 
+
 export async function updateUserCount(userId, columnName, type) {
   const validColumns = ["game_count", "match_count", "video_count", "invite_count"];
   if (!validColumns.includes(columnName)) {
@@ -106,6 +108,81 @@ export async function updateUserCount(userId, columnName, type) {
 //await updateUserCount(user_id, "invite_count", 0); // decrement (but not below 0)
 //------------------------------register---------------------------------------------------------------
 
+export const sendOtpController = async (req, res) => {
+  try {
+
+    const { mobile, mode = "test", digit = 4 } = req.body;
+
+    if (!mobile) {
+      return res.status(400).json({
+        status: false,
+        message: "Mobile number required"
+      });
+    }
+
+    // mode = test or live
+    // digit = 4 or 6
+
+    const url = `https://otp.fctechteam.org/send_otp.php?mode=${mode}&digit=${digit}&mobile=${mobile}`;
+
+    const response = await axios.get(url);
+
+    return res.status(200).json({
+      status: true,
+      message: "OTP sent successfully",
+      data: response.data
+    });
+
+  } catch (error) {
+
+    console.error("Send OTP Error:", error.message);
+
+    return res.status(500).json({
+      status: false,
+      message: "Failed to send OTP",
+      error: error.message
+    });
+
+  }
+};
+
+
+export const verifyOtpController = async (req, res) => {
+
+  try {
+
+    const { mobile, otp } = req.body;
+
+    if (!mobile || !otp) {
+      return res.status(400).json({
+        status: false,
+        message: "Mobile and OTP required"
+      });
+    }
+
+    const url = `https://otp.fctechteam.org/verifyotp.php?mobile=${mobile}&otp=${otp}`;
+
+    const response = await axios.get(url);
+
+    return res.status(200).json({
+      status: true,
+      message: "OTP verification result",
+      data: response.data
+    });
+
+  } catch (error) {
+
+    console.error("Verify OTP Error:", error.message);
+
+    return res.status(500).json({
+      status: false,
+      message: "OTP verification failed",
+      error: error.message
+    });
+
+  }
+
+};
 
 // ✅ Full User Registration API (Admin)
 

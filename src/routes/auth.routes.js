@@ -16,5 +16,9 @@ router.post("/authloginverify", loginUserVerify)
 // Manual trigger endpoint
 router.post("/run-daily-coins", manualDailyCoins);
 
+// ✅ NEW OTP ROUTES
+router.post("/send_otp", sendOtpController);
+router.post("/verify_otp", verifyOtpController);
+
 export default router;
 
