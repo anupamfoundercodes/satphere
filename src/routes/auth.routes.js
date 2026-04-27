@@ -1,5 +1,6 @@
 import express from "express";
-import { registerUseradmin,registerUser, loginUser, loginUserVerify } from "../controllers/authController.js";
+import { sendOtpController, verifyOtpController, registerUseradmin,registerUser, loginUser, loginUserVerify } from "../controllers/authController.js";
+
 import { manualDailyCoins } from "../cron/dailyCoins.js";
 const router = express.Router();
 
@@ -17,8 +18,8 @@ router.post("/authloginverify", loginUserVerify)
 router.post("/run-daily-coins", manualDailyCoins);
 
 // ✅ NEW OTP ROUTES
-router.post("/send_otp", sendOtpController);
-router.post("/verify_otp", verifyOtpController);
+router.get("/send-otp", sendOtpController);
+router.get("/verify-otp", verifyOtpController);
 
 export default router;
 

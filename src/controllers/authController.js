@@ -108,29 +108,65 @@ export async function updateUserCount(userId, columnName, type) {
 //await updateUserCount(user_id, "invite_count", 0); // decrement (but not below 0)
 //------------------------------register---------------------------------------------------------------
 
+
 export const sendOtpController = async (req, res) => {
   try {
 
-    const { mobile, mode = "test", digit = 4 } = req.body;
+    /* ✅ GET params */
+    const {
+      mobile,
+      digit = 4,
+      merchant_key = "09757d9dc5dc30b49b4d7ae6ac183ccfd1a353c546d5134c"
+    } = req.query;
 
-    if (!mobile) {
+    /* validation */
+    if (!mobile || !/^[6-9]\d{9}$/.test(mobile)) {
       return res.status(400).json({
         status: false,
-        message: "Mobile number required"
+        message: "Valid mobile number required"
       });
     }
 
-    // mode = test or live
-    // digit = 4 or 6
-
-    const url = `https://otp.fctechteam.org/send_otp.php?mode=${mode}&digit=${digit}&mobile=${mobile}`;
+    /* provider API */
+    const url =
+      `https://indopay.cloud/otp/newsend_otp.php?merchant_key=${merchant_key}&digit=${digit}&mobile_no=${mobile}`;
 
     const response = await axios.get(url);
+    const data = response.data;
+
+    if (!data || !data.otp) {
+      return res.status(400).json({
+        status: false,
+        message: "OTP provider failed"
+      });
+    }
+
+    /* expiry 5 minutes */
+    const expiry = new Date(Date.now() + 5 * 60 * 1000);
+
+    /* invalidate old OTP */
+await pool.query(
+  "UPDATE otp_logs SET is_verified=1 WHERE mobile=? AND is_verified=0",
+  [mobile]
+);
+
+await pool.query(
+  `INSERT INTO otp_logs
+   (mobile, otp, merchant_key, provider_mode, expires_at)
+   VALUES (?,?,?,?,?)`,
+  [
+    mobile,
+    String(data.otp),
+    merchant_key,
+    data.mode || "api",
+    expiry
+  ]
+);
 
     return res.status(200).json({
       status: true,
       message: "OTP sent successfully",
-      data: response.data
+      data
     });
 
   } catch (error) {
@@ -142,12 +178,162 @@ export const sendOtpController = async (req, res) => {
       message: "Failed to send OTP",
       error: error.message
     });
-
   }
 };
 
-
 export const verifyOtpController = async (req, res) => {
+  try {
+
+    const { mobile, otp } = req.query;
+
+    if (!mobile || !otp) {
+      return res.status(400).json({
+        status: false,
+        message: "Mobile and OTP required"
+      });
+    }
+
+    /* ✅ TEST NUMBERS (bypass) */
+    const testNumbers = ["9876543210", "9876543211"];
+
+    if (testNumbers.includes(mobile) && otp === "1111") {
+      return res.status(200).json({
+        status: true,
+        message: "OTP verified successfully (TEST MODE)",
+        data: {
+          mobile,
+          otp,
+          verified: true
+        }
+      });
+    }
+
+    // ✅ DB se latest OTP check
+    const [rows] = await pool.query(
+      `SELECT * FROM otp_logs
+       WHERE mobile=? AND otp=? AND is_verified=0
+       ORDER BY id DESC LIMIT 1`,
+      [mobile, otp]
+    );
+
+    if (!rows.length) {
+      return res.status(200).json({
+        status: false,
+        message: "Invalid OTP"
+      });
+    }
+
+    const record = rows[0];
+
+    // ✅ expiry check
+    if (new Date() > new Date(record.expires_at)) {
+      return res.status(200).json({
+        status: false,
+        message: "OTP expired"
+      });
+    }
+
+    // ✅ mark verified
+    await pool.query(
+      "UPDATE otp_logs SET is_verified=1 WHERE id=?",
+      [record.id]
+    );
+
+    // ✅ SUCCESS RESPONSE
+    return res.status(200).json({
+      status: true,
+      message: "OTP verified successfully",
+      data: {
+        mobile,
+        otp,
+        verified: true
+      }
+    });
+
+  } catch (error) {
+
+    console.error("Verify OTP Error:", error.message);
+
+    return res.status(500).json({
+      status: false,
+      message: "OTP verification failed",
+      error: error.message
+    });
+
+  }
+};
+/*export const verifyOtpController = async (req, res) => {
+
+  try {
+
+    const { mobile, otp } = req.query;
+
+    if (!mobile || !otp) {
+      return res.status(400).json({
+        status: false,
+        message: "Mobile and OTP required"
+      });
+    }
+
+    // ✅ check DB OTP
+    const [rows] = await db.promise().query(
+      `SELECT * FROM otp_logs
+       WHERE mobile=? AND otp=? AND is_verified=0
+       ORDER BY id DESC LIMIT 1`,
+      [mobile, otp]
+    );
+
+    if (!rows.length) {
+      return res.status(200).json({
+        status: false,
+        message: "Invalid OTP"
+      });
+    }
+
+    const record = rows[0];
+
+    // expiry check
+    if (new Date() > new Date(record.expires_at)) {
+      return res.status(200).json({
+        status: false,
+        message: "OTP expired"
+      });
+    }
+
+    // ✅ provider verify API
+    const url =
+      `https://indopay.cloud/otp/verifyotp.php?merchant_key=${record.merchant_key}&mobile=${mobile}&otp=${otp}`;
+
+    const response = await axios.get(url);
+
+    // ✅ mark verified
+    await db.promise().query(
+      "UPDATE otp_logs SET is_verified=1 WHERE id=?",
+      [record.id]
+    );
+
+    // RESPONSE SAME
+    return res.status(200).json({
+      status: true,
+      message: "OTP verification result",
+      data: response.data
+    });
+
+  } catch (error) {
+
+    console.error("Verify OTP Error:", error.message);
+
+    return res.status(500).json({
+      status: false,
+      message: "OTP verification failed",
+      error: error.message
+    });
+
+  }
+};*/
+
+
+/*export const verifyOtpController = async (req, res) => {
 
   try {
 
@@ -160,7 +346,7 @@ export const verifyOtpController = async (req, res) => {
       });
     }
 
-    const url = `https://otp.fctechteam.org/verifyotp.php?mobile=${mobile}&otp=${otp}`;
+    const url = `https://indopay.cloud/otp/verifyotp.php?mobile=${mobile}&otp=${otp}`;
 
     const response = await axios.get(url);
 
@@ -182,7 +368,7 @@ export const verifyOtpController = async (req, res) => {
 
   }
 
-};
+};*/
 
 // ✅ Full User Registration API (Admin)
 
